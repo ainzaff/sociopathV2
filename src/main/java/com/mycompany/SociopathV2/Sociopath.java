@@ -286,6 +286,7 @@ public class Sociopath {
             counter = i;
         }
         System.out.println("Rounds needed: " + counter);
+        mainMenu();
     }
 
     public static void eventFive() {
