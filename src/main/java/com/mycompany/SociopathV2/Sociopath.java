@@ -27,7 +27,7 @@ public class Sociopath {
         graphDb.beginTx();
         initializeStudents();
         mainMenu();
-        studentMenu();
+        //studentMenu();
 
     }
 
@@ -141,24 +141,28 @@ public class Sociopath {
     }
 
     public static void mainMenu() {
-        int choice;
-        System.out.println("\nWELCOME TO SOCIOPATH!");
-        System.out.println("What do you want to do?\n");
-        System.out.println("1. Check Students");
-        System.out.println("2. Events");
-        System.out.println("3. Exit\n");
-        choice = input.nextInt();
-        switch (choice) {
-            case 1:
-                studentMenu();
-                break;
-            case 2:
-                eventMenu();
-                break;
-            case 3:
-                System.exit(0);
+        int choice=0;
+        while(choice !=1 || choice != 2 || choice != 3){
+            System.out.println("\nWELCOME TO SOCIOPATH!");
+            System.out.println("What do you want to do?\n");
+            System.out.println("1. Check Students");
+            System.out.println("2. Events");
+            System.out.println("3. Exit\n");
+            choice = input.nextInt();
+            switch (choice) {
+                case 1:
+                    studentMenu();
+                    break;
+                case 2:
+                    eventMenu();
+                    break;
+                case 3:
+                    System.exit(0);
+                    break;
+                default:
+                    System.out.println("Invalid input");
+            }
         }
-
     }
 
     public static void studentMenu() {
@@ -173,16 +177,16 @@ public class Sociopath {
     }
 
     public static void eventMenu() {
+        int choice;
         System.out.println("\nWhich event happened? \n");
         System.out.println("1. Teaching a stranger to solve lab questions ");
         System.out.println("2. Chit-chat ");
         System.out.println("3. Your road to glory ");
         System.out.println("4. Arranging books ");
         System.out.println("5. Meet your crush ");
-        System.out.println("6. Friendship ");
-        int choice = input.nextInt();
+        System.out.println("6. Friendship \n");
+        choice = input.nextInt();
         eventSelector(choice);
-
     }
 
     public static void displayStudents() {
@@ -237,8 +241,12 @@ public class Sociopath {
                 eventSix();
                 break;
             }
+            default: {
+                System.out.println("Invalid input\nGoing back to main menu");
+                mainMenu();
+            }
         }
-        mainMenu();
+        //mainMenu();
     }
 
     public static void eventOne() {
