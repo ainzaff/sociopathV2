@@ -229,10 +229,10 @@ public class Sociopath {
                 eventThree();
                 break;
             }
-            case 4: {
+            case 4: 
                 eventFour();
                 break;
-            }
+            
             case 5: {
                 eventFive();
                 break;
@@ -262,14 +262,13 @@ public class Sociopath {
     }
 
     public static void eventFour() {
-        Scanner s = new Scanner(System.in);
         int counter = 0;
         LinkedList<Integer> bookList = new LinkedList<>();
-        System.out.print("Enter number of books: ");
-        int numOfBooks = s.nextInt();
-        s.nextLine();
-        System.out.print("Enter books' heights: ");
-        String bookHeightsInput = s.nextLine();
+        System.out.println("Enter number of books: ");
+        int numOfBooks = input.nextInt();
+        input.nextLine();
+        System.out.println("Enter books' heights: ");
+        String bookHeightsInput = input.nextLine();
         //split space 
         String[] bookHeights = bookHeightsInput.split(" ");
         //push book height elements into a list while parse into integer
