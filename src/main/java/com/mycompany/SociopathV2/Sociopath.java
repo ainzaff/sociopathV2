@@ -254,7 +254,31 @@ public class Sociopath {
     }
 
     public static void eventFour() {
-        System.out.println("\nThis is a placeholder because the event has not currently been implemented yet <3\n");
+        Scanner s = new Scanner(System.in);
+        int counter = 0;
+        LinkedList<Integer> bookList = new LinkedList<>();
+        System.out.print("Enter number of books: ");
+        int numOfBooks = s.nextInt();
+        s.nextLine();
+        System.out.print("Enter books' heights: ");
+        String bookHeightsInput = s.nextLine();
+        //split space 
+        String[] bookHeights = bookHeightsInput.split(" ");
+        //push book height elements into a list while parse into integer
+        for (int i = 0; i < numOfBooks; i++) {
+            bookList.push(Integer.parseInt(bookHeights[i]));
+        }
+        for (int i = 0; i < bookList.size(); i++) {
+            for (int j = 0; j < bookList.size(); j++) {
+                if (j == bookList.size() - 1) {
+                    break;
+                } else if (bookList.get(j) > bookList.get(j + 1)) {
+                    bookList.remove(j + 1);
+                }
+            }
+            counter = i;
+        }
+        System.out.println("Rounds needed: " + counter);
     }
 
     public static void eventFive() {
