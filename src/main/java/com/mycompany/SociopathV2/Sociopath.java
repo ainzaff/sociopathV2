@@ -160,7 +160,7 @@ public class Sociopath {
                     System.exit(0);
                     break;
                 default:
-                    System.out.println("Invalid input");
+                    System.out.println("Please type in a valid number option");
             }
         }
     }
@@ -242,7 +242,7 @@ public class Sociopath {
                 break;
             }
             default: {
-                System.out.println("Invalid input\nGoing back to main menu");
+                System.out.println("Please type in a valid number option\nGoing back to main menu");
                 mainMenu();
             }
         }
