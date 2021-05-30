@@ -8,7 +8,6 @@ package com.mycompany.SociopathV2;
 import java.io.*;
 import java.lang.*;
 import java.util.*;
-import javax.swing.JFrame;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Label;
 import org.neo4j.graphdb.Node;
@@ -142,33 +141,28 @@ public class Sociopath {
     }
 
     public static void mainMenu() {
-//        int choice=0;
-//        while(choice !=1 || choice != 2 || choice != 3){
-//            System.out.println("\nWELCOME TO SOCIOPATH!");
-//            System.out.println("What do you want to do?\n");
-//            System.out.println("1. Check Students");
-//            System.out.println("2. Events");
-//            System.out.println("3. Exit\n");
-//            choice = input.nextInt();
-//            switch (choice) {
-//                case 1:
-//                    studentMenu();
-//                    break;
-//                case 2:
-//                    eventMenu();
-//                    break;
-//                case 3:
-//                    System.exit(0);
-//                    break;
-//                default:
-//                    System.out.println("Please type in a valid number option");
-//            }
-//        }
-        MainMenu mainM = new MainMenu();
-        mainM.setVisible(true);
-        mainM.pack();
-        mainM.setLocationRelativeTo(null);
-        mainM.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        int choice=0;
+        while(choice !=1 || choice != 2 || choice != 3){
+            System.out.println("\nWELCOME TO SOCIOPATH!");
+            System.out.println("What do you want to do?\n");
+            System.out.println("1. Check Students");
+            System.out.println("2. Events");
+            System.out.println("3. Exit\n");
+            choice = input.nextInt();
+            switch (choice) {
+                case 1:
+                    studentMenu();
+                    break;
+                case 2:
+                    eventMenu();
+                    break;
+                case 3:
+                    System.exit(0);
+                    break;
+                default:
+                    System.out.println("Please type in a valid number option");
+            }
+        }
     }
 
     public static void studentMenu() {
@@ -183,21 +177,16 @@ public class Sociopath {
     }
 
     public static void eventMenu() {
-//        int choice;
-//        System.out.println("\nWhich event happened? \n");
-//        System.out.println("1. Teaching a stranger to solve lab questions ");
-//        System.out.println("2. Chit-chat ");
-//        System.out.println("3. Your road to glory ");
-//        System.out.println("4. Arranging books ");
-//        System.out.println("5. Meet your crush ");
-//        System.out.println("6. Friendship \n");
-//        choice = input.nextInt();
-//        eventSelector(choice);
-        EventMenu eventM = new EventMenu();
-        eventM.setVisible(true);
-        eventM.pack();
-        eventM.setLocationRelativeTo(null);
-        eventM.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        int choice;
+        System.out.println("\nWhich event happened? \n");
+        System.out.println("1. Teaching a stranger to solve lab questions ");
+        System.out.println("2. Chit-chat ");
+        System.out.println("3. Your road to glory ");
+        System.out.println("4. Arranging books ");
+        System.out.println("5. Meet your crush ");
+        System.out.println("6. Friendship \n");
+        choice = input.nextInt();
+        eventSelector(choice);
     }
 
     public static void displayStudents() {
@@ -273,36 +262,31 @@ public class Sociopath {
     }
 
     public static void eventFour() {
-//        int counter = 0;
-//        LinkedList<Integer> bookList = new LinkedList<>();
-//        System.out.println("Enter number of books: ");
-//        int numOfBooks = input.nextInt();
-//        input.nextLine();
-//        System.out.println("Enter books' heights: ");
-//        String bookHeightsInput = input.nextLine();
-//        //split space 
-//        String[] bookHeights = bookHeightsInput.split(" ");
-//        //push book height elements into a list while parse into integer
-//        for (int i = 0; i < numOfBooks; i++) {
-//            bookList.push(Integer.parseInt(bookHeights[i]));
-//        }
-//        for (int i = 0; i < bookList.size(); i++) {
-//            for (int j = 0; j < bookList.size(); j++) {
-//                if (j == bookList.size() - 1) {
-//                    break;
-//                } else if (bookList.get(j) > bookList.get(j + 1)) {
-//                    bookList.remove(j + 1);
-//                }
-//            }
-//            counter = i;
-//        }
-//        System.out.println("Rounds needed: " + counter);
-//        mainMenu();
-        EventFour eFour = new EventFour();
-        eFour.setVisible(true);
-        eFour.pack();
-        eFour.setLocationRelativeTo(null);
-        eFour.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        int counter = 0;
+        LinkedList<Integer> bookList = new LinkedList<>();
+        System.out.println("Enter number of books: ");
+        int numOfBooks = input.nextInt();
+        input.nextLine();
+        System.out.println("Enter books' heights: ");
+        String bookHeightsInput = input.nextLine();
+        //split space 
+        String[] bookHeights = bookHeightsInput.split(" ");
+        //push book height elements into a list while parse into integer
+        for (int i = 0; i < numOfBooks; i++) {
+            bookList.push(Integer.parseInt(bookHeights[i]));
+        }
+        for (int i = 0; i < bookList.size(); i++) {
+            for (int j = 0; j < bookList.size(); j++) {
+                if (j == bookList.size() - 1) {
+                    break;
+                } else if (bookList.get(j) > bookList.get(j + 1)) {
+                    bookList.remove(j + 1);
+                }
+            }
+            counter = i;
+        }
+        System.out.println("Rounds needed: " + counter);
+        mainMenu();
     }
 
     public static void eventFive() {
