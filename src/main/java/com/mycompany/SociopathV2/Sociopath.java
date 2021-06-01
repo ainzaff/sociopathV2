@@ -16,6 +16,8 @@ import org.neo4j.graphdb.RelationshipType;
 import org.neo4j.graphdb.Result;
 import org.neo4j.graphdb.factory.GraphDatabaseFactory;
 
+import javax.management.relation.Relation;
+
 public class Sociopath {
 
     public static GraphDatabaseFactory dbFactory = new GraphDatabaseFactory();
@@ -295,5 +297,27 @@ public class Sociopath {
 
     public static void eventSix() {
         System.out.println("\nThis is a placeholder because the event has not currently been implemented yet <3\n");
+        // How to check for duplicate nodes?
+
+        System.out.println("How many friendships do you want to examine?");
+        int n = input.nextInt();
+//        for(int i = 1; i <= n; i++) {
+//            System.out.println("Friendship #" + i + " (enter TWO integers)");
+//            int node1 = input.nextInt();
+//            int node2 = input.nextInt();
+//            // checks for duplicate inputs
+//            while (node1 == node2) {
+//                node2 = input.nextInt();
+//            }
+
+        // For testing purposes. Manually initialized three nodes.
+        Node nodeOne = graphDb.createNode(Label.label("Student"));
+        Node nodeTwo = graphDb.createNode(Label.label("Student"));
+        Node nodeThree = graphDb.createNode(Label.label("Student"));
+
+        Relationship oneTwo = nodeOne.createRelationshipTo(nodeTwo, RelationshipType.withName("IS_FRIENDS_WITH"));
+        Relationship twoThree = nodeOne.createRelationshipTo(nodeTwo, RelationshipType.withName("IS_FRIENDS_WITH"));
+        Relationship oneThree = nodeOne.createRelationshipTo(nodeTwo, RelationshipType.withName("IS_FRIENDS_WITH"));
+
     }
 }
