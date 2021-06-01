@@ -8,6 +8,8 @@ package com.mycompany.SociopathV2;
 import java.io.*;
 import java.lang.*;
 import java.util.*;
+import org.neo4j.graphalgo.GraphAlgoFactory;
+import org.neo4j.graphalgo.PathFinder;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Label;
 import org.neo4j.graphdb.Node;
@@ -15,6 +17,15 @@ import org.neo4j.graphdb.Relationship;
 import org.neo4j.graphdb.RelationshipType;
 import org.neo4j.graphdb.Result;
 import org.neo4j.graphdb.factory.GraphDatabaseFactory;
+import org.neo4j.graphdb.traversal.Evaluators;
+import org.neo4j.graphdb.traversal.TraversalDescription;
+import org.neo4j.graphdb.traversal.Traverser;
+import org.neo4j.graphdb.traversal.Evaluation;
+import org.neo4j.graphdb.traversal.Uniqueness;
+import org.neo4j.graphdb.Path;
+import org.neo4j.graphdb.PathExpander;
+import org.neo4j.graphdb.PathExpanders;
+import org.neo4j.graphdb.ResourceIterator;
 
 public class Sociopath {
 
@@ -23,7 +34,7 @@ public class Sociopath {
             new File("data/students"));
     public static Scanner input = new Scanner(System.in);
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         graphDb.beginTx();
         initializeStudents();
         mainMenu();
@@ -32,16 +43,16 @@ public class Sociopath {
     }
 
     public static void initializeStudents() {
-        Node Alice = graphDb.createNode(Label.label("Student"));
-        Node Bob = graphDb.createNode(Label.label("Student"));
-        Node Charlie = graphDb.createNode(Label.label("Student"));
-        Node Daniel = graphDb.createNode(Label.label("Student"));
-        Node Ethan = graphDb.createNode(Label.label("Student"));
-        Node Finn = graphDb.createNode(Label.label("Student"));
-        Node Guy = graphDb.createNode(Label.label("Student"));
-        Node Holly = graphDb.createNode(Label.label("Student"));
-        Node Ian = graphDb.createNode(Label.label("Student"));
-        Node Joe = graphDb.createNode(Label.label("Student"));
+        Node Alice = graphDb.createNode(Labels.STUDENT);
+        Node Bob = graphDb.createNode(Labels.STUDENT);
+        Node Charlie = graphDb.createNode(Labels.STUDENT);
+        Node Daniel = graphDb.createNode(Labels.STUDENT);
+        Node Ethan = graphDb.createNode(Labels.STUDENT);
+        Node Finn = graphDb.createNode(Labels.STUDENT);
+        Node Guy = graphDb.createNode(Labels.STUDENT);
+        Node Holly = graphDb.createNode(Labels.STUDENT);
+        Node Ian = graphDb.createNode(Labels.STUDENT);
+        Node Joe = graphDb.createNode(Labels.STUDENT);
 
         Relationship AliceBob = Alice.createRelationshipTo(Bob, RelationshipType.withName("IS_FRIENDS_WITH"));
         AliceBob.setProperty("rep", 5);
@@ -290,10 +301,58 @@ public class Sociopath {
     }
 
     public static void eventFive() {
-        System.out.println("\nThis is a placeholder because the event has not currently been implemented yet <3\n");
+        //Randomizer
+        String[] name = {"ALICE","BOB","CHARLIE","DANIEL","ETHAN","FINN","GUY","HOLLY","IAN","JOE"};
+        Random r = new Random();
+        String rumor = name[r.nextInt(10)];
+        String crush = name[r.nextInt(10)];
+        while (crush == rumor) {
+                rumor = name[r.nextInt(10)];
+            }
+        
+        //Initialize source and target nodes
+        Node src = graphDb.findNode(Labels.STUDENT, "name", rumor);
+        Node target = graphDb.findNode(Labels.STUDENT, "name", crush);
+        
+        //Traverse and return the path
+        Iterable<Path> all = allPaths(src,target);
+        try {
+            Iterable<Node> path = all.iterator().next().nodes();
+
+            //To collect the nodes in the path
+            ArrayList<Node> list = new ArrayList<>();
+            for (Node curr : path) {
+                list.add(curr);
+            }
+            
+            System.out.println("The following is the path from the rumour to your crush(left to right):");
+            for (int i = 0; i < list.size(); i++) {
+                System.out.print(list.get(i).getProperty("name") + " ");
+            }
+            
+            System.out.println("Day 1: Convince "+list.get(list.size()-2).getProperty("name"));
+            System.out.println("You're safe!");
+        } catch (NoSuchElementException ex) {
+            System.out.println("It is impossible for the rumour to reach your crush");
+        }
     }
 
     public static void eventSix() {
         System.out.println("\nThis is a placeholder because the event has not currently been implemented yet <3\n");
+    }
+    
+    private static enum Rels implements RelationshipType {
+        IS_FRIENDS_WITH;
+    }
+    
+    public static enum Labels implements Label {
+        STUDENT;
+    }
+    
+    //Method for expanding path during traversal
+    public static Iterable<Path> allPaths(Node src,Node target) {
+        PathExpander expander = PathExpanders.forType(Rels.IS_FRIENDS_WITH);
+        PathFinder<Path> allPath = GraphAlgoFactory.allPaths(expander, 10);
+        return allPath.findAllPaths(src, target);
     }
 }
