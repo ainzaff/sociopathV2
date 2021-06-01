@@ -313,6 +313,10 @@ public class Sociopath {
                 rumor = name[r.nextInt(10)];
             }
         
+        //Text
+        System.out.println("You have a crush who is "+crush+" but there is someone who has a rumour about you and he/she is "+rumor);
+        System.out.println("");
+        
         //Initialize source and target nodes
         Node src = graphDb.findNode(Labels.STUDENT, "name", rumor);
         Node target = graphDb.findNode(Labels.STUDENT, "name", crush);
@@ -333,11 +337,16 @@ public class Sociopath {
             for (int i = 0; i < list.size(); i++) {
                 System.out.print(list.get(i).getProperty("name") + " ");
             }
-            System.out.println("");
-            System.out.println("Day 1: Convince "+list.get(list.size()-2).getProperty("name"));
-            System.out.println("You're safe!");
+            System.out.println("\n");
+            if (list.size() == 2) {
+                System.out.println("Sorry but there is no way you can stop the rumour from spreading to your crush");
+            } else {
+                System.out.println("The way you can stop the rumour from spreading to your crush");
+                System.out.println("Day 1: Convince " + list.get(list.size() - 2).getProperty("name"));
+                System.out.println("You're safe!");
+            }
         } catch (NoSuchElementException ex) {
-            System.out.println("It is impossible for the rumour to reach your crush");
+            System.out.println("Luckily, it is impossible for the rumour to reach your crush");
         }
     }
 
