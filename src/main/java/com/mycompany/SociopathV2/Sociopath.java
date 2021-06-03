@@ -72,14 +72,14 @@ public class Sociopath {
         
         Alice.setProperty("prog", 92);
         Bob.setProperty("prog", 88);
-        Charlie.setProperty("prog", 7);
-        Daniel.setProperty("prog", 1);
-        Ethan.setProperty("prog", 5);
+        Charlie.setProperty("prog", 10);
+        Daniel.setProperty("prog", 40);
+        Ethan.setProperty("prog", 55);
         Finn.setProperty("prog", 10);
         Guy.setProperty("prog", 30);
         Holly.setProperty("prog", 60);
-        Ian.setProperty("prog", 20);
-        Joe.setProperty("prog", 70);
+        Ian.setProperty("prog", 70);
+        Joe.setProperty("prog", 30);
 
         Alice.setProperty("dive", 92);
         Bob.setProperty("dive", 88);
@@ -267,7 +267,25 @@ public class Sociopath {
         String helper = input.nextLine().toUpperCase();
         System.out.println("\nWho was the stranger?");
         String helped = input.nextLine().toUpperCase();
-
+        Node helpernode = getNode(helper);
+        Node helpednode = getNode(helped);
+        if (!isFriendsWith(helper,helped)){
+            if ((Integer)helpernode.getProperty("prog")>=50){
+                System.out.println("\nAhh, I see. "+helper+" is quite good at programming. ");
+                System.out.println(helper+" and "+ helped +" have now become friends!");
+                System.out.println(helper + "'s reputation in the eyes of "+helped+" has increased by 10!");
+                friendTo(helper,helped,10);
+                friendTo(helped,helper,0);
+            }
+            if ((Integer)helpernode.getProperty("prog")<50){
+                System.out.println("\n"+helper+" isn't very good at programming, so "+helper+" probably could not have finished those questions.");
+                System.out.println(helper+" and "+ helped +" have now become friends!");
+                System.out.println(helper + "'s reputation in the eyes of "+helped+" has increased by 2!");
+                friendTo(helper,helped,2);
+                friendTo(helped,helper,0);
+            }
+        }
+        else System.out.println("\nThey are not strangers. Are you lying to yourself?");
 
         
 
@@ -397,23 +415,29 @@ public class Sociopath {
         return allPath.findAllPaths(src, target);
     }
     
-    /*public static boolean isFriendsWith(String s1, String s2,RelationshipType r){
-        Node src = graphDb.findNode(Labels.STUDENT, "name", s1);
-        Node target = graphDb.findNode(Labels.STUDENT, "name", s2);
-        if (src.hasRelationship(r)){
-            //idk
-            if(relay.getEndNode().equals(target)){
-                return true;
+    public static boolean isFriendsWith(String s1, String s2){
+        Node src = graphDb.findNode(Labels.STUDENT, "name", s1.toUpperCase());
+        Node target = graphDb.findNode(Labels.STUDENT, "name", s2.toUpperCase());
+        Iterable<Relationship> relationships =src.getRelationships(Direction.OUTGOING,Rels.IS_FRIENDS_WITH);
+            for( Relationship relationship : relationships )
+            {
+             if (relationship.getEndNode().equals(target)){
+                 return true;
+             }
             }
-        }
+        
         return false;
-    }*/
+    }
     
     public static void friendTo(String name1,String name2,int repTo){
         Node s1 = graphDb.findNode(Labels.STUDENT,"name", name1.toUpperCase());
         Node s2 = graphDb.findNode(Labels.STUDENT,"name", name2.toUpperCase());
             Relationship relationship = s1.createRelationshipTo( s2, Rels.IS_FRIENDS_WITH);
             relationship.setProperty( "rep", repTo );
+    }
+    
+    public static Node getNode(String name){
+        return graphDb.findNode(Labels.STUDENT, "name", name);
     }
 
 }
