@@ -138,7 +138,7 @@ public class Sociopath {
 
         friendTo("Joe", "Ian", 4);
         friendTo("Ian", "Joe", 3);
-
+        
     }
 
     public static void mainMenu() {
@@ -399,27 +399,40 @@ public class Sociopath {
         //Traverse and return the path
         Iterable<Path> all = allPaths(src, target);
         try {
-            Iterable<Node> path = all.iterator().next().nodes();
+            ArrayList<Path> pathlist = new ArrayList<>();
+            for (Path curr : all) {
+                pathlist.add(curr);
+            }
 
             //To collect the nodes in the path
-            ArrayList<Node> list = new ArrayList<>();
-            for (Node curr : path) {
-                list.add(curr);
+            ArrayList<ArrayList<Node>> list = new ArrayList<>();
+            int index = 0;
+            for (Path curr : pathlist) {
+                list.add(new ArrayList<Node>());
+                Iterable<Node> nodeslist = curr.nodes();
+                for (Node node : nodeslist) {
+                        list.get(index).add(node);
+                    }
+                index++;
             }
+            
+            //Filter duplicate paths
+            list = removeDuplicates(list);
 
             //Output
+            if(list.size()==0) {
+                System.out.println("Luckily, it is impossible for the rumour to reach your crush");
+                return;
+            }
             System.out.println("The following is the path from the rumour to your crush(left to right):");
             for (int i = 0; i < list.size(); i++) {
-                System.out.print(list.get(i).getProperty("name") + " ");
+                for (int j = 0; j < list.get(i).size(); j++) {
+                    if(j==list.get(i).size()-1) System.out.print(list.get(i).get(j).getProperty("name"));
+                    else System.out.print(list.get(i).get(j).getProperty("name") + ">");
+                }
+                System.out.println("");
             }
             System.out.println("\n");
-            if (list.size() == 2) {
-                System.out.println("Sorry but there is no way you can stop the rumour from spreading to your crush");
-            } else {
-                System.out.println("The way you can stop the rumour from spreading to your crush");
-                System.out.println("Day 1: Convince " + list.get(list.size() - 2).getProperty("name"));
-                System.out.println("You're safe!");
-            }
         } catch (NoSuchElementException ex) {
             System.out.println("Luckily, it is impossible for the rumour to reach your crush");
         }
@@ -464,7 +477,8 @@ public class Sociopath {
     //Method for expanding path during traversal
     public static Iterable<Path> allPaths(Node src, Node target) {
         PathExpander expander = PathExpanders.forType(Rels.IS_FRIENDS_WITH);
-        PathFinder<Path> allPath = GraphAlgoFactory.allPaths(expander, 10);
+        //PathFinder<Path> allPath = GraphAlgoFactory.allPaths(expander, 10);
+        PathFinder<Path> allPath = GraphAlgoFactory.allSimplePaths(expander,50);
         return allPath.findAllPaths(src, target);
     }
 
@@ -519,5 +533,13 @@ public class Sociopath {
     public static void incrementRep(Relationship r, int change) {
         r.setProperty("rep", (int) r.getProperty("rep") + change);
     }
-
+    
+    //Remove duplicate elements in an arraylist method for Event 5
+    public static <T> ArrayList<T> removeDuplicates(ArrayList<T> list) {
+        Set<T> set = new LinkedHashSet<>();
+        set.addAll(list);
+        list.clear();
+        list.addAll(set);
+        return list;
+    }
 }
