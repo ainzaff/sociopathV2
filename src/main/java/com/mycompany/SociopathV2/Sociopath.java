@@ -8,7 +8,6 @@ package com.mycompany.SociopathV2;
 import java.io.*;
 import java.lang.*;
 import java.util.*;
-
 import org.neo4j.graphalgo.GraphAlgoFactory;
 import org.neo4j.graphalgo.PathFinder;
 import org.neo4j.graphdb.GraphDatabaseService;
