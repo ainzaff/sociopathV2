@@ -29,6 +29,7 @@ import org.neo4j.graphdb.ResourceIterator;
 
 
 import javax.management.relation.Relation;
+import org.neo4j.graphdb.Direction;
 
 public class Sociopath {
 
@@ -57,45 +58,6 @@ public class Sociopath {
         Node Ian = graphDb.createNode(Labels.STUDENT);
         Node Joe = graphDb.createNode(Labels.STUDENT);
 
-        Relationship AliceBob = Alice.createRelationshipTo(Bob, RelationshipType.withName("IS_FRIENDS_WITH"));
-        AliceBob.setProperty("rep", 5);
-        Relationship BobAlice = Bob.createRelationshipTo(Alice, RelationshipType.withName("IS_FRIENDS_WITH"));
-        BobAlice.setProperty("rep", 8);
-
-        Relationship AliceGuy = Alice.createRelationshipTo(Guy, RelationshipType.withName("IS_FRIENDS_WITH"));
-        AliceGuy.setProperty("rep", 4);
-        Relationship GuyAlice = Guy.createRelationshipTo(Alice, RelationshipType.withName("IS_FRIENDS_WITH"));
-        GuyAlice.setProperty("rep", 3);
-
-        Relationship BobFinn = Bob.createRelationshipTo(Finn, RelationshipType.withName("IS_FRIENDS_WITH"));
-        BobFinn.setProperty("rep", 9);
-        Relationship FinnBob = Finn.createRelationshipTo(Bob, RelationshipType.withName("IS_FRIENDS_WITH"));
-        FinnBob.setProperty("rep", 7);
-
-        Relationship BobCharlie = Bob.createRelationshipTo(Charlie, RelationshipType.withName("IS_FRIENDS_WITH"));
-        BobCharlie.setProperty("rep", 5);
-        Relationship CharlieBob = Charlie.createRelationshipTo(Bob, RelationshipType.withName("IS_FRIENDS_WITH"));
-        CharlieBob.setProperty("rep", 4);
-
-        Relationship BobEthan = Bob.createRelationshipTo(Ethan, RelationshipType.withName("IS_FRIENDS_WITH"));
-        BobEthan.setProperty("rep", 6);
-        Relationship EthanBob = Ethan.createRelationshipTo(Bob, RelationshipType.withName("IS_FRIENDS_WITH"));
-        EthanBob.setProperty("rep", 2);
-
-        Relationship DanielHolly = Daniel.createRelationshipTo(Holly, RelationshipType.withName("IS_FRIENDS_WITH"));
-        DanielHolly.setProperty("rep", 7);
-        Relationship HollyDaniel = Holly.createRelationshipTo(Daniel, RelationshipType.withName("IS_FRIENDS_WITH"));
-        HollyDaniel.setProperty("rep", 10);
-
-        Relationship DanielJoe = Daniel.createRelationshipTo(Joe, RelationshipType.withName("IS_FRIENDS_WITH"));
-        DanielJoe.setProperty("rep", 7);
-        Relationship JoeDaniel = Joe.createRelationshipTo(Daniel, RelationshipType.withName("IS_FRIENDS_WITH"));
-        JoeDaniel.setProperty("rep", 7);
-
-        Relationship JoeIan = Joe.createRelationshipTo(Ian, RelationshipType.withName("IS_FRIENDS_WITH"));
-        JoeIan.setProperty("rep", 4);
-        Relationship IanJoe = Ian.createRelationshipTo(Joe, RelationshipType.withName("IS_FRIENDS_WITH"));
-        IanJoe.setProperty("rep", 3);
 
         Alice.setProperty("name", "ALICE");
         Bob.setProperty("name", "BOB");
@@ -107,6 +69,17 @@ public class Sociopath {
         Holly.setProperty("name", "HOLLY");
         Ian.setProperty("name", "IAN");
         Joe.setProperty("name", "JOE");
+        
+        Alice.setProperty("prog", 92);
+        Bob.setProperty("prog", 88);
+        Charlie.setProperty("prog", 7);
+        Daniel.setProperty("prog", 1);
+        Ethan.setProperty("prog", 5);
+        Finn.setProperty("prog", 10);
+        Guy.setProperty("prog", 30);
+        Holly.setProperty("prog", 60);
+        Ian.setProperty("prog", 20);
+        Joe.setProperty("prog", 70);
 
         Alice.setProperty("dive", 92);
         Bob.setProperty("dive", 88);
@@ -151,6 +124,31 @@ public class Sociopath {
         Holly.setProperty("lunchPeriod", 10);
         Ian.setProperty("lunchPeriod", 50);
         Joe.setProperty("lunchPeriod", 10);
+        
+        friendTo("Alice","Bob",5);
+        friendTo("Bob","Alice",8);
+
+        friendTo("Alice","Guy",4);
+        friendTo("Guy","Alice",3);
+
+        friendTo("Bob","Finn",9);
+        friendTo("Finn","Bob",7);
+
+        friendTo("Bob","Charlie",5);
+        friendTo("Charlie","Bob",4);
+
+        friendTo("Bob","Ethan",6);
+        friendTo("Ethan","Bob",2);
+
+        friendTo("Daniel","Holly",7);
+        friendTo("Holly","Daniel",10);
+
+
+        friendTo("Daniel","Joe",7);
+        friendTo("Joe","Daniel",7);
+
+        friendTo("Joe","Ian",4);
+        friendTo("Ian","Joe",3);
 
     }
 
@@ -205,7 +203,7 @@ public class Sociopath {
 
     public static void displayStudents() {
         Result result = graphDb.execute(
-                "MATCH (s:Student)"
+                "MATCH (s:STUDENT)"
                 + "RETURN s.name as name,s.dive as diving_rate, s.lunchStart as lunch_starts_at,s.lunchPeriod as lunch_period");
 
         System.out.println(result.resultAsString());
@@ -219,7 +217,7 @@ public class Sociopath {
         }
         name = name.toUpperCase();
         Result result = graphDb.execute(
-                "MATCH (s:Student) -[r:IS_FRIENDS_WITH]-> (other:Student) "
+                "MATCH (s:STUDENT) -[r:IS_FRIENDS_WITH]-> (other:STUDENT) "
                 + "WHERE  s.name= '" + name + "'"
                 + "RETURN other.name as friend_name, r.rep as reputation_with");
 
@@ -264,7 +262,15 @@ public class Sociopath {
     }
 
     public static void eventOne() {
-        System.out.println("\nThis is a placeholder because the event has not currently been implemented yet <3\n");
+        input.nextLine();
+        System.out.println("\nWho was helping the stranger with their lab questions?");
+        String helper = input.nextLine().toUpperCase();
+        System.out.println("\nWho was the stranger?");
+        String helped = input.nextLine().toUpperCase();
+
+
+        
+
     }
 
     public static void eventTwo() {
@@ -390,4 +396,24 @@ public class Sociopath {
         PathFinder<Path> allPath = GraphAlgoFactory.allPaths(expander, 10);
         return allPath.findAllPaths(src, target);
     }
+    
+    /*public static boolean isFriendsWith(String s1, String s2,RelationshipType r){
+        Node src = graphDb.findNode(Labels.STUDENT, "name", s1);
+        Node target = graphDb.findNode(Labels.STUDENT, "name", s2);
+        if (src.hasRelationship(r)){
+            //idk
+            if(relay.getEndNode().equals(target)){
+                return true;
+            }
+        }
+        return false;
+    }*/
+    
+    public static void friendTo(String name1,String name2,int repTo){
+        Node s1 = graphDb.findNode(Labels.STUDENT,"name", name1.toUpperCase());
+        Node s2 = graphDb.findNode(Labels.STUDENT,"name", name2.toUpperCase());
+            Relationship relationship = s1.createRelationshipTo( s2, Rels.IS_FRIENDS_WITH);
+            relationship.setProperty( "rep", repTo );
+    }
+
 }
