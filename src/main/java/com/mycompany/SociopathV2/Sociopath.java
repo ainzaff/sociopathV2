@@ -180,11 +180,11 @@ public class Sociopath {
     public static void studentMenu() {
         System.out.println("\nDisplaying students . . .\n");
         displayStudents();
-        System.out.println("\nWhich student's friends would you like to check?");
+        System.out.println("\nWhich student's profile would you like to check?");
         System.out.println("Type exit to go back to main menu\n");
         input.nextLine();
         String name = input.nextLine();
-        displayFriends(name);
+        displayProfile(name);
 
     }
 
@@ -210,16 +210,16 @@ public class Sociopath {
 
     }
 
-    public static void displayFriends(String name) {
+    public static void displayProfile(String name) {
         if (name.compareToIgnoreCase("exit") == 0) {
             mainMenu();
             return;
         }
         name = name.toUpperCase();
         Result result = graphDb.execute(
-                "MATCH (s:STUDENT) -[r:IS_FRIENDS_WITH]-> (other:STUDENT) "
+                "MATCH (s:STUDENT) -[r]-> (other:STUDENT) "
                 + "WHERE  s.name= '" + name + "'"
-                + "RETURN other.name as friend_name, r.rep as reputation_with");
+                + "RETURN type(r)as relationship,other.name as name, r.rep as reputation_with");
 
         System.out.println(result.resultAsString());
 
@@ -267,21 +267,27 @@ public class Sociopath {
         String helper = input.nextLine().toUpperCase();
         System.out.println("\nWho was the stranger?");
         String helped = input.nextLine().toUpperCase();
+        if (helper.equals(helped)){
+            System.out.println("\n Now you're not even making sense . . .");
+            return;
+        }
         Node helpernode = getNode(helper);
         Node helpednode = getNode(helped);
         if (!isFriendsWith(helper,helped)){
             if ((Integer)helpernode.getProperty("prog")>=50){
-                System.out.println("\nAhh, I see. "+helper+" is quite good at programming. ");
+                System.out.println("\nAhh, I see. "+helper+" is quite good at programming . . .");
                 System.out.println(helper+" and "+ helped +" have now become friends!");
                 System.out.println(helper + "'s reputation in the eyes of "+helped+" has increased by 10!");
-                friendTo(helper,helped,10);
+                Relationship lab =friendTo(helper,helped,10);
+                lab.setProperty("goodLab", "true");
                 friendTo(helped,helper,0);
             }
             if ((Integer)helpernode.getProperty("prog")<50){
-                System.out.println("\n"+helper+" isn't very good at programming, so "+helper+" probably could not have finished those questions.");
+                System.out.println("\n"+helper+" isn't very good at programming, so "+helper+" probably could not have finished those questions . . .");
                 System.out.println(helper+" and "+ helped +" have now become friends!");
                 System.out.println(helper + "'s reputation in the eyes of "+helped+" has increased by 2!");
-                friendTo(helper,helped,2);
+                Relationship lab =friendTo(helper,helped,2);
+                lab.setProperty("goodLab", "false");
                 friendTo(helped,helper,0);
             }
         }
@@ -292,10 +298,67 @@ public class Sociopath {
     }
 
     public static void eventTwo() {
-        System.out.println("\nThis is a placeholder because the event has not currently been implemented yet <3\n");
+        input.nextLine();
+        System.out.println("\nWho was the first person chit-chatting?");
+        String person1 = input.nextLine().toUpperCase();
+        System.out.println("\nWho was the second person chit-chatting?");
+        String person2 = input.nextLine().toUpperCase();
+        if (person1.equals(person2)){
+            System.out.println("\n Now you're not even making sense . . .");
+            return;
+        }
+        if (!isFriendsWith(person1,person2)){
+            System.out.println("\nImpossible. They do not know each other!");
+            return;
+        }
+        if (isFriendsWith(person1,person2)){
+            System.out.println("Which student were they talking about?");
+            String talked = input.nextLine().toUpperCase();
+                    if (talked.equals(person2)||talked.equals(person1)){
+            System.out.println("\n Now you're not even making sense . . .");
+            return;
+        }
+            if (!isFriendsWith(person1,talked)){
+                System.out.println("\nThat's a lie! "+person1+ " and " + talked+" haven't even met!");
+                return;
+            }
+            Node talkednode = getNode(talked);
+            Node person1node = getNode(person1);
+            Iterable<Relationship> relationships =talkednode.getRelationships(Direction.OUTGOING,Rels.IS_FRIENDS_WITH);
+            for (Relationship relay : relationships){
+            if (!relay.hasProperty("goodLab")){
+            continue;
+            }
+            if (relay.getProperty("goodLab").equals("true")){
+                System.out.println("\nLuckily, "+talked+ " did a good job helping "+ person1 + " with the lab questions . . .");
+                if (isFriendsWith(person2,talked)){
+                    incrementRep(getRelationship(person2,talked,Rels.IS_FRIENDS_WITH),(int)Math.floor(0.5*(int)relay.getProperty("rep")));
+                    System.out.println(person2+" is already friends with "+ talked+"\nThis incident has caused "+talked+"'s reputation from "+person2+"'s perspective to increase by "+(int)Math.floor(0.5*(int)relay.getProperty("rep"))+"!");
+                    return;
+                }
+                knowsOf(person2,talked,(int)Math.floor(0.5*(int)relay.getProperty("rep")));
+                System.out.println( person2 + " now knows of "+ talked+" !");
+                System.out.println(talked+"'s reputation in the eyes (or in this case, ears) of "+ person2+ " has increased by "+(int)Math.floor(0.5*(int)relay.getProperty("rep"))+"!");
+            return;    
+            }
+            if (relay.getProperty("goodLab").equals("false")){
+                System.out.println("\n"+talked+" must have messed up when helping "+ person1+" with the lab questions . . .");
+                if (isFriendsWith(person2,talked)){
+                    incrementRep(getRelationship(person2,talked,Rels.IS_FRIENDS_WITH),(int)Math.floor(-1*(int)relay.getProperty("rep")));
+                    System.out.println(person2+" is already friends with "+ talked+"\nThis incident has caused "+talked+"'s reputation from "+person2+"'s perspective to decrease by "+(int)Math.floor(1*(int)relay.getProperty("rep"))+"!");
+                    return;
+                }
+                knowsOf(person2,talked,(int)Math.floor(-1*(int)relay.getProperty("rep")));
+                System.out.println( person2 + " now knows of "+ talked+" !");
+                System.out.println(talked+"'s reputation in the eyes (or in this case, ears) of "+ person2+ " has decreased by "+(int)Math.floor(-1*(int)relay.getProperty("rep"))+"!");
+            return;    
+            }
+            }
+        }
     }
 
     public static void eventThree() {
+        input.nextLine();
         System.out.println("\nThis is a placeholder because the event has not currently been implemented yet <3\n");
     }
 
@@ -366,7 +429,7 @@ public class Sociopath {
                 System.out.println("Sorry but there is no way you can stop the rumour from spreading to your crush");
             } else {
                 System.out.println("The way you can stop the rumour from spreading to your crush");
-                System.out.println("Day 1: Convince " + list.get(1).getProperty("name"));
+                System.out.println("Day 1: Convince " + list.get(list.size() - 2).getProperty("name"));
                 System.out.println("You're safe!");
             }
         } catch (NoSuchElementException ex) {
@@ -401,7 +464,9 @@ public class Sociopath {
     }
     
     private static enum Rels implements RelationshipType {
-        IS_FRIENDS_WITH;
+        IS_FRIENDS_WITH,
+        KNOWS_OF;
+        
     }
     
     public static enum Labels implements Label {
@@ -429,15 +494,45 @@ public class Sociopath {
         return false;
     }
     
-    public static void friendTo(String name1,String name2,int repTo){
+    public static Relationship friendTo(String name1,String name2,int repTo){
         Node s1 = graphDb.findNode(Labels.STUDENT,"name", name1.toUpperCase());
         Node s2 = graphDb.findNode(Labels.STUDENT,"name", name2.toUpperCase());
             Relationship relationship = s1.createRelationshipTo( s2, Rels.IS_FRIENDS_WITH);
             relationship.setProperty( "rep", repTo );
+            return relationship;
     }
     
     public static Node getNode(String name){
-        return graphDb.findNode(Labels.STUDENT, "name", name);
+        return graphDb.findNode(Labels.STUDENT, "name", name.toUpperCase());
     }
-
+    
+    public static Relationship knowsOf(String name1,String name2,int repTo){
+        Node s1 = graphDb.findNode(Labels.STUDENT,"name", name1.toUpperCase());
+        Node s2 = graphDb.findNode(Labels.STUDENT,"name", name2.toUpperCase());
+            Relationship relationship = s1.createRelationshipTo( s2, Rels.KNOWS_OF);
+            relationship.setProperty( "rep", repTo );
+            return relationship;
+            
+            
+    }
+    
+    public static Relationship getRelationship(String s1,String s2,RelationshipType rt){
+        Node src = graphDb.findNode(Labels.STUDENT, "name", s1.toUpperCase());
+        Node target = graphDb.findNode(Labels.STUDENT, "name", s2.toUpperCase());
+        Relationship relay;
+        Iterable<Relationship> relationships =src.getRelationships(Direction.OUTGOING,rt);
+            for( Relationship relationship : relationships )
+            {
+            if (relationship.getEndNode().equals(target)){
+                relay=relationship;
+                return relay;
+            }
+            }
+            return null;
+    }
+    
+    public static void incrementRep(Relationship r, int change){
+        r.setProperty("rep", (int)r.getProperty("rep")+change);
+    }
+            
 }
