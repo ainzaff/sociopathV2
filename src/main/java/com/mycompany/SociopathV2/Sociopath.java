@@ -8,6 +8,7 @@ package com.mycompany.SociopathV2;
 import java.io.*;
 import java.lang.*;
 import java.util.*;
+
 import org.neo4j.graphalgo.GraphAlgoFactory;
 import org.neo4j.graphalgo.PathFinder;
 import org.neo4j.graphdb.GraphDatabaseService;
@@ -17,18 +18,9 @@ import org.neo4j.graphdb.Relationship;
 import org.neo4j.graphdb.RelationshipType;
 import org.neo4j.graphdb.Result;
 import org.neo4j.graphdb.factory.GraphDatabaseFactory;
-import org.neo4j.graphdb.traversal.Evaluators;
-import org.neo4j.graphdb.traversal.TraversalDescription;
-import org.neo4j.graphdb.traversal.Traverser;
-import org.neo4j.graphdb.traversal.Evaluation;
-import org.neo4j.graphdb.traversal.Uniqueness;
 import org.neo4j.graphdb.Path;
 import org.neo4j.graphdb.PathExpander;
 import org.neo4j.graphdb.PathExpanders;
-import org.neo4j.graphdb.ResourceIterator;
-
-
-import javax.management.relation.Relation;
 import org.neo4j.graphdb.Direction;
 
 public class Sociopath {
@@ -58,7 +50,6 @@ public class Sociopath {
         Node Ian = graphDb.createNode(Labels.STUDENT);
         Node Joe = graphDb.createNode(Labels.STUDENT);
 
-
         Alice.setProperty("name", "ALICE");
         Bob.setProperty("name", "BOB");
         Charlie.setProperty("name", "CHARLIE");
@@ -69,7 +60,7 @@ public class Sociopath {
         Holly.setProperty("name", "HOLLY");
         Ian.setProperty("name", "IAN");
         Joe.setProperty("name", "JOE");
-        
+
         Alice.setProperty("prog", 92);
         Bob.setProperty("prog", 88);
         Charlie.setProperty("prog", 10);
@@ -124,37 +115,36 @@ public class Sociopath {
         Holly.setProperty("lunchPeriod", 10);
         Ian.setProperty("lunchPeriod", 50);
         Joe.setProperty("lunchPeriod", 10);
-        
-        friendTo("Alice","Bob",5);
-        friendTo("Bob","Alice",8);
 
-        friendTo("Alice","Guy",4);
-        friendTo("Guy","Alice",3);
+        friendTo("Alice", "Bob", 5);
+        friendTo("Bob", "Alice", 8);
 
-        friendTo("Bob","Finn",9);
-        friendTo("Finn","Bob",7);
+        friendTo("Alice", "Guy", 4);
+        friendTo("Guy", "Alice", 3);
 
-        friendTo("Bob","Charlie",5);
-        friendTo("Charlie","Bob",4);
+        friendTo("Bob", "Finn", 9);
+        friendTo("Finn", "Bob", 7);
 
-        friendTo("Bob","Ethan",6);
-        friendTo("Ethan","Bob",2);
+        friendTo("Bob", "Charlie", 5);
+        friendTo("Charlie", "Bob", 4);
 
-        friendTo("Daniel","Holly",7);
-        friendTo("Holly","Daniel",10);
+        friendTo("Bob", "Ethan", 6);
+        friendTo("Ethan", "Bob", 2);
 
+        friendTo("Daniel", "Holly", 7);
+        friendTo("Holly", "Daniel", 10);
 
-        friendTo("Daniel","Joe",7);
-        friendTo("Joe","Daniel",7);
+        friendTo("Daniel", "Joe", 7);
+        friendTo("Joe", "Daniel", 7);
 
-        friendTo("Joe","Ian",4);
-        friendTo("Ian","Joe",3);
+        friendTo("Joe", "Ian", 4);
+        friendTo("Ian", "Joe", 3);
 
     }
 
     public static void mainMenu() {
-        int choice=0;
-        while(choice !=1 || choice != 2 || choice != 3){
+        int choice = 0;
+        while (choice != 1 || choice != 2 || choice != 3) {
             System.out.println("\nWELCOME TO SOCIOPATH!");
             System.out.println("What do you want to do?\n");
             System.out.println("1. Check Students");
@@ -241,10 +231,10 @@ public class Sociopath {
                 eventThree();
                 break;
             }
-            case 4: 
+            case 4:
                 eventFour();
                 break;
-            
+
             case 5: {
                 eventFive();
                 break;
@@ -267,33 +257,32 @@ public class Sociopath {
         String helper = input.nextLine().toUpperCase();
         System.out.println("\nWho was the stranger?");
         String helped = input.nextLine().toUpperCase();
-        if (helper.equals(helped)){
+        if (helper.equals(helped)) {
             System.out.println("\n Now you're not even making sense . . .");
             return;
         }
         Node helpernode = getNode(helper);
         Node helpednode = getNode(helped);
-        if (!isFriendsWith(helper,helped)){
-            if ((Integer)helpernode.getProperty("prog")>=50){
-                System.out.println("\nAhh, I see. "+helper+" is quite good at programming . . .");
-                System.out.println(helper+" and "+ helped +" have now become friends!");
-                System.out.println(helper + "'s reputation in the eyes of "+helped+" has increased by 10!");
-                Relationship lab =friendTo(helper,helped,10);
+        if (!isFriendsWith(helper, helped)) {
+            if ((Integer) helpernode.getProperty("prog") >= 50) {
+                System.out.println("\nAhh, I see. " + helper + " is quite good at programming . . .");
+                System.out.println(helper + " and " + helped + " have now become friends!");
+                System.out.println(helper + "'s reputation in the eyes of " + helped + " has increased by 10!");
+                Relationship lab = friendTo(helper, helped, 10);
                 lab.setProperty("goodLab", "true");
-                friendTo(helped,helper,0);
+                friendTo(helped, helper, 0);
             }
-            if ((Integer)helpernode.getProperty("prog")<50){
-                System.out.println("\n"+helper+" isn't very good at programming, so "+helper+" probably could not have finished those questions . . .");
-                System.out.println(helper+" and "+ helped +" have now become friends!");
-                System.out.println(helper + "'s reputation in the eyes of "+helped+" has increased by 2!");
-                Relationship lab =friendTo(helper,helped,2);
+            if ((Integer) helpernode.getProperty("prog") < 50) {
+                System.out.println("\n" + helper + " isn't very good at programming, so " + helper + " probably could not have finished those questions . . .");
+                System.out.println(helper + " and " + helped + " have now become friends!");
+                System.out.println(helper + "'s reputation in the eyes of " + helped + " has increased by 2!");
+                Relationship lab = friendTo(helper, helped, 2);
                 lab.setProperty("goodLab", "false");
-                friendTo(helped,helper,0);
+                friendTo(helped, helper, 0);
             }
+        } else {
+            System.out.println("\nThey are not strangers. Are you lying to yourself?");
         }
-        else System.out.println("\nThey are not strangers. Are you lying to yourself?");
-
-        
 
     }
 
@@ -303,56 +292,56 @@ public class Sociopath {
         String person1 = input.nextLine().toUpperCase();
         System.out.println("\nWho was the second person chit-chatting?");
         String person2 = input.nextLine().toUpperCase();
-        if (person1.equals(person2)){
+        if (person1.equals(person2)) {
             System.out.println("\n Now you're not even making sense . . .");
             return;
         }
-        if (!isFriendsWith(person1,person2)){
+        if (!isFriendsWith(person1, person2)) {
             System.out.println("\nImpossible. They do not know each other!");
             return;
         }
-        if (isFriendsWith(person1,person2)){
+        if (isFriendsWith(person1, person2)) {
             System.out.println("Which student were they talking about?");
             String talked = input.nextLine().toUpperCase();
-                    if (talked.equals(person2)||talked.equals(person1)){
-            System.out.println("\n Now you're not even making sense . . .");
-            return;
-        }
-            if (!isFriendsWith(person1,talked)){
-                System.out.println("\nThat's a lie! "+person1+ " and " + talked+" haven't even met!");
+            if (talked.equals(person2) || talked.equals(person1)) {
+                System.out.println("\n Now you're not even making sense . . .");
+                return;
+            }
+            if (!isFriendsWith(person1, talked)) {
+                System.out.println("\nThat's a lie! " + person1 + " and " + talked + " haven't even met!");
                 return;
             }
             Node talkednode = getNode(talked);
             Node person1node = getNode(person1);
-            Iterable<Relationship> relationships =talkednode.getRelationships(Direction.OUTGOING,Rels.IS_FRIENDS_WITH);
-            for (Relationship relay : relationships){
-            if (!relay.hasProperty("goodLab")){
-            continue;
-            }
-            if (relay.getProperty("goodLab").equals("true")){
-                System.out.println("\nLuckily, "+talked+ " did a good job helping "+ person1 + " with the lab questions . . .");
-                if (isFriendsWith(person2,talked)){
-                    incrementRep(getRelationship(person2,talked,Rels.IS_FRIENDS_WITH),(int)Math.floor(0.5*(int)relay.getProperty("rep")));
-                    System.out.println(person2+" is already friends with "+ talked+"\nThis incident has caused "+talked+"'s reputation from "+person2+"'s perspective to increase by "+(int)Math.floor(0.5*(int)relay.getProperty("rep"))+"!");
+            Iterable<Relationship> relationships = talkednode.getRelationships(Direction.OUTGOING, Rels.IS_FRIENDS_WITH);
+            for (Relationship relay : relationships) {
+                if (!relay.hasProperty("goodLab")) {
+                    continue;
+                }
+                if (relay.getProperty("goodLab").equals("true")) {
+                    System.out.println("\nLuckily, " + talked + " did a good job helping " + person1 + " with the lab questions . . .");
+                    if (isFriendsWith(person2, talked)) {
+                        incrementRep(getRelationship(person2, talked, Rels.IS_FRIENDS_WITH), (int) Math.floor(0.5 * (int) relay.getProperty("rep")));
+                        System.out.println(person2 + " is already friends with " + talked + "\nThis incident has caused " + talked + "'s reputation from " + person2 + "'s perspective to increase by " + (int) Math.floor(0.5 * (int) relay.getProperty("rep")) + "!");
+                        return;
+                    }
+                    knowsOf(person2, talked, (int) Math.floor(0.5 * (int) relay.getProperty("rep")));
+                    System.out.println(person2 + " now knows of " + talked + " !");
+                    System.out.println(talked + "'s reputation in the eyes (or in this case, ears) of " + person2 + " has increased by " + (int) Math.floor(0.5 * (int) relay.getProperty("rep")) + "!");
                     return;
                 }
-                knowsOf(person2,talked,(int)Math.floor(0.5*(int)relay.getProperty("rep")));
-                System.out.println( person2 + " now knows of "+ talked+" !");
-                System.out.println(talked+"'s reputation in the eyes (or in this case, ears) of "+ person2+ " has increased by "+(int)Math.floor(0.5*(int)relay.getProperty("rep"))+"!");
-            return;    
-            }
-            if (relay.getProperty("goodLab").equals("false")){
-                System.out.println("\n"+talked+" must have messed up when helping "+ person1+" with the lab questions . . .");
-                if (isFriendsWith(person2,talked)){
-                    incrementRep(getRelationship(person2,talked,Rels.IS_FRIENDS_WITH),(int)Math.floor(-1*(int)relay.getProperty("rep")));
-                    System.out.println(person2+" is already friends with "+ talked+"\nThis incident has caused "+talked+"'s reputation from "+person2+"'s perspective to decrease by "+(int)Math.floor(1*(int)relay.getProperty("rep"))+"!");
+                if (relay.getProperty("goodLab").equals("false")) {
+                    System.out.println("\n" + talked + " must have messed up when helping " + person1 + " with the lab questions . . .");
+                    if (isFriendsWith(person2, talked)) {
+                        incrementRep(getRelationship(person2, talked, Rels.IS_FRIENDS_WITH), (int) Math.floor(-1 * (int) relay.getProperty("rep")));
+                        System.out.println(person2 + " is already friends with " + talked + "\nThis incident has caused " + talked + "'s reputation from " + person2 + "'s perspective to decrease by " + (int) Math.floor(1 * (int) relay.getProperty("rep")) + "!");
+                        return;
+                    }
+                    knowsOf(person2, talked, (int) Math.floor(-1 * (int) relay.getProperty("rep")));
+                    System.out.println(person2 + " now knows of " + talked + " !");
+                    System.out.println(talked + "'s reputation in the eyes (or in this case, ears) of " + person2 + " has decreased by " + (int) Math.floor(-1 * (int) relay.getProperty("rep")) + "!");
                     return;
                 }
-                knowsOf(person2,talked,(int)Math.floor(-1*(int)relay.getProperty("rep")));
-                System.out.println( person2 + " now knows of "+ talked+" !");
-                System.out.println(talked+"'s reputation in the eyes (or in this case, ears) of "+ person2+ " has decreased by "+(int)Math.floor(-1*(int)relay.getProperty("rep"))+"!");
-            return;    
-            }
             }
         }
     }
@@ -392,24 +381,24 @@ public class Sociopath {
 
     public static void eventFive() {
         //Randomizer
-        String[] name = {"ALICE","BOB","CHARLIE","DANIEL","ETHAN","FINN","GUY","HOLLY","IAN","JOE"};
+        String[] name = {"ALICE", "BOB", "CHARLIE", "DANIEL", "ETHAN", "FINN", "GUY", "HOLLY", "IAN", "JOE"};
         Random r = new Random();
         String rumor = name[r.nextInt(10)];
         String crush = name[r.nextInt(10)];
         while (crush == rumor) {
-                rumor = name[r.nextInt(10)];
-            }
-        
+            rumor = name[r.nextInt(10)];
+        }
+
         //Text
-        System.out.println("You have a crush who is "+crush+" but there is someone who has a rumour about you and he/she is "+rumor);
+        System.out.println("You have a crush who is " + crush + " but there is someone who has a rumour about you and he/she is " + rumor);
         System.out.println("");
-        
+
         //Initialize source and target nodes
         Node src = graphDb.findNode(Labels.STUDENT, "name", rumor);
         Node target = graphDb.findNode(Labels.STUDENT, "name", crush);
-        
+
         //Traverse and return the path
-        Iterable<Path> all = allPaths(src,target);
+        Iterable<Path> all = allPaths(src, target);
         try {
             Iterable<Node> path = all.iterator().next().nodes();
 
@@ -418,7 +407,7 @@ public class Sociopath {
             for (Node curr : path) {
                 list.add(curr);
             }
-            
+
             //Output
             System.out.println("The following is the path from the rumour to your crush(left to right):");
             for (int i = 0; i < list.size(); i++) {
@@ -462,77 +451,74 @@ public class Sociopath {
         Relationship oneThree = nodeOne.createRelationshipTo(nodeTwo, RelationshipType.withName("IS_FRIENDS_WITH"));
 
     }
-    
+
     private static enum Rels implements RelationshipType {
         IS_FRIENDS_WITH,
         KNOWS_OF;
-        
+
     }
-    
+
     public static enum Labels implements Label {
         STUDENT;
     }
-    
+
     //Method for expanding path during traversal
-    public static Iterable<Path> allPaths(Node src,Node target) {
+    public static Iterable<Path> allPaths(Node src, Node target) {
         PathExpander expander = PathExpanders.forType(Rels.IS_FRIENDS_WITH);
         PathFinder<Path> allPath = GraphAlgoFactory.allPaths(expander, 10);
         return allPath.findAllPaths(src, target);
     }
-    
-    public static boolean isFriendsWith(String s1, String s2){
+
+    public static boolean isFriendsWith(String s1, String s2) {
         Node src = graphDb.findNode(Labels.STUDENT, "name", s1.toUpperCase());
         Node target = graphDb.findNode(Labels.STUDENT, "name", s2.toUpperCase());
-        Iterable<Relationship> relationships =src.getRelationships(Direction.OUTGOING,Rels.IS_FRIENDS_WITH);
-            for( Relationship relationship : relationships )
-            {
-             if (relationship.getEndNode().equals(target)){
-                 return true;
-             }
+        Iterable<Relationship> relationships = src.getRelationships(Direction.OUTGOING, Rels.IS_FRIENDS_WITH);
+        for (Relationship relationship : relationships) {
+            if (relationship.getEndNode().equals(target)) {
+                return true;
             }
-        
+        }
+
         return false;
     }
-    
-    public static Relationship friendTo(String name1,String name2,int repTo){
-        Node s1 = graphDb.findNode(Labels.STUDENT,"name", name1.toUpperCase());
-        Node s2 = graphDb.findNode(Labels.STUDENT,"name", name2.toUpperCase());
-            Relationship relationship = s1.createRelationshipTo( s2, Rels.IS_FRIENDS_WITH);
-            relationship.setProperty( "rep", repTo );
-            return relationship;
+
+    public static Relationship friendTo(String name1, String name2, int repTo) {
+        Node s1 = graphDb.findNode(Labels.STUDENT, "name", name1.toUpperCase());
+        Node s2 = graphDb.findNode(Labels.STUDENT, "name", name2.toUpperCase());
+        Relationship relationship = s1.createRelationshipTo(s2, Rels.IS_FRIENDS_WITH);
+        relationship.setProperty("rep", repTo);
+        return relationship;
     }
-    
-    public static Node getNode(String name){
+
+    public static Node getNode(String name) {
         return graphDb.findNode(Labels.STUDENT, "name", name.toUpperCase());
     }
-    
-    public static Relationship knowsOf(String name1,String name2,int repTo){
-        Node s1 = graphDb.findNode(Labels.STUDENT,"name", name1.toUpperCase());
-        Node s2 = graphDb.findNode(Labels.STUDENT,"name", name2.toUpperCase());
-            Relationship relationship = s1.createRelationshipTo( s2, Rels.KNOWS_OF);
-            relationship.setProperty( "rep", repTo );
-            return relationship;
-            
-            
+
+    public static Relationship knowsOf(String name1, String name2, int repTo) {
+        Node s1 = graphDb.findNode(Labels.STUDENT, "name", name1.toUpperCase());
+        Node s2 = graphDb.findNode(Labels.STUDENT, "name", name2.toUpperCase());
+        Relationship relationship = s1.createRelationshipTo(s2, Rels.KNOWS_OF);
+        relationship.setProperty("rep", repTo);
+        return relationship;
+
     }
-    
-    public static Relationship getRelationship(String s1,String s2,RelationshipType rt){
+
+    public static Relationship getRelationship(String s1, String s2, RelationshipType rt) {
         Node src = graphDb.findNode(Labels.STUDENT, "name", s1.toUpperCase());
         Node target = graphDb.findNode(Labels.STUDENT, "name", s2.toUpperCase());
         Relationship relay;
-        Iterable<Relationship> relationships =src.getRelationships(Direction.OUTGOING,rt);
-            for( Relationship relationship : relationships )
-            {
-            if (relationship.getEndNode().equals(target)){
-                relay=relationship;
+        Iterable<Relationship> relationships = src.getRelationships(Direction.OUTGOING, rt);
+        for (Relationship relationship : relationships) {
+            if (relationship.getEndNode().equals(target)) {
+                relay = relationship;
                 return relay;
             }
-            }
-            return null;
+        }
+        return null;
     }
-    
-    public static void incrementRep(Relationship r, int change){
-        r.setProperty("rep", (int)r.getProperty("rep")+change);
+
+    public static void incrementRep(Relationship r, int change) {
+        r.setProperty("rep", (int) r.getProperty("rep") + change);
     }
-            
+
 }
