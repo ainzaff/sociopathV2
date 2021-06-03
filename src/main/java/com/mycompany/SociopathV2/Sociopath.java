@@ -366,7 +366,7 @@ public class Sociopath {
                 System.out.println("Sorry but there is no way you can stop the rumour from spreading to your crush");
             } else {
                 System.out.println("The way you can stop the rumour from spreading to your crush");
-                System.out.println("Day 1: Convince " + list.get(list.size() - 2).getProperty("name"));
+                System.out.println("Day 1: Convince " + list.get(1).getProperty("name"));
                 System.out.println("You're safe!");
             }
         } catch (NoSuchElementException ex) {
