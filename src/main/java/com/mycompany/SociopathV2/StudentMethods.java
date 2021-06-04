@@ -36,6 +36,7 @@ public class StudentMethods {
         Node Holly = Sociopath.graphDb.createNode(Sociopath.Labels.STUDENT);
         Node Ian = Sociopath.graphDb.createNode(Sociopath.Labels.STUDENT);
         Node Joe = Sociopath.graphDb.createNode(Sociopath.Labels.STUDENT);
+        
         Alice.setProperty("name", "ALICE");
         Bob.setProperty("name", "BOB");
         Charlie.setProperty("name", "CHARLIE");
@@ -46,6 +47,7 @@ public class StudentMethods {
         Holly.setProperty("name", "HOLLY");
         Ian.setProperty("name", "IAN");
         Joe.setProperty("name", "JOE");
+        
         Alice.setProperty("prog", 92);
         Bob.setProperty("prog", 88);
         Charlie.setProperty("prog", 10);
@@ -56,6 +58,7 @@ public class StudentMethods {
         Holly.setProperty("prog", 60);
         Ian.setProperty("prog", 70);
         Joe.setProperty("prog", 30);
+        
         Alice.setProperty("dive", 92);
         Bob.setProperty("dive", 88);
         Charlie.setProperty("dive", 7);
@@ -66,6 +69,7 @@ public class StudentMethods {
         Holly.setProperty("dive", 50);
         Ian.setProperty("dive", 20);
         Joe.setProperty("dive", 70);
+        
         Alice.setProperty("lunchStart", 1200);
         Bob.setProperty("lunchStart", 1300);
         Charlie.setProperty("lunchStart", 1330);
@@ -86,6 +90,7 @@ public class StudentMethods {
         Holly.setProperty("lunchStart", 1350);
         Ian.setProperty("lunchStart", 1110);
         Joe.setProperty("lunchStart", 1310);
+        
         Alice.setProperty("lunchPeriod", 30);
         Bob.setProperty("lunchPeriod", 40);
         Charlie.setProperty("lunchPeriod", 20);
@@ -96,6 +101,7 @@ public class StudentMethods {
         Holly.setProperty("lunchPeriod", 10);
         Ian.setProperty("lunchPeriod", 50);
         Joe.setProperty("lunchPeriod", 10);
+        
         DataManipulation.friendTo("Alice", "Bob", 5);
         DataManipulation.friendTo("Bob", "Alice", 8);
         DataManipulation.friendTo("Alice", "Guy", 4);
@@ -118,5 +124,5 @@ public class StudentMethods {
         Result result = Sociopath.graphDb.execute("MATCH (s:STUDENT)" + "RETURN s.name as name,s.dive as diving_rate, s.lunchStart as lunch_starts_at,s.lunchPeriod as lunch_period");
         System.out.println(result.resultAsString());
     }
-    
+
 }

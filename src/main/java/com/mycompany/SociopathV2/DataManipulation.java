@@ -27,7 +27,6 @@ import org.neo4j.graphdb.RelationshipType;
  */
 public class DataManipulation {
 
-
     //Remove duplicate elements in an arraylist method for Event 5
     public static <T> ArrayList<T> removeDuplicates(ArrayList<T> list) {
         Set<T> set = new LinkedHashSet<>();
@@ -95,5 +94,4 @@ public class DataManipulation {
         return allPath.findAllPaths(src, target);
     }
 
-    
 }

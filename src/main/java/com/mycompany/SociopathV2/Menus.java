@@ -58,5 +58,5 @@ public class Menus {
         choice = Sociopath.input.nextInt();
         Events.eventSelector(choice);
     }
-    
+
 }

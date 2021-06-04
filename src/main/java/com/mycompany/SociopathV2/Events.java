@@ -229,41 +229,35 @@ public class Events {
 
     public static void eventSelector(int choice) {
         switch (choice) {
-            case 1:
-                {
-                    Events.eventOne();
-                    break;
-                }
-            case 2:
-                {
-                    Events.eventTwo();
-                    break;
-                }
-            case 3:
-                {
-                    Events.eventThree();
-                    break;
-                }
+            case 1: {
+                Events.eventOne();
+                break;
+            }
+            case 2: {
+                Events.eventTwo();
+                break;
+            }
+            case 3: {
+                Events.eventThree();
+                break;
+            }
             case 4:
                 Events.eventFour();
                 break;
-            case 5:
-                {
-                    Events.eventFive();
-                    break;
-                }
-            case 6:
-                {
-                    Events.eventSix();
-                    break;
-                }
-            default:
-                {
-                    System.out.println("Please type in a valid number option\nGoing back to main menu");
-                    Menus.mainMenu();
-                }
+            case 5: {
+                Events.eventFive();
+                break;
+            }
+            case 6: {
+                Events.eventSix();
+                break;
+            }
+            default: {
+                System.out.println("Please type in a valid number option\nGoing back to main menu");
+                Menus.mainMenu();
+            }
         }
         //mainMenu();
     }
-    
+
 }

@@ -37,11 +37,6 @@ public class Sociopath {
 
     }
 
-
-
-
-
-
     public static enum Rels implements RelationshipType {
         IS_FRIENDS_WITH,
         KNOWS_OF;
@@ -52,5 +47,4 @@ public class Sociopath {
         STUDENT;
     }
 
-    
 }
