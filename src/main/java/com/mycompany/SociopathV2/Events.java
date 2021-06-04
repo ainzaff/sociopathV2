@@ -262,6 +262,8 @@ public class Events {
 
 
         // ISSUE: Cannot retrieve paths
+        // TODO Fix path retrieval
+        // https://community.neo4j.com/t/list-of-all-paths-dag/4453
         Iterable<Path> paths = DataManipulation.getAllPaths(nodeOne, nodeTwo);
 //        Iterable<Path> paths = DataManipulation.getAllPaths(nodeTwo, nodeThree);
 //        Iterable<Path> paths = DataManipulation.getAllPaths(nodeOne, nodeThree);
@@ -269,16 +271,16 @@ public class Events {
 
         // Testing path
         try {
-            // Adds all paths in path1 -> pathList
-            ArrayList<Path> pathList = new ArrayList<>();
+            // Adds all paths in path1 -> pathsList
+            ArrayList<Path> pathsList = new ArrayList<>();
             for (Path path : paths) {
-                pathList.add(path);
+                pathsList.add(path);
             }
 
-            // Adds all nodesList in pathList -> nodesListsList
+            // Adds all nodesList in pathsList -> nodesListsList
             ArrayList<ArrayList<Node>> nodesListsList = new ArrayList<>();
             int index = 0;
-            for (Path path : pathList) {
+            for (Path path : paths) {
                 nodesListsList.add(new ArrayList<Node>());
                 Iterable<Node> nodesList = path.nodes();
             }
