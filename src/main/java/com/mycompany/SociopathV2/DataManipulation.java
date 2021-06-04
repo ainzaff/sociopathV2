@@ -173,7 +173,7 @@ public static Scanner input = new Scanner(System.in);
    
    public static void convince(LinkedList<LinkedList<Node>> list,Node crush) {
        //CHECKING STARTS
-       for (int cost = 1; cost < 10; cost++) {
+       for (int cost = 1; cost < 20; cost++) {
            for (int i = 0; i < list.size(); i++) {
                if(list.get(i).get(cost).equals(crush)) {
                    System.out.println("OH WAIT!!! After calculating, apparently you can't stop the rumour from reaching your crush");
@@ -237,12 +237,10 @@ public static Scanner input = new Scanner(System.in);
                                System.out.println("Day "+cost+": Convince "+list.get(j).get(cost).getProperty("name"));
                                if(similaritycount==list.size()-1) {
                                    list.clear();
-                                   hasRemoved = true;
                                    break;
                                } else {
                                    list.remove(j);
                                    list.remove(j + 1);
-                                   hasRemoved = true;
                                    break;
                                }
                            }
@@ -251,7 +249,7 @@ public static Scanner input = new Scanner(System.in);
                        System.out.println("Day "+cost+": Convince "+list.remove().get(cost).getProperty("name"));
                    }
            }
-           if(list.size()==0) {
+           if(list.isEmpty()) {
                System.out.println("You're safe!");
                return;
            }
