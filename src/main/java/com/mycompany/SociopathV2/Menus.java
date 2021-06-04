@@ -56,7 +56,8 @@ public static Scanner input = new Scanner(System.in);
         System.out.println("3. Your road to glory ");
         System.out.println("4. Arranging books ");
         System.out.println("5. Meet your crush ");
-        System.out.println("6. Friendship \n");
+        System.out.println("6. Friendship ");
+        System.out.println("7. Social Dynamics Events\n");
         choice = Sociopath.input.nextInt();
         Events.eventSelector(choice);
     }

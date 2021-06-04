@@ -15,6 +15,7 @@ import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Path;
 import org.neo4j.graphdb.Relationship;
 import org.neo4j.graphdb.RelationshipType;
+import org.neo4j.graphdb.ResourceIterable;
 import org.neo4j.graphdb.ResourceIterator;
 import org.neo4j.graphdb.Result;
 
@@ -52,6 +53,7 @@ public static Scanner input = new Scanner(System.in);
     public static void eventFour() {
         int counter = 0;
         LinkedList<Integer> bookList = new LinkedList<>();
+        System.out.println("\nOn a lazy Sunday afternoon, you decide to volunteer at the library. The librarian, Jabbar, has asked you to arrange some books.");
         System.out.println("Enter number of books: ");
         int numOfBooks = Sociopath.input.nextInt();
         Sociopath.input.nextLine();
@@ -252,41 +254,133 @@ public static Scanner input = new Scanner(System.in);
 
     public static void eventSelector(int choice) {
         switch (choice) {
-            case 1:
-                {
-                    Events.eventOne();
-                    break;
-                }
-            case 2:
-                {
-                    Events.eventTwo();
-                    break;
-                }
-            case 3:
-                {
-                    Events.eventThree();
-                    break;
-                }
+            case 1: {
+                Events.eventOne();
+                break;
+            }
+            case 2: {
+                Events.eventTwo();
+                break;
+            }
+            case 3: {
+                Events.eventThree();
+                break;
+            }
             case 4:
                 Events.eventFour();
                 break;
-            case 5:
-                {
-                    Events.eventFive();
-                    break;
-                }
-            case 6:
-                {
-                    Events.eventSix();
-                    break;
-                }
-            default:
-                {
-                    System.out.println("Please type in a valid number option\nGoing back to main menu");
-                    Menus.mainMenu();
-                }
+            case 5: {
+                Events.eventFive();
+                break;
+            }
+            case 6: {
+                Events.eventSix();
+                break;
+            }
+            case 7: {
+                Events.eventSeven();
+
+                break;
+            }
+            default: {
+                System.out.println("Please type in a valid number option\nGoing back to main menu");
+                Menus.mainMenu();
+            }
         }
         //mainMenu();
     }
+    
+    public static void eventSeven(){
+        System.out.println("Select event :");
+        System.out.println("1. Bully");
+        System.out.println("2. Love Proposal");
+        int choice = input.nextInt();
+        switch(choice){
+            case 1:{
+                Bully();
+                break;
+            }
+            case 2: {
+                loveProposal();
+                break;
+            }
+            default:{System.out.println("Please type in a valid number option. Returning to main menu . . .");
+            Menus.mainMenu();
+                
+            }
+        }
+    }
+    
+    public static void Bully(){
+        input.nextLine();
+        System.out.println("Who was the bully?");
+        String bully = input.nextLine();
+        Node bullynode = DataManipulation.getNode(bully);
+        System.out.println("Which person was being bullied?");
+        String bullied = input.nextLine();
+        System.out.println("The small and weak "+ bullied+" was preyed upon by the big bad bully , "+bully+"!" );
+        DataManipulation.bullies(bully, bullied, -1);
+        System.out.println(bullied + " now hates "+ bully);
+        DataManipulation.hates(bullied, bully, -1);
+        System.out.println("\nThe voices of "+ bullied+" echoed through the school halls.");
+        System.out.println("Everyone now knows that "+bully+ " is bullying "+ bullied+"\n");
+        Iterable<Relationship> list = bullynode.getRelationships();
+        for (Relationship r : list){
+            DataManipulation.incrementRep(r, -1);
+        }
+
+        System.out.println("-1 Reputation for every relationship that "+ bully +" has");
+    }
+    
+    public static void loveProposal(){
+        input.nextLine();
+        System.out.println("\nYou were walking home from school when you saw two shady figures on your way out.");
+        System.out.println("Using your ultimate stealth, you creep behind them unnoticed to hear that one of the shady figures had confessed their love to the other!");
+        System.out.println("Creeping closer, you realize who those two shady figures were. . .");
+        System.out.println("\nWho was the one confessing their love?");
+        String lover = input.nextLine().toUpperCase();
+        Node lovernode = DataManipulation.getNode(lover);
+        System.out.println("\nWho was the one being confessed to?");
+        String loved = input.nextLine().toUpperCase();
+        if (lover.equals(loved)){
+            System.out.println("\n Now you're not even making sense . . .");
+            return;
+        }
+        if (DataManipulation.isLoversWith(loved, lover)){
+            System.out.println("\nThey are already lovers. \nReturning to main menu . . .");
+            return;
+        }
+        
+        
+        System.out.println("\nWell, stop being dramatic! Did they accept the proposal? (YES/NO)");
+        String choice = input.nextLine();
+        if (choice.equalsIgnoreCase("yes")){
+            //if already have a crush
+            if (DataManipulation.isLoversWith(lover, loved)){
+                                DataManipulation.incrementRep(DataManipulation.getRelationship(lover, loved, Sociopath.Rels.LOVES), 10);
+            }
+           if (!DataManipulation.isLoversWith(lover, loved)){
+                                DataManipulation.loves(lover,loved,20);
+            }
+            DataManipulation.loves(loved, lover, 20);
+            System.out.println("\n"+lover+ " and "+ loved +" are now lovers!\n");
+            return;
+        }
+        if (choice.equalsIgnoreCase("no")){
+            System.out.println("\nThat's too bad. . .");
+            if (DataManipulation.isLoversWith(lover, loved)){
+                DataManipulation.incrementRep(DataManipulation.getRelationship(lover, loved, Sociopath.Rels.LOVES), 1);
+                System.out.println("Through every rejection, "+ lover+"'s crush on "+loved+" grows biggers and bigger!");
+            }
+            DataManipulation.loves(lover, loved, 10);
+            System.out.println(lover+" still has a crush on "+ loved+", but "+ loved+" does not feel the same way . . .");
+            return;
+        }
+        System.out.println("I don't wanna waste anymore time with you. Try putting in the correct input next time. Returning to main menu . . .");
+        
+        
+    }
+    
+    
     
 }

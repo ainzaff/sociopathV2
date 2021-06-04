@@ -84,6 +84,42 @@ public static Scanner input = new Scanner(System.in);
         }
         return false;
     }
+    
+        public static boolean isLoversWith(String s1, String s2) {
+        Node src = Sociopath.graphDb.findNode(Sociopath.Labels.STUDENT, "name", s1.toUpperCase());
+        Node target = Sociopath.graphDb.findNode(Sociopath.Labels.STUDENT, "name", s2.toUpperCase());
+        Iterable<Relationship> relationships = src.getRelationships(Direction.OUTGOING, Sociopath.Rels.LOVES);
+        for (Relationship relationship : relationships) {
+            if (relationship.getEndNode().equals(target)) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    public static Relationship bullies(String name1, String name2, int repTo) {
+        Node s1 = Sociopath.graphDb.findNode(Sociopath.Labels.STUDENT, "name", name1.toUpperCase());
+        Node s2 = Sociopath.graphDb.findNode(Sociopath.Labels.STUDENT, "name", name2.toUpperCase());
+        Relationship relationship = s1.createRelationshipTo(s2, Sociopath.Rels.BULLIES);
+        relationship.setProperty("rep", repTo);
+        return relationship;
+    }
+
+    public static Relationship hates(String name1, String name2, int repTo) {
+        Node s1 = Sociopath.graphDb.findNode(Sociopath.Labels.STUDENT, "name", name1.toUpperCase());
+        Node s2 = Sociopath.graphDb.findNode(Sociopath.Labels.STUDENT, "name", name2.toUpperCase());
+        Relationship relationship = s1.createRelationshipTo(s2, Sociopath.Rels.HATES);
+        relationship.setProperty("rep", repTo);
+        return relationship;
+    }
+
+    public static Relationship loves(String name1, String name2, int repTo) {
+        Node s1 = Sociopath.graphDb.findNode(Sociopath.Labels.STUDENT, "name", name1.toUpperCase());
+        Node s2 = Sociopath.graphDb.findNode(Sociopath.Labels.STUDENT, "name", name2.toUpperCase());
+        Relationship relationship = s1.createRelationshipTo(s2, Sociopath.Rels.LOVES);
+        relationship.setProperty("rep", repTo);
+        return relationship;
+    }
 
     public static Node getNode(String name) {
         return Sociopath.graphDb.findNode(Sociopath.Labels.STUDENT, "name", name.toUpperCase());
