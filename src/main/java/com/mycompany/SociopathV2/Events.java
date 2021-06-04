@@ -150,12 +150,15 @@ public class Events {
         while (crush == rumor) {
             rumor = name[r.nextInt(10)];
         }
+        
         //Text
         System.out.println("You have a crush who is " + crush + " but there is someone who has a rumour about you and he/she is " + rumor);
         System.out.println("");
+        
         //Initialize source and target nodes
-        Node src = Sociopath.graphDb.findNode(Sociopath.Labels.STUDENT, "name", rumor);
-        Node target = Sociopath.graphDb.findNode(Sociopath.Labels.STUDENT, "name", crush);
+        Node src = DataManipulation.getNode(rumor);
+        Node target = DataManipulation.getNode(crush);
+        
         //Traverse and return the path
         Iterable<Path> all = DataManipulation.getAllPaths(src, target);
         try {
@@ -163,36 +166,34 @@ public class Events {
             for (Path curr : all) {
                 pathlist.add(curr);
             }
+            
             //To collect the nodes in the path
-            ArrayList<ArrayList<Node>> list = new ArrayList<>();
+            LinkedList<LinkedList<Node>> list = new LinkedList<>();
             int index = 0;
             for (Path curr : pathlist) {
-                list.add(new ArrayList<Node>());
+                list.add(new LinkedList<Node>());
                 Iterable<Node> nodeslist = curr.nodes();
                 for (Node node : nodeslist) {
                     list.get(index).add(node);
                 }
                 index++;
             }
+            
             //Filter duplicate paths
             list = DataManipulation.removeDuplicates(list);
+            
             //Output
             if (list.size() == 0) {
                 System.out.println("Luckily, it is impossible for the rumour to reach your crush");
                 return;
             }
-            System.out.println("The following is the path from the rumour to your crush(left to right):");
-            for (int i = 0; i < list.size(); i++) {
-                for (int j = 0; j < list.get(i).size(); j++) {
-                    if (j == list.get(i).size() - 1) {
-                        System.out.print(list.get(i).get(j).getProperty("name"));
-                    } else {
-                        System.out.print(list.get(i).get(j).getProperty("name") + ">");
-                    }
-                }
-                System.out.println("");
+            if (list.get(0).size() == 2) {
+                System.out.println("There is no way you can stop the rumour from reaching your crush");
+                return;
             }
-            System.out.println("\n");
+            DataManipulation.displayPath(list);
+            DataManipulation.convince(list,target);
+            
         } catch (NoSuchElementException ex) {
             System.out.println("Luckily, it is impossible for the rumour to reach your crush");
         }
