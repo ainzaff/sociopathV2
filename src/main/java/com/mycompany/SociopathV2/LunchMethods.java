@@ -126,7 +126,7 @@ private static Random r = new Random();
     }
         
     static public int changeToTime(int n){
-        int min=n%1000;
+        int min=n%100;
         int hour = n-min;
         while (min>=60){
             hour+=100;
@@ -145,8 +145,8 @@ private static Random r = new Random();
         ResourceIterator<Node> list = DataManipulation.getAllNodes();
         while (list.hasNext()) {
             Node s = list.next();
-            if(s.getProperty("name")==user){
-                return;
+            if(s.getProperty("name").equals(user)){
+                continue;
             }
             int start = (int) s.getProperty("avgLunchStart");
             int end = (int) s.getProperty("avgLunchEnd");
