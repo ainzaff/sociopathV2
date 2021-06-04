@@ -1,4 +1,4 @@
-/*
+/*events
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
@@ -9,21 +9,44 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.NoSuchElementException;
 import java.util.Random;
+import java.util.Scanner;
 import org.neo4j.graphdb.Direction;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Path;
 import org.neo4j.graphdb.Relationship;
 import org.neo4j.graphdb.RelationshipType;
+import org.neo4j.graphdb.ResourceIterator;
+import org.neo4j.graphdb.Result;
 
 /**
  *
  * @author lenovo
  */
 public class Events {
-
+public static Scanner input = new Scanner(System.in);
     public static void eventThree() {
         Sociopath.input.nextLine();
-        System.out.println("\nThis is a placeholder because the event has not currently been implemented yet <3\n");
+        System.out.println("\nWho is going to use this unrivaled algorithm to obtain maximum reputation by having lunch?");
+        String user = input.nextLine().toUpperCase();
+        Node usernode = DataManipulation.getNode(user);
+        System.out.println("\nVery well, " + user + " , proceed with caution.");
+        LunchMethods.nextDay();
+        System.out.println("Through meticulous calculation , Sociopath has decided who to have lunch with to gain the most rep\n");
+        System.out.println("Day : "+(LunchMethods.getDayCounter()-1));
+        //set averages first before getting them
+        ResourceIterator<Node> list = DataManipulation.getAllNodes();
+        while (list.hasNext()) {
+            Node s = list.next();
+            LunchMethods.setNewAvgLunchStart(s);
+            LunchMethods.setNewAvgLunchEnd(s);
+        }
+        Result result = Sociopath.graphDb.execute("MATCH (s:STUDENT)" + "RETURN s.name as name, s.avgLunchStart as average_lunch_start,s.avgLunchEnd as average_lunch_end");
+        System.out.println(result.resultAsString());
+        System.out.println("\nUser : " + user);
+        System.out.println("User's average lunchStart : " + LunchMethods.getAvgLunchStart(usernode));
+        System.out.println("User's average lunchEnd : " + LunchMethods.getAvgLunchEnd(usernode));
+        System.out.println("\n"+user+" should have lunch with the following :\n");
+        LunchMethods.lunchAlgo(user, LunchMethods.getAvgLunchStart(usernode), LunchMethods.getAvgLunchEnd(usernode));
     }
 
     public static void eventFour() {
@@ -130,7 +153,7 @@ public class Events {
         Node src = Sociopath.graphDb.findNode(Sociopath.Labels.STUDENT, "name", rumor);
         Node target = Sociopath.graphDb.findNode(Sociopath.Labels.STUDENT, "name", crush);
         //Traverse and return the path
-        Iterable<Path> all = DataManipulation.allPaths(src, target);
+        Iterable<Path> all = DataManipulation.getAllPaths(src, target);
         try {
             ArrayList<Path> pathlist = new ArrayList<>();
             for (Path curr : all) {
@@ -229,35 +252,41 @@ public class Events {
 
     public static void eventSelector(int choice) {
         switch (choice) {
-            case 1: {
-                Events.eventOne();
-                break;
-            }
-            case 2: {
-                Events.eventTwo();
-                break;
-            }
-            case 3: {
-                Events.eventThree();
-                break;
-            }
+            case 1:
+                {
+                    Events.eventOne();
+                    break;
+                }
+            case 2:
+                {
+                    Events.eventTwo();
+                    break;
+                }
+            case 3:
+                {
+                    Events.eventThree();
+                    break;
+                }
             case 4:
                 Events.eventFour();
                 break;
-            case 5: {
-                Events.eventFive();
-                break;
-            }
-            case 6: {
-                Events.eventSix();
-                break;
-            }
-            default: {
-                System.out.println("Please type in a valid number option\nGoing back to main menu");
-                Menus.mainMenu();
-            }
+            case 5:
+                {
+                    Events.eventFive();
+                    break;
+                }
+            case 6:
+                {
+                    Events.eventSix();
+                    break;
+                }
+            default:
+                {
+                    System.out.println("Please type in a valid number option\nGoing back to main menu");
+                    Menus.mainMenu();
+                }
         }
         //mainMenu();
     }
-
+    
 }

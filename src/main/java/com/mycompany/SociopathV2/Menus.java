@@ -1,16 +1,18 @@
-/*
+/*menus
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
 package com.mycompany.SociopathV2;
 
+import java.util.Scanner;
+
 /**
  *
  * @author lenovo
  */
 public class Menus {
-
+public static Scanner input = new Scanner(System.in);
     public static void mainMenu() {
         int choice = 0;
         while (choice != 1 || choice != 2 || choice != 3) {
@@ -58,5 +60,5 @@ public class Menus {
         choice = Sociopath.input.nextInt();
         Events.eventSelector(choice);
     }
-
+    
 }

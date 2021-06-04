@@ -1,4 +1,4 @@
-/*
+/*datamanipulation
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
@@ -10,6 +10,7 @@ import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.NoSuchElementException;
 import java.util.Random;
+import java.util.Scanner;
 import java.util.Set;
 import org.neo4j.graphalgo.GraphAlgoFactory;
 import org.neo4j.graphalgo.PathFinder;
@@ -20,12 +21,14 @@ import org.neo4j.graphdb.PathExpander;
 import org.neo4j.graphdb.PathExpanders;
 import org.neo4j.graphdb.Relationship;
 import org.neo4j.graphdb.RelationshipType;
+import org.neo4j.graphdb.ResourceIterator;
 
 /**
  *
  * @author lenovo
  */
 public class DataManipulation {
+public static Scanner input = new Scanner(System.in);
 
     //Remove duplicate elements in an arraylist method for Event 5
     public static <T> ArrayList<T> removeDuplicates(ArrayList<T> list) {
@@ -87,11 +90,14 @@ public class DataManipulation {
     }
 
     //Method for expanding path during traversal
-    public static Iterable<Path> allPaths(Node src, Node target) {
+    public static Iterable<Path> getAllPaths(Node src, Node target) {
         PathExpander expander = PathExpanders.forType(Sociopath.Rels.IS_FRIENDS_WITH);
         //PathFinder<Path> allPath = GraphAlgoFactory.allPaths(expander, 10);
         PathFinder<Path> allPath = GraphAlgoFactory.allSimplePaths(expander, 50);
         return allPath.findAllPaths(src, target);
     }
 
+   public static ResourceIterator<Node> getAllNodes (){
+       return Sociopath.graphDb.findNodes(Sociopath.Labels.STUDENT);
+   }
 }
