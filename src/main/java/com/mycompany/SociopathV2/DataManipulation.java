@@ -61,6 +61,15 @@ public static Scanner input = new Scanner(System.in);
         return relationship;
     }
 
+    // Overloaded friendTo() for eventSix()
+    public static Relationship friendTo(String name1, String name2) {
+        // instead of finding the non-existing node, simply create a new node
+        Node s1 = Sociopath.graphDb.createNode();
+        Node s2 = Sociopath.graphDb.createNode();
+        Relationship relationship = s1.createRelationshipTo(s2, Sociopath.Rels.IS_FRIENDS_WITH);
+        return relationship;
+    }
+
     public static void incrementRep(Relationship r, int change) {
         r.setProperty("rep", (int) r.getProperty("rep") + change);
     }

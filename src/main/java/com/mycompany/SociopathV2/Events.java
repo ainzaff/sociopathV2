@@ -5,6 +5,7 @@
  */
 package com.mycompany.SociopathV2;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.NoSuchElementException;
@@ -233,8 +234,8 @@ public static Scanner input = new Scanner(System.in);
     public static void eventSix() {
         System.out.println("\nThis is a placeholder because the event has not currently been implemented yet <3\n");
         // How to check for duplicate nodes?
-        System.out.println("How many friendships do you want to examine?");
-        int n = Sociopath.input.nextInt();
+        System.out.println("TEMP: How many friendships do you want to examine?\n");
+//        int n = Sociopath.input.nextInt();
         //        for(int i = 1; i <= n; i++) {
         //            System.out.println("Friendship #" + i + " (enter TWO integers)");
         //            int node1 = input.nextInt();
@@ -247,9 +248,57 @@ public static Scanner input = new Scanner(System.in);
         Node nodeOne = Sociopath.graphDb.createNode(Sociopath.Labels.STUDENT);
         Node nodeTwo = Sociopath.graphDb.createNode(Sociopath.Labels.STUDENT);
         Node nodeThree = Sociopath.graphDb.createNode(Sociopath.Labels.STUDENT);
-        Relationship oneTwo = nodeOne.createRelationshipTo(nodeTwo, RelationshipType.withName("IS_FRIENDS_WITH"));
-        Relationship twoThree = nodeOne.createRelationshipTo(nodeTwo, RelationshipType.withName("IS_FRIENDS_WITH"));
-        Relationship oneThree = nodeOne.createRelationshipTo(nodeTwo, RelationshipType.withName("IS_FRIENDS_WITH"));
+
+//        nodeOne.setProperty("name", "nodeOne");
+//        nodeTwo.setProperty("name", "nodeTwo");
+
+        // ISSUE: Error "s1" is null in friendTo()
+        // REASON: Because s1 is not an existing node in the original initialized Students graph
+        // SOLUTION: Overloaded friendTo() method in DataManipulation
+        DataManipulation.friendTo("nodeOne", "nodeTwo");
+        DataManipulation.friendTo("nodeTwo", "nodeThree");
+//        DataManipulation.friendTo("nodeOne", "nodeThree");
+
+
+        // ISSUE: Cannot retrieve paths
+//        Iterable<Path> path1 = DataManipulation.getAllPaths(nodeOne, nodeTwo);
+//        Iterable<Path> path2 = DataManipulation.getAllPaths(nodeTwo, nodeThree);
+        Iterable<Path> path3 = DataManipulation.getAllPaths(nodeOne, nodeThree);
+
+
+        // Testing path1
+        try {
+            // Adds all paths in path1 -> pathList
+            ArrayList<Path> pathList = new ArrayList<>();
+            for (Path path : path3) {
+                pathList.add(path);
+            }
+
+            // Adds all nodesList in pathList -> nodesListsList
+            ArrayList<ArrayList<Node>> nodesListsList = new ArrayList<>();
+            int index = 0;
+            for (Path path : pathList) {
+                nodesListsList.add(new ArrayList<Node>());
+                Iterable<Node> nodesList = path.nodes();
+            }
+
+            // Removes duplicate nodesList from nodesListsList
+            nodesListsList = DataManipulation.removeDuplicates(nodesListsList);
+
+
+            // Output
+            // Traverses through nodesListsList and displays the nodes in each paths
+            int numFriendships = nodesListsList.size();
+            System.out.println("You can form " + numFriendships + " friendship(s):");
+            for (int i = 1; i <= numFriendships; i++) {
+                System.out.println(i + ". " + nodesListsList.get(i).toString());
+            }
+            return;
+
+        } catch (NoSuchElementException ex) {
+            System.out.println("No paths available!");
+        }
+
     }
 
     public static void eventSelector(int choice) {
