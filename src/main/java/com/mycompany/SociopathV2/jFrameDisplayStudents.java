@@ -19,6 +19,7 @@ public class jFrameDisplayStudents extends javax.swing.JFrame {
      */
     public jFrameDisplayStudents() {
         initComponents();
+        fetch();
     }
     
     public void fetch(){

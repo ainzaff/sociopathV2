@@ -136,7 +136,7 @@ public class StudentMethods {
 //        System.out.println(result.resultAsString());
 //    }
     public static void displayStudents() {
-        jfFrameDisplayStudents ds = new jfFrameDisplayStudents();
+        jFrameDisplayStudents ds = new jFrameDisplayStudents();
         ds.setVisible(true);
         ds.pack();
         ds.setLocationRelativeTo(null);
