@@ -184,6 +184,6 @@ private static Random r = new Random();
             }
 
         }
-        System.out.println("\nEach person "+ user +" had lunch with has increased "+ user+ "'s reputation towards them by!");
+        System.out.println("\nEach person "+ user +" had lunch with has increased "+ user+ "'s reputation towards them by 1 !");
     }
 }
