@@ -11,6 +11,7 @@ import java.util.LinkedList;
 import java.util.NoSuchElementException;
 import java.util.Random;
 import java.util.Scanner;
+
 import org.neo4j.graphdb.Direction;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Path;
@@ -21,11 +22,11 @@ import org.neo4j.graphdb.ResourceIterator;
 import org.neo4j.graphdb.Result;
 
 /**
- *
  * @author lenovo
  */
 public class Events {
-public static Scanner input = new Scanner(System.in);
+    public static Scanner input = new Scanner(System.in);
+
     public static void eventThree() {
         Sociopath.input.nextLine();
         System.out.println("\nWho is going to use this unrivaled algorithm to obtain maximum reputation by having lunch?");
@@ -34,7 +35,7 @@ public static Scanner input = new Scanner(System.in);
         System.out.println("\nVery well, " + user + " , proceed with caution.");
         LunchMethods.nextDay();
         System.out.println("Through meticulous calculation , Sociopath has decided who to have lunch with to gain the most rep\n");
-        System.out.println("Day : "+(LunchMethods.getDayCounter()-1));
+        System.out.println("Day : " + (LunchMethods.getDayCounter() - 1));
         //set averages first before getting them
         ResourceIterator<Node> list = DataManipulation.getAllNodes();
         while (list.hasNext()) {
@@ -47,7 +48,7 @@ public static Scanner input = new Scanner(System.in);
         System.out.println("\nUser : " + user);
         System.out.println("User's average lunchStart : " + LunchMethods.getAvgLunchStart(usernode));
         System.out.println("User's average lunchEnd : " + LunchMethods.getAvgLunchEnd(usernode));
-        System.out.println("\n"+user+" should have lunch with the following :\n");
+        System.out.println("\n" + user + " should have lunch with the following :\n");
         LunchMethods.lunchAlgo(user, LunchMethods.getAvgLunchStart(usernode), LunchMethods.getAvgLunchEnd(usernode));
     }
 
@@ -261,16 +262,16 @@ public static Scanner input = new Scanner(System.in);
 
 
         // ISSUE: Cannot retrieve paths
-//        Iterable<Path> path1 = DataManipulation.getAllPaths(nodeOne, nodeTwo);
-//        Iterable<Path> path2 = DataManipulation.getAllPaths(nodeTwo, nodeThree);
-        Iterable<Path> path3 = DataManipulation.getAllPaths(nodeOne, nodeThree);
+        Iterable<Path> paths = DataManipulation.getAllPaths(nodeOne, nodeTwo);
+//        Iterable<Path> paths = DataManipulation.getAllPaths(nodeTwo, nodeThree);
+//        Iterable<Path> paths = DataManipulation.getAllPaths(nodeOne, nodeThree);
 
 
-        // Testing path1
+        // Testing path
         try {
             // Adds all paths in path1 -> pathList
             ArrayList<Path> pathList = new ArrayList<>();
-            for (Path path : path3) {
+            for (Path path : paths) {
                 pathList.add(path);
             }
 
@@ -338,14 +339,14 @@ public static Scanner input = new Scanner(System.in);
         }
         //mainMenu();
     }
-    
-    public static void eventSeven(){
+
+    public static void eventSeven() {
         System.out.println("Select event :");
         System.out.println("1. Bully");
         System.out.println("2. Love Proposal");
         int choice = input.nextInt();
-        switch(choice){
-            case 1:{
+        switch (choice) {
+            case 1: {
                 Bully();
                 break;
             }
@@ -353,35 +354,36 @@ public static Scanner input = new Scanner(System.in);
                 loveProposal();
                 break;
             }
-            default:{System.out.println("Please type in a valid number option. Returning to main menu . . .");
-            Menus.mainMenu();
-                
+            default: {
+                System.out.println("Please type in a valid number option. Returning to main menu . . .");
+                Menus.mainMenu();
+
             }
         }
     }
-    
-    public static void Bully(){
+
+    public static void Bully() {
         input.nextLine();
         System.out.println("Who was the bully?");
         String bully = input.nextLine();
         Node bullynode = DataManipulation.getNode(bully);
         System.out.println("Which person was being bullied?");
         String bullied = input.nextLine();
-        System.out.println("The small and weak "+ bullied+" was preyed upon by the big bad bully , "+bully+"!" );
+        System.out.println("The small and weak " + bullied + " was preyed upon by the big bad bully , " + bully + "!");
         DataManipulation.bullies(bully, bullied, -1);
-        System.out.println(bullied + " now hates "+ bully);
+        System.out.println(bullied + " now hates " + bully);
         DataManipulation.hates(bullied, bully, -1);
-        System.out.println("\nThe voices of "+ bullied+" echoed through the school halls.");
-        System.out.println("Everyone now knows that "+bully+ " is bullying "+ bullied+"\n");
+        System.out.println("\nThe voices of " + bullied + " echoed through the school halls.");
+        System.out.println("Everyone now knows that " + bully + " is bullying " + bullied + "\n");
         Iterable<Relationship> list = bullynode.getRelationships();
-        for (Relationship r : list){
+        for (Relationship r : list) {
             DataManipulation.incrementRep(r, -1);
         }
 
-        System.out.println("-1 Reputation for every relationship that "+ bully +" has");
+        System.out.println("-1 Reputation for every relationship that " + bully + " has");
     }
-    
-    public static void loveProposal(){
+
+    public static void loveProposal() {
         input.nextLine();
         System.out.println("\nYou were walking home from school when you saw two shady figures on your way out.");
         System.out.println("Using your ultimate stealth, you creep behind them unnoticed to hear that one of the shady figures had confessed their love to the other!");
@@ -391,45 +393,44 @@ public static Scanner input = new Scanner(System.in);
         Node lovernode = DataManipulation.getNode(lover);
         System.out.println("\nWho was the one being confessed to?");
         String loved = input.nextLine().toUpperCase();
-        if (lover.equals(loved)){
+        if (lover.equals(loved)) {
             System.out.println("\n Now you're not even making sense . . .");
             return;
         }
-        if (DataManipulation.isLoversWith(loved, lover)){
+        if (DataManipulation.isLoversWith(loved, lover)) {
             System.out.println("\nThey are already lovers. \nReturning to main menu . . .");
             return;
         }
-        
-        
+
+
         System.out.println("\nWell, stop being dramatic! Did they accept the proposal? (YES/NO)");
         String choice = input.nextLine();
-        if (choice.equalsIgnoreCase("yes")){
+        if (choice.equalsIgnoreCase("yes")) {
             //if already have a crush
-            if (DataManipulation.isLoversWith(lover, loved)){
-                                DataManipulation.incrementRep(DataManipulation.getRelationship(lover, loved, Sociopath.Rels.LOVES), 10);
+            if (DataManipulation.isLoversWith(lover, loved)) {
+                DataManipulation.incrementRep(DataManipulation.getRelationship(lover, loved, Sociopath.Rels.LOVES), 10);
             }
-           if (!DataManipulation.isLoversWith(lover, loved)){
-                                DataManipulation.loves(lover,loved,20);
+            if (!DataManipulation.isLoversWith(lover, loved)) {
+                DataManipulation.loves(lover, loved, 20);
             }
             DataManipulation.loves(loved, lover, 20);
-            System.out.println("\n"+lover+ " and "+ loved +" are now lovers!\n");
+            System.out.println("\n" + lover + " and " + loved + " are now lovers!\n");
             return;
         }
-        if (choice.equalsIgnoreCase("no")){
+        if (choice.equalsIgnoreCase("no")) {
             System.out.println("\nThat's too bad. . .");
-            if (DataManipulation.isLoversWith(lover, loved)){
+            if (DataManipulation.isLoversWith(lover, loved)) {
                 DataManipulation.incrementRep(DataManipulation.getRelationship(lover, loved, Sociopath.Rels.LOVES), 1);
-                System.out.println("Through every rejection, "+ lover+"'s crush on "+loved+" grows biggers and bigger!");
+                System.out.println("Through every rejection, " + lover + "'s crush on " + loved + " grows biggers and bigger!");
             }
             DataManipulation.loves(lover, loved, 10);
-            System.out.println(lover+" still has a crush on "+ loved+", but "+ loved+" does not feel the same way . . .");
+            System.out.println(lover + " still has a crush on " + loved + ", but " + loved + " does not feel the same way . . .");
             return;
         }
         System.out.println("I don't wanna waste anymore time with you. Try putting in the correct input next time. Returning to main menu . . .");
-        
-        
+
+
     }
-    
-    
-    
+
+
 }
