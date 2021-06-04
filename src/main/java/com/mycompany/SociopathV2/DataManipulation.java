@@ -38,6 +38,14 @@ public static Scanner input = new Scanner(System.in);
         list.addAll(set);
         return list;
     }
+    
+    public static <T> ArrayList<T> removeDuplicates(ArrayList<T> list) {
+        Set<T> set = new LinkedHashSet<>();
+        set.addAll(list);
+        list.clear();
+        list.addAll(set);
+        return list;
+    }
 
     public static Relationship getRelationship(String s1, String s2, RelationshipType rt) {
         Node src = Sociopath.graphDb.findNode(Sociopath.Labels.STUDENT, "name", s1.toUpperCase());
