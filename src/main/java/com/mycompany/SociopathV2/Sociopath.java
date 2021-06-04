@@ -8,19 +8,10 @@ package com.mycompany.SociopathV2;
 import java.io.*;
 import java.lang.*;
 import java.util.*;
-import org.neo4j.graphalgo.GraphAlgoFactory;
-import org.neo4j.graphalgo.PathFinder;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Label;
-import org.neo4j.graphdb.Node;
-import org.neo4j.graphdb.Relationship;
 import org.neo4j.graphdb.RelationshipType;
-import org.neo4j.graphdb.Result;
 import org.neo4j.graphdb.factory.GraphDatabaseFactory;
-import org.neo4j.graphdb.Path;
-import org.neo4j.graphdb.PathExpander;
-import org.neo4j.graphdb.PathExpanders;
-import org.neo4j.graphdb.Direction;
 
 public class Sociopath {
 
@@ -37,7 +28,6 @@ public class Sociopath {
 
     }
 
-
     public static enum Rels implements RelationshipType {
         IS_FRIENDS_WITH,
         LOVES,
@@ -51,5 +41,4 @@ public class Sociopath {
         STUDENT;
     }
 
-    
 }

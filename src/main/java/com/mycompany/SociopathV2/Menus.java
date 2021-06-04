@@ -12,7 +12,9 @@ import java.util.Scanner;
  * @author lenovo
  */
 public class Menus {
-public static Scanner input = new Scanner(System.in);
+
+    public static Scanner input = new Scanner(System.in);
+
     public static void mainMenu() {
         int choice = 0;
         while (choice != 1 || choice != 2 || choice != 3) {
@@ -61,5 +63,5 @@ public static Scanner input = new Scanner(System.in);
         choice = Sociopath.input.nextInt();
         Events.eventSelector(choice);
     }
-    
+
 }

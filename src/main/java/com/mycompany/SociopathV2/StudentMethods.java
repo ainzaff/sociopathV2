@@ -6,7 +6,11 @@
 package com.mycompany.SociopathV2;
 
 import java.util.Scanner;
+import javax.swing.JFrame;
+import org.neo4j.graphdb.Direction;
 import org.neo4j.graphdb.Node;
+import org.neo4j.graphdb.Relationship;
+import org.neo4j.graphdb.ResourceIterator;
 import org.neo4j.graphdb.Result;
 
 /**
@@ -14,7 +18,9 @@ import org.neo4j.graphdb.Result;
  * @author lenovo
  */
 public class StudentMethods {
-public static Scanner input = new Scanner(System.in);
+
+    public static Scanner input = new Scanner(System.in);
+
     public static void displayProfile(String name) {
         if (name.compareToIgnoreCase("exit") == 0) {
             Menus.mainMenu();
@@ -97,7 +103,7 @@ public static Scanner input = new Scanner(System.in);
         Holly.setProperty("lunchPeriod", 45);
         Ian.setProperty("lunchPeriod", 50);
         Joe.setProperty("lunchPeriod", 35);
-        Alice.setProperty("avgLunchEnd",LunchMethods.getLunchEnd(Alice));
+        Alice.setProperty("avgLunchEnd", LunchMethods.getLunchEnd(Alice));
         Bob.setProperty("avgLunchEnd", LunchMethods.getLunchEnd(Bob));
         Charlie.setProperty("avgLunchEnd", LunchMethods.getLunchEnd(Charlie));
         Daniel.setProperty("avgLunchEnd", LunchMethods.getLunchEnd(Daniel));
@@ -125,11 +131,57 @@ public static Scanner input = new Scanner(System.in);
         DataManipulation.friendTo("Ian", "Joe", 3);
     }
 
+//    public static void displayStudents() {
+//        Result result = Sociopath.graphDb.execute("MATCH (s:STUDENT)" + "RETURN s.name as name,s.dive as diving_rate, s.lunchStart as lunch_starts_at,s.lunchPeriod as lunch_period");
+//        System.out.println(result.resultAsString());
+//    }
     public static void displayStudents() {
-        Result result = Sociopath.graphDb.execute("MATCH (s:STUDENT)" + "RETURN s.name as name,s.dive as diving_rate, s.lunchStart as lunch_starts_at,s.lunchPeriod as lunch_period");
-        System.out.println(result.resultAsString());
+        jfFrameDisplayStudents ds = new jfFrameDisplayStudents();
+        ds.setVisible(true);
+        ds.pack();
+        ds.setLocationRelativeTo(null);
+        ds.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
     }
-    
-    
-    
+
+    public static Object[][] getAllStudents() {
+        Object[][] res = new Object[10][5];
+        int colcounter = 0;
+        int rowcounter = 0;
+        ResourceIterator<Node> list = DataManipulation.getAllNodes();
+
+        while (list.hasNext()) {
+            colcounter = 0;
+            Node s = list.next();
+            res[rowcounter][colcounter] = s.getProperty("name");
+            colcounter++;
+            res[rowcounter][colcounter] = s.getProperty("dive");
+            colcounter++;
+            res[rowcounter][colcounter] = s.getProperty("lunchStart");
+            colcounter++;
+            res[rowcounter][colcounter] = s.getProperty("lunchPeriod");
+            colcounter++;
+            rowcounter++;
+        }
+
+        return res;
+    }
+
+    public static Object[][] getProfile(Node s1) {
+        Object[][] res = new Object[100][4];
+        int rowcounter = 0;
+        Iterable<Relationship> list = s1.getRelationships(Direction.OUTGOING);
+
+        for (Relationship r : list) {
+            int colcounter = 0;
+            res[rowcounter][colcounter] = (Object) r.getType().toString();
+            colcounter++;
+            res[rowcounter][colcounter] = r.getEndNode().getProperty("name");
+            colcounter++;
+            res[rowcounter][colcounter] = r.getProperty("rep");
+            rowcounter++;
+        }
+
+        return res;
+    }
+
 }

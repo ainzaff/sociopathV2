@@ -16,136 +16,137 @@ import org.neo4j.graphdb.ResourceIterator;
  * @author lenovo
  */
 public class LunchMethods {
-    private static int dayCounter=1;
+
+    private static int dayCounter = 1;
     public static Scanner input = new Scanner(System.in);
-private static Random r = new Random();
+    private static Random r = new Random();
 
     public static int getDayCounter() {
         return dayCounter;
     }
-    
-    public static int getNewLunchStart(Node s1){
+
+    public static int getNewLunchStart(Node s1) {
         int rand = r.nextInt(3);
-        int start=(int)s1.getProperty("lunchStart");
-        switch(rand){
-            case 0: start=startEarly(start);
+        int start = (int) s1.getProperty("lunchStart");
+        switch (rand) {
+            case 0:
+                start = startEarly(start);
                 break;
-            case 1: start = startLate(start);
+            case 1:
+                start = startLate(start);
                 break;
-            case 2: 
+            case 2:
                 break;
         }
         return changeToTime(start);
     }
-    
-    static public int getNewLunchPeriod(Node s1){
-    int lunchPeriod = (int)s1.getProperty("lunchPeriod");
-    int rand = r.nextInt(2);
-    switch(rand){
-        case 0: lunchPeriod= startEarly(lunchPeriod);
-            break;
-        case 1: lunchPeriod = startLate(lunchPeriod);
-            break;
+
+    static public int getNewLunchPeriod(Node s1) {
+        int lunchPeriod = (int) s1.getProperty("lunchPeriod");
+        int rand = r.nextInt(2);
+        switch (rand) {
+            case 0:
+                lunchPeriod = startEarly(lunchPeriod);
+                break;
+            case 1:
+                lunchPeriod = startLate(lunchPeriod);
+                break;
+        }
+        return lunchPeriod;
     }
-    return lunchPeriod;
-    }
-    
-    static public void setNewAvgLunchStart(Node s1){
-        int avg=(int)Math.floor((((int)s1.getProperty("avgLunchStart")+getNewLunchStart(s1)))/2);
+
+    static public void setNewAvgLunchStart(Node s1) {
+        int avg = (int) Math.floor((((int) s1.getProperty("avgLunchStart") + getNewLunchStart(s1))) / 2);
         s1.setProperty("avgLunchStart", changeToTime(avg));
     }
-    
-    static public int startEarly(int start){
-        start-=(r.nextInt(15)+1);
+
+    static public int startEarly(int start) {
+        start -= (r.nextInt(15) + 1);
         return start;
     }
-    
-    static public int startLate(int start){
-        start+=(r.nextInt(15)+1);
+
+    static public int startLate(int start) {
+        start += (r.nextInt(15) + 1);
         return start;
     }
-    
-    static public void setNewAvgLunchEnd(Node s1){
-        int avg=(int)Math.floor((((int)s1.getProperty("avgLunchEnd")+getNewLunchEnd(s1)))/2);
+
+    static public void setNewAvgLunchEnd(Node s1) {
+        int avg = (int) Math.floor((((int) s1.getProperty("avgLunchEnd") + getNewLunchEnd(s1))) / 2);
         s1.setProperty("avgLunchEnd", changeToTime(avg));
     }
-    
-    static public int getAvgLunchStart(Node s1){
-    return (int)s1.getProperty("avgLunchStart");
-}
-    static public int getAvgLunchEnd(Node s1){
-    return (int)s1.getProperty("avgLunchEnd");
-}
-    
-    static public int getNewLunchEnd(Node s1){
+
+    static public int getAvgLunchStart(Node s1) {
+        return (int) s1.getProperty("avgLunchStart");
+    }
+
+    static public int getAvgLunchEnd(Node s1) {
+        return (int) s1.getProperty("avgLunchEnd");
+    }
+
+    static public int getNewLunchEnd(Node s1) {
         int lunchStart = getNewLunchStart(s1);
         int lunchPeriod = getNewLunchPeriod(s1);
-        int hour=0;
-        int lunchEnd=lunchStart- lunchPeriod;
-        
+        int hour = 0;
+        int lunchEnd = lunchStart - lunchPeriod;
 
         return changeToTime(lunchEnd);
     }
-    
-        static public int getLunchEnd(Node s1){
-        int lunchStart = (int)s1.getProperty("lunchStart");
-        int lunchPeriod = (int)s1.getProperty("lunchPeriod");
-        int hour=0;
-        int lunchEnd=lunchStart- lunchPeriod;
-        
+
+    static public int getLunchEnd(Node s1) {
+        int lunchStart = (int) s1.getProperty("lunchStart");
+        int lunchPeriod = (int) s1.getProperty("lunchPeriod");
+        int hour = 0;
+        int lunchEnd = lunchStart - lunchPeriod;
+
         // if its starts at the exact hour and 60 minutes period
-        if (lunchStart%100==0&&lunchPeriod>=60)
-        {
-            lunchEnd= lunchStart+100;
-            lunchEnd+=lunchPeriod-60;
-        }
-        // if it starts at the exact hour but period is less than an hour
-        else if (lunchStart%100==0){
-            lunchEnd=lunchStart+lunchPeriod;
-            
-        }
-        
-        else{
+        if (lunchStart % 100 == 0 && lunchPeriod >= 60) {
+            lunchEnd = lunchStart + 100;
+            lunchEnd += lunchPeriod - 60;
+        } // if it starts at the exact hour but period is less than an hour
+        else if (lunchStart % 100 == 0) {
+            lunchEnd = lunchStart + lunchPeriod;
+
+        } else {
             // get hour
-        hour = lunchStart-(lunchStart%100);
-        //get minutes
-        int minutes = lunchStart%hour;
-        //get lunchEnd's minutes
-        int totalMinutes = minutes + lunchPeriod;
-        // if its more than an hour
-         if (totalMinutes >=60){
-             //add an hour
-        hour+=100;
-        // reset minutes to less than an hour
-        totalMinutes-=60;
-}
-         // add the remaining minutes to the hour
-       lunchEnd = hour + totalMinutes;
+            hour = lunchStart - (lunchStart % 100);
+            //get minutes
+            int minutes = lunchStart % hour;
+            //get lunchEnd's minutes
+            int totalMinutes = minutes + lunchPeriod;
+            // if its more than an hour
+            if (totalMinutes >= 60) {
+                //add an hour
+                hour += 100;
+                // reset minutes to less than an hour
+                totalMinutes -= 60;
+            }
+            // add the remaining minutes to the hour
+            lunchEnd = hour + totalMinutes;
         }
         return lunchEnd;
     }
-        
-    static public int changeToTime(int n){
-        int min=n%100;
-        int hour = n-min;
-        while (min>=60){
-            hour+=100;
-            min-=60;
-            
+
+    static public int changeToTime(int n) {
+        int min = n % 100;
+        int hour = n - min;
+        while (min >= 60) {
+            hour += 100;
+            min -= 60;
+
         }
-        n= hour+min;
+        n = hour + min;
         return n;
     }
-    
-    static public void nextDay(){
+
+    static public void nextDay() {
         dayCounter++;
     }
-    
+
     public static void lunchAlgo(String user, int userStart, int userEnd) {
         ResourceIterator<Node> list = DataManipulation.getAllNodes();
         while (list.hasNext()) {
             Node s = list.next();
-            if(s.getProperty("name").equals(user)){
+            if (s.getProperty("name").equals(user)) {
                 continue;
             }
             int start = (int) s.getProperty("avgLunchStart");
@@ -163,7 +164,7 @@ private static Random r = new Random();
                 if (!DataManipulation.isFriendsWith(user, name)) {
                     DataManipulation.friendTo(user, name, 0);
                     DataManipulation.friendTo(name, user, 1);
-                    System.out.println(user+" now knows "+ name+"!");
+                    System.out.println(user + " now knows " + name + "!");
                 }
             }
             //if end within users period
@@ -178,12 +179,12 @@ private static Random r = new Random();
                 if (!DataManipulation.isFriendsWith(user, name)) {
                     DataManipulation.friendTo(user, name, 0);
                     DataManipulation.friendTo(name, user, 1);
-                    System.out.println(user+" now knows "+ name+"!");
+                    System.out.println(user + " now knows " + name + "!");
 
                 }
             }
 
         }
-        System.out.println("\nEach person "+ user +" had lunch with has increased "+ user+ "'s reputation towards them by 1 !");
+        System.out.println("\nEach person " + user + " had lunch with has increased " + user + "'s reputation towards them by 1 !");
     }
 }

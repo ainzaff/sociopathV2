@@ -7,9 +7,6 @@ package com.mycompany.SociopathV2;
 
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
-import java.util.LinkedList;
-import java.util.NoSuchElementException;
-import java.util.Random;
 import java.util.Scanner;
 import java.util.Set;
 import org.neo4j.graphalgo.GraphAlgoFactory;
@@ -28,7 +25,8 @@ import org.neo4j.graphdb.ResourceIterator;
  * @author lenovo
  */
 public class DataManipulation {
-public static Scanner input = new Scanner(System.in);
+
+    public static Scanner input = new Scanner(System.in);
 
     //Remove duplicate elements in an arraylist method for Event 5
     public static <T> ArrayList<T> removeDuplicates(ArrayList<T> list) {
@@ -84,8 +82,8 @@ public static Scanner input = new Scanner(System.in);
         }
         return false;
     }
-    
-        public static boolean isLoversWith(String s1, String s2) {
+
+    public static boolean isLoversWith(String s1, String s2) {
         Node src = Sociopath.graphDb.findNode(Sociopath.Labels.STUDENT, "name", s1.toUpperCase());
         Node target = Sociopath.graphDb.findNode(Sociopath.Labels.STUDENT, "name", s2.toUpperCase());
         Iterable<Relationship> relationships = src.getRelationships(Direction.OUTGOING, Sociopath.Rels.LOVES);
@@ -96,7 +94,7 @@ public static Scanner input = new Scanner(System.in);
         }
         return false;
     }
-    
+
     public static Relationship bullies(String name1, String name2, int repTo) {
         Node s1 = Sociopath.graphDb.findNode(Sociopath.Labels.STUDENT, "name", name1.toUpperCase());
         Node s2 = Sociopath.graphDb.findNode(Sociopath.Labels.STUDENT, "name", name2.toUpperCase());
@@ -133,7 +131,7 @@ public static Scanner input = new Scanner(System.in);
         return allPath.findAllPaths(src, target);
     }
 
-   public static ResourceIterator<Node> getAllNodes (){
-       return Sociopath.graphDb.findNodes(Sociopath.Labels.STUDENT);
-   }
+    public static ResourceIterator<Node> getAllNodes() {
+        return Sociopath.graphDb.findNodes(Sociopath.Labels.STUDENT);
+    }
 }
