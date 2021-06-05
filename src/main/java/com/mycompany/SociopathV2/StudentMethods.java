@@ -14,6 +14,7 @@ import org.neo4j.graphdb.Result;
  * @author lenovo
  */
 public class StudentMethods {
+
     public static Scanner input = new Scanner(System.in);
 
     public static void displayProfile(String name) {
