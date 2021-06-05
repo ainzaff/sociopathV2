@@ -5,21 +5,23 @@
  */
 package com.mycompany.SociopathV2;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.NoSuchElementException;
 import java.util.Random;
 import java.util.Scanner;
+
 import org.neo4j.graphdb.Direction;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Path;
 import org.neo4j.graphdb.Relationship;
 import org.neo4j.graphdb.RelationshipType;
+import org.neo4j.graphdb.ResourceIterable;
 import org.neo4j.graphdb.ResourceIterator;
 import org.neo4j.graphdb.Result;
 
 /**
- *
  * @author lenovo
  */
 public class Events {
@@ -183,12 +185,15 @@ public class Events {
         while (crush == rumor) {
             rumor = name[r.nextInt(10)];
         }
+
         //Text
         System.out.println("You have a crush who is " + crush + " but there is someone who has a rumour about you and he/she is " + rumor);
         System.out.println("");
+
         //Initialize source and target nodes
-        Node src = Sociopath.graphDb.findNode(Sociopath.Labels.STUDENT, "name", rumor);
-        Node target = Sociopath.graphDb.findNode(Sociopath.Labels.STUDENT, "name", crush);
+        Node src = DataManipulation.getNode(rumor);
+        Node target = DataManipulation.getNode(crush);
+
         //Traverse and return the path
         Iterable<Path> all = DataManipulation.getAllPaths(src, target);
         try {
@@ -196,36 +201,34 @@ public class Events {
             for (Path curr : all) {
                 pathlist.add(curr);
             }
+
             //To collect the nodes in the path
-            ArrayList<ArrayList<Node>> list = new ArrayList<>();
+            LinkedList<LinkedList<Node>> list = new LinkedList<>();
             int index = 0;
             for (Path curr : pathlist) {
-                list.add(new ArrayList<Node>());
+                list.add(new LinkedList<Node>());
                 Iterable<Node> nodeslist = curr.nodes();
                 for (Node node : nodeslist) {
                     list.get(index).add(node);
                 }
                 index++;
             }
+
             //Filter duplicate paths
             list = DataManipulation.removeDuplicates(list);
+
             //Output
             if (list.size() == 0) {
                 System.out.println("Luckily, it is impossible for the rumour to reach your crush");
                 return;
             }
-            System.out.println("The following is the path from the rumour to your crush(left to right):");
-            for (int i = 0; i < list.size(); i++) {
-                for (int j = 0; j < list.get(i).size(); j++) {
-                    if (j == list.get(i).size() - 1) {
-                        System.out.print(list.get(i).get(j).getProperty("name"));
-                    } else {
-                        System.out.print(list.get(i).get(j).getProperty("name") + ">");
-                    }
-                }
-                System.out.println("");
+            if (list.get(0).size() == 2) {
+                System.out.println("There is no way you can stop the rumour from reaching your crush");
+                return;
             }
-            System.out.println("\n");
+            DataManipulation.displayPath(list);
+            DataManipulation.convince(list, target);
+
         } catch (NoSuchElementException ex) {
             System.out.println("Luckily, it is impossible for the rumour to reach your crush");
         }
@@ -234,8 +237,8 @@ public class Events {
     public static void eventSix() {
         System.out.println("\nThis is a placeholder because the event has not currently been implemented yet <3\n");
         // How to check for duplicate nodes?
-        System.out.println("How many friendships do you want to examine?");
-        int n = Sociopath.input.nextInt();
+        System.out.println("TEMP: How many friendships do you want to examine?\n");
+//        int n = Sociopath.input.nextInt();
         //        for(int i = 1; i <= n; i++) {
         //            System.out.println("Friendship #" + i + " (enter TWO integers)");
         //            int node1 = input.nextInt();
@@ -248,9 +251,55 @@ public class Events {
         Node nodeOne = Sociopath.graphDb.createNode(Sociopath.Labels.STUDENT);
         Node nodeTwo = Sociopath.graphDb.createNode(Sociopath.Labels.STUDENT);
         Node nodeThree = Sociopath.graphDb.createNode(Sociopath.Labels.STUDENT);
-        Relationship oneTwo = nodeOne.createRelationshipTo(nodeTwo, RelationshipType.withName("IS_FRIENDS_WITH"));
-        Relationship twoThree = nodeOne.createRelationshipTo(nodeTwo, RelationshipType.withName("IS_FRIENDS_WITH"));
-        Relationship oneThree = nodeOne.createRelationshipTo(nodeTwo, RelationshipType.withName("IS_FRIENDS_WITH"));
+
+//        nodeOne.setProperty("name", "nodeOne");
+//        nodeTwo.setProperty("name", "nodeTwo");
+        // ISSUE: Error "s1" is null in friendTo()
+        // REASON: Because s1 is not an existing node in the original initialized Students graph
+        // SOLUTION: Overloaded friendTo() method in DataManipulation
+        DataManipulation.friendTo("nodeOne", "nodeTwo");
+        DataManipulation.friendTo("nodeTwo", "nodeThree");
+//        DataManipulation.friendTo("nodeOne", "nodeThree");
+
+        // ISSUE: Cannot retrieve paths
+        // TODO Fix path retrieval
+        // https://community.neo4j.com/t/list-of-all-paths-dag/4453
+        Iterable<Path> paths = DataManipulation.getAllPaths(nodeOne, nodeTwo);
+//        Iterable<Path> paths = DataManipulation.getAllPaths(nodeTwo, nodeThree);
+//        Iterable<Path> paths = DataManipulation.getAllPaths(nodeOne, nodeThree);
+
+        // Testing path
+        try {
+            // Adds all paths in path1 -> pathsList
+            ArrayList<Path> pathsList = new ArrayList<>();
+            for (Path path : paths) {
+                pathsList.add(path);
+            }
+
+            // Adds all nodesList in pathsList -> nodesListsList
+            ArrayList<ArrayList<Node>> nodesListsList = new ArrayList<>();
+            int index = 0;
+            for (Path path : paths) {
+                nodesListsList.add(new ArrayList<Node>());
+                Iterable<Node> nodesList = path.nodes();
+            }
+
+            // Removes duplicate nodesList from nodesListsList
+            nodesListsList = DataManipulation.removeDuplicates(nodesListsList);
+
+            // Output
+            // Traverses through nodesListsList and displays the nodes in each paths
+            int numFriendships = nodesListsList.size();
+            System.out.println("You can form " + numFriendships + " friendship(s):");
+            for (int i = 1; i <= numFriendships; i++) {
+                System.out.println(i + ". " + nodesListsList.get(i).toString());
+            }
+            return;
+
+        } catch (NoSuchElementException ex) {
+            System.out.println("No paths available!");
+        }
+
     }
 
     public static void eventSeven() {

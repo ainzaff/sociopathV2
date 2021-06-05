@@ -7,6 +7,9 @@ package com.mycompany.SociopathV2;
 
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
+import java.util.NoSuchElementException;
+import java.util.Random;
 import java.util.Scanner;
 import java.util.Set;
 import org.neo4j.graphalgo.GraphAlgoFactory;
@@ -29,6 +32,14 @@ public class DataManipulation {
     public static Scanner input = new Scanner(System.in);
 
     //Remove duplicate elements in an arraylist method for Event 5
+    public static <T> LinkedList<T> removeDuplicates(LinkedList<T> list) {
+        Set<T> set = new LinkedHashSet<>();
+        set.addAll(list);
+        list.clear();
+        list.addAll(set);
+        return list;
+    }
+
     public static <T> ArrayList<T> removeDuplicates(ArrayList<T> list) {
         Set<T> set = new LinkedHashSet<>();
         set.addAll(list);
@@ -56,6 +67,17 @@ public class DataManipulation {
         Node s2 = Sociopath.graphDb.findNode(Sociopath.Labels.STUDENT, "name", name2.toUpperCase());
         Relationship relationship = s1.createRelationshipTo(s2, Sociopath.Rels.IS_FRIENDS_WITH);
         relationship.setProperty("rep", repTo);
+        return relationship;
+    }
+
+    // Overloaded friendTo() for eventSix()
+    public static Relationship friendTo(String name1, String name2) {
+        // Creates two new students
+        Node student1 = Sociopath.graphDb.createNode(Sociopath.Labels.STUDENT);
+        Node student2 = Sociopath.graphDb.createNode(Sociopath.Labels.STUDENT);
+
+        // Forms a friendship
+        Relationship relationship = student1.createRelationshipTo(student2, Sociopath.Rels.IS_FRIENDS_WITH);
         return relationship;
     }
 
@@ -134,4 +156,104 @@ public class DataManipulation {
     public static ResourceIterator<Node> getAllNodes() {
         return Sociopath.graphDb.findNodes(Sociopath.Labels.STUDENT);
     }
+
+    public static void displayPath(LinkedList<LinkedList<Node>> list) {
+        System.out.println("The following is the path from the rumour to your crush(left to right):");
+        for (int i = 0; i < list.size(); i++) {
+            for (int j = 0; j < list.get(i).size(); j++) {
+                if (j == list.get(i).size() - 1) {
+                    System.out.print(list.get(i).get(j).getProperty("name"));
+                } else {
+                    System.out.print(list.get(i).get(j).getProperty("name") + ">");
+                }
+            }
+            System.out.println("");
+        }
+        System.out.println("");
+    }
+
+    public static void convince(LinkedList<LinkedList<Node>> list, Node crush) {
+        //CHECKING STARTS
+        for (int cost = 1; cost < 20; cost++) {
+            for (int i = 0; i < list.size(); i++) {
+                if (list.get(i).get(cost).equals(crush)) {
+                    System.out.println("OH WAIT!!! After calculating, apparently you can't stop the rumour from reaching your crush");
+                    return;
+                }
+            }
+
+            boolean hasRemoved = false;
+            //Check for similar nodes
+            int similaritycount = 0;
+            LinkedList<Integer> similarid = new LinkedList<>();
+            LinkedList<String> getSimilar = new LinkedList<>();
+            for (int i = 0; i < list.size(); i++) {
+                getSimilar.add(list.get(i).get(cost).getProperty("name").toString());
+            }
+            for (int i = 0; i < getSimilar.size() - 1; i++) {
+                similarid.add(0);
+                if (getSimilar.get(i).equalsIgnoreCase(getSimilar.get(i + 1))) {
+                    similaritycount++;
+                    similarid.set(i, 1);
+                    similarid.add(0);
+                    similarid.set(i + 1, 1);
+                }
+            }
+
+            //Priority for people directly connected to crush
+            for (int i = 0; i < list.size(); i++) {
+                if (list.get(i).get(cost + 1).equals(crush)) {
+                    //Check if same person
+                    if (similaritycount != 0 && similarid.get(i) == 1) {
+                        for (int j = 0; j < list.size() - 1; j++) {
+                            if (list.get(j).get(cost).equals(list.get(j + 1).get(cost))) {
+                                System.out.println("Day " + cost + ": Convince " + list.get(i).get(cost).getProperty("name"));
+                                if (similaritycount == list.size() - 1) { //This means all same node, so clear all
+                                    list.clear();
+                                    hasRemoved = true;
+                                    break;
+                                } else {
+                                    list.remove(j);
+                                    list.remove(j + 1);
+                                    hasRemoved = true;
+                                    break;
+                                }
+                            }
+                        }
+                    } else {
+                        System.out.println("Day " + cost + ": Convince " + list.get(i).get(cost).getProperty("name"));
+                        list.remove(i);
+                        hasRemoved = true;
+                        break;
+                    }
+                }
+            }
+
+            if (!hasRemoved) {
+                //Check if same person
+                if (similaritycount != 0 && similarid.getLast() == 1) {
+                    for (int j = 0; j < list.size() - 1; j++) {
+                        if (list.get(j).get(cost).equals(list.get(j + 1).get(cost))) {
+                            System.out.println("Day " + cost + ": Convince " + list.get(j).get(cost).getProperty("name"));
+                            if (similaritycount == list.size() - 1) {
+                                list.clear();
+                                break;
+                            } else {
+                                list.remove(j);
+                                list.remove(j + 1);
+                                break;
+                            }
+                        }
+                    }
+                } else {
+                    System.out.println("Day " + cost + ": Convince " + list.remove().get(cost).getProperty("name"));
+                }
+            }
+            if (list.isEmpty()) {
+                System.out.println("You're safe!");
+                return;
+            }
+        }
+    }
+
 }
