@@ -133,6 +133,11 @@ public class StudentMethods {
         DataManipulation.friendTo("Joe", "Daniel", 7);
         DataManipulation.friendTo("Joe", "Ian", 4);
         DataManipulation.friendTo("Ian", "Joe", 3);
+        
+        //Relay manipulation codes for testing purposes(Event 5)
+        //DataManipulation.friendTo("ALice", "Ian", 3);
+        //DataManipulation.friendTo("Ian", "Bob", 3);
+        //DataManipulation.friendTo("Bob", "Daniel", 3);
     }
 
     public static void displayStudents() {

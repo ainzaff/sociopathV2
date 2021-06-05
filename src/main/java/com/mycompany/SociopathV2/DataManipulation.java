@@ -6,6 +6,7 @@
 package com.mycompany.SociopathV2;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.NoSuchElementException;
@@ -173,8 +174,42 @@ public class DataManipulation {
     }
 
     public static void convince(LinkedList<LinkedList<Node>> list, Node crush) {
+        LinkedList<Node> isRemoved = new LinkedList<>();
         //CHECKING STARTS
+        int freq = 0;
+        for (int i = 0; i < list.size(); i++) {
+            LinkedList<Node> path = list.get(i);
+            if(path.size()==3) freq++;
+        }
+        if(freq>1) {
+            System.out.println("There is no way you can stop the rumour from reaching your crush");
+            return;
+        }
+        
         for (int cost = 1; cost < 20; cost++) {
+            
+            //Check previously removed node in path to prevent multiple convincing
+            try {
+                ArrayList<Integer> saveIndex = new ArrayList<>();
+                for (int i = 0; i < list.size(); i++) {
+                    LinkedList<Node> checkpath = list.get(i);
+                    for (int j = 0; j < isRemoved.size(); j++) {
+                        if (checkpath.contains(isRemoved.get(j))) {
+                            saveIndex.add(i);
+                        }
+                    }
+                }
+                
+                for (int i = 0; i < saveIndex.size(); i++) {
+                    int j = saveIndex.get(i);
+                    list.remove(j);
+                    for (int k = 0; k < saveIndex.size(); k++) {
+                        saveIndex.set(k, saveIndex.get(k)-1);
+                    }
+                }
+            } catch (IndexOutOfBoundsException ex) {}
+            
+            //Check whether crush exists in current level
             for (int i = 0; i < list.size(); i++) {
                 if (list.get(i).get(cost).equals(crush)) {
                     System.out.println("OH WAIT!!! After calculating, apparently you can't stop the rumour from reaching your crush");
@@ -213,6 +248,7 @@ public class DataManipulation {
                                     hasRemoved = true;
                                     break;
                                 } else {
+                                    isRemoved.add(list.get(i).get(cost));
                                     list.remove(j);
                                     list.remove(j + 1);
                                     hasRemoved = true;
@@ -222,6 +258,7 @@ public class DataManipulation {
                         }
                     } else {
                         System.out.println("Day " + cost + ": Convince " + list.get(i).get(cost).getProperty("name"));
+                        isRemoved.add(list.get(i).get(cost));
                         list.remove(i);
                         hasRemoved = true;
                         break;
@@ -231,7 +268,7 @@ public class DataManipulation {
 
             if (!hasRemoved) {
                 //Check if same person
-                if (similaritycount != 0 && similarid.getLast() == 1) {
+                if (similaritycount != 0 && similarid.getFirst() == 1) {
                     for (int j = 0; j < list.size() - 1; j++) {
                         if (list.get(j).get(cost).equals(list.get(j + 1).get(cost))) {
                             System.out.println("Day " + cost + ": Convince " + list.get(j).get(cost).getProperty("name"));
@@ -239,6 +276,7 @@ public class DataManipulation {
                                 list.clear();
                                 break;
                             } else {
+                                isRemoved.add(list.get(j).get(cost));
                                 list.remove(j);
                                 list.remove(j + 1);
                                 break;
@@ -246,7 +284,8 @@ public class DataManipulation {
                         }
                     }
                 } else {
-                    System.out.println("Day " + cost + ": Convince " + list.remove().get(cost).getProperty("name"));
+                    isRemoved.add(list.remove().get(cost));
+                    System.out.println("Day " + cost + ": Convince " + isRemoved.get(isRemoved.size()-1).getProperty("name"));
                 }
             }
             if (list.isEmpty()) {
