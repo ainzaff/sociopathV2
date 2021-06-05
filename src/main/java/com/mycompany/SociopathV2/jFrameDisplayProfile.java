@@ -5,29 +5,33 @@
  */
 package com.mycompany.SociopathV2;
 
-import static com.mycompany.SociopathV2.StudentMethods.getAllStudents;
 import javax.swing.table.DefaultTableModel;
 
 /**
  *
  * @author Syaamil Faiq
  */
-public class jFrameDisplayStudents extends javax.swing.JFrame {
+public class jFrameDisplayProfile extends javax.swing.JFrame {
 
     /**
-     * Creates new form jFrameDisplayStudents
+     * Creates new form jFrameDisplayProfile
      */
-    public jFrameDisplayStudents() {
+    public jFrameDisplayProfile(String name) {
         initComponents();
-        fetch();
+        fetch(name);
+    }
+
+    private jFrameDisplayProfile() {
+        initComponents();
     }
     
-    public void fetch(){
-        String[] column = {"NAME", "DIVING RATE", "LUNCH STARTS", "LUNCH PERIOD"};
-        Object[][] data = getAllStudents();
-        DefaultTableModel model = new DefaultTableModel(data, column); 
+    public void fetch(String a){
+        a = a.toUpperCase();
+        String[] column = {"NAME", "RELATIONSHIP", "REPUTATION"};
+        DefaultTableModel model = new DefaultTableModel(StudentMethods.getProfile(DataManipulation.getNode(a)), column); 
         jTable1.setModel(model);
     }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -42,8 +46,6 @@ public class jFrameDisplayStudents extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jTable1.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
-        jTable1.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
@@ -88,20 +90,20 @@ public class jFrameDisplayStudents extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(jFrameDisplayStudents.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(jFrameDisplayProfile.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(jFrameDisplayStudents.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(jFrameDisplayProfile.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(jFrameDisplayStudents.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(jFrameDisplayProfile.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(jFrameDisplayStudents.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(jFrameDisplayProfile.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new jFrameDisplayStudents().setVisible(true);
+                new jFrameDisplayProfile().setVisible(true);
             }
         });
     }

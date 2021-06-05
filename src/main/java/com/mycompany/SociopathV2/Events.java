@@ -26,58 +26,38 @@ public class Events {
 
     public static Scanner input = new Scanner(System.in);
 
-    public static void eventThree() {
+    public static void eventOne() {
         Sociopath.input.nextLine();
-        System.out.println("\nWho is going to use this unrivaled algorithm to obtain maximum reputation by having lunch?");
-        String user = input.nextLine().toUpperCase();
-        Node usernode = DataManipulation.getNode(user);
-        System.out.println("\nVery well, " + user + " , proceed with caution.");
-        LunchMethods.nextDay();
-        System.out.println("Through meticulous calculation , Sociopath has decided who to have lunch with to gain the most rep\n");
-        System.out.println("Day : " + (LunchMethods.getDayCounter() - 1));
-        //set averages first before getting them
-        ResourceIterator<Node> list = DataManipulation.getAllNodes();
-        while (list.hasNext()) {
-            Node s = list.next();
-            LunchMethods.setNewAvgLunchStart(s);
-            LunchMethods.setNewAvgLunchEnd(s);
+        System.out.println("\nWho was helping the stranger with their lab questions?");
+        String helper = Sociopath.input.nextLine().toUpperCase();
+        System.out.println("\nWho was the stranger?");
+        String helped = Sociopath.input.nextLine().toUpperCase();
+        if (helper.equals(helped)) {
+            System.out.println("\n Now you're not even making sense . . .");
+            return;
         }
-        Result result = Sociopath.graphDb.execute("MATCH (s:STUDENT)" + "RETURN s.name as name, s.avgLunchStart as average_lunch_start,s.avgLunchEnd as average_lunch_end");
-        System.out.println(result.resultAsString());
-        System.out.println("\nUser : " + user);
-        System.out.println("User's average lunchStart : " + LunchMethods.getAvgLunchStart(usernode));
-        System.out.println("User's average lunchEnd : " + LunchMethods.getAvgLunchEnd(usernode));
-        System.out.println("\n" + user + " should have lunch with the following :\n");
-        LunchMethods.lunchAlgo(user, LunchMethods.getAvgLunchStart(usernode), LunchMethods.getAvgLunchEnd(usernode));
-    }
-
-    public static void eventFour() {
-        int counter = 0;
-        LinkedList<Integer> bookList = new LinkedList<>();
-        System.out.println("\nOn a lazy Sunday afternoon, you decide to volunteer at the library. The librarian, Jabbar, has asked you to arrange some books.");
-        System.out.println("Enter number of books: ");
-        int numOfBooks = Sociopath.input.nextInt();
-        Sociopath.input.nextLine();
-        System.out.println("Enter books' heights: ");
-        String bookHeightsInput = Sociopath.input.nextLine();
-        //split space
-        String[] bookHeights = bookHeightsInput.split(" ");
-        //push book height elements into a list while parse into integer
-        for (int i = 0; i < numOfBooks; i++) {
-            bookList.push(Integer.parseInt(bookHeights[i]));
-        }
-        for (int i = 0; i < bookList.size(); i++) {
-            for (int j = 0; j < bookList.size(); j++) {
-                if (j == bookList.size() - 1) {
-                    break;
-                } else if (bookList.get(j) > bookList.get(j + 1)) {
-                    bookList.remove(j + 1);
-                }
+        Node helpernode = DataManipulation.getNode(helper);
+        Node helpednode = DataManipulation.getNode(helped);
+        if (!DataManipulation.isFriendsWith(helper, helped)) {
+            if ((Integer) helpernode.getProperty("prog") >= 50) {
+                System.out.println("\nAhh, I see. " + helper + " is quite good at programming . . .");
+                System.out.println(helper + " and " + helped + " have now become friends!");
+                System.out.println(helper + "'s reputation in the eyes of " + helped + " has increased by 10!");
+                Relationship lab = DataManipulation.friendTo(helper, helped, 10);
+                lab.setProperty("goodLab", "true");
+                DataManipulation.friendTo(helped, helper, 0);
             }
-            counter = i;
+            if ((Integer) helpernode.getProperty("prog") < 50) {
+                System.out.println("\n" + helper + " isn't very good at programming, so " + helper + " probably could not have finished those questions . . .");
+                System.out.println(helper + " and " + helped + " have now become friends!");
+                System.out.println(helper + "'s reputation in the eyes of " + helped + " has increased by 2!");
+                Relationship lab = DataManipulation.friendTo(helper, helped, 2);
+                lab.setProperty("goodLab", "false");
+                DataManipulation.friendTo(helped, helper, 0);
+            }
+        } else {
+            System.out.println("\nThey are not strangers. Are you lying to yourself?");
         }
-        System.out.println("Rounds needed: " + counter);
-        Menus.mainMenu();
     }
 
     public static void eventTwo() {
@@ -140,6 +120,60 @@ public class Events {
         }
     }
 
+    public static void eventThree() {
+        Sociopath.input.nextLine();
+        System.out.println("\nWho is going to use this unrivaled algorithm to obtain maximum reputation by having lunch?");
+        String user = input.nextLine().toUpperCase();
+        Node usernode = DataManipulation.getNode(user);
+        System.out.println("\nVery well, " + user + " , proceed with caution.");
+        LunchMethods.nextDay();
+        System.out.println("Through meticulous calculation , Sociopath has decided who to have lunch with to gain the most rep\n");
+        System.out.println("Day : " + (LunchMethods.getDayCounter() - 1));
+        //set averages first before getting them
+        ResourceIterator<Node> list = DataManipulation.getAllNodes();
+        while (list.hasNext()) {
+            Node s = list.next();
+            LunchMethods.setNewAvgLunchStart(s);
+            LunchMethods.setNewAvgLunchEnd(s);
+        }
+        Result result = Sociopath.graphDb.execute("MATCH (s:STUDENT)" + "RETURN s.name as name, s.avgLunchStart as average_lunch_start,s.avgLunchEnd as average_lunch_end");
+        System.out.println(result.resultAsString());
+        System.out.println("\nUser : " + user);
+        System.out.println("User's average lunchStart : " + LunchMethods.getAvgLunchStart(usernode));
+        System.out.println("User's average lunchEnd : " + LunchMethods.getAvgLunchEnd(usernode));
+        System.out.println("\n" + user + " should have lunch with the following :\n");
+        LunchMethods.lunchAlgo(user, LunchMethods.getAvgLunchStart(usernode), LunchMethods.getAvgLunchEnd(usernode));
+    }
+
+    public static void eventFour() {
+        int counter = 0;
+        LinkedList<Integer> bookList = new LinkedList<>();
+        System.out.println("\nOn a lazy Sunday afternoon, you decide to volunteer at the library. The librarian, Jabbar, has asked you to arrange some books.");
+        System.out.println("Enter number of books: ");
+        int numOfBooks = Sociopath.input.nextInt();
+        Sociopath.input.nextLine();
+        System.out.println("Enter books' heights: ");
+        String bookHeightsInput = Sociopath.input.nextLine();
+        //split space
+        String[] bookHeights = bookHeightsInput.split(" ");
+        //push book height elements into a list while parse into integer
+        for (int i = 0; i < numOfBooks; i++) {
+            bookList.push(Integer.parseInt(bookHeights[i]));
+        }
+        for (int i = 0; i < bookList.size(); i++) {
+            for (int j = 0; j < bookList.size(); j++) {
+                if (j == bookList.size() - 1) {
+                    break;
+                } else if (bookList.get(j) > bookList.get(j + 1)) {
+                    bookList.remove(j + 1);
+                }
+            }
+            counter = i;
+        }
+        System.out.println("Rounds needed: " + counter);
+        Menus.mainMenu();
+    }
+
     public static void eventFive() {
         //Randomizer
         String[] name = {"ALICE", "BOB", "CHARLIE", "DANIEL", "ETHAN", "FINN", "GUY", "HOLLY", "IAN", "JOE"};
@@ -197,40 +231,6 @@ public class Events {
         }
     }
 
-    public static void eventOne() {
-        Sociopath.input.nextLine();
-        System.out.println("\nWho was helping the stranger with their lab questions?");
-        String helper = Sociopath.input.nextLine().toUpperCase();
-        System.out.println("\nWho was the stranger?");
-        String helped = Sociopath.input.nextLine().toUpperCase();
-        if (helper.equals(helped)) {
-            System.out.println("\n Now you're not even making sense . . .");
-            return;
-        }
-        Node helpernode = DataManipulation.getNode(helper);
-        Node helpednode = DataManipulation.getNode(helped);
-        if (!DataManipulation.isFriendsWith(helper, helped)) {
-            if ((Integer) helpernode.getProperty("prog") >= 50) {
-                System.out.println("\nAhh, I see. " + helper + " is quite good at programming . . .");
-                System.out.println(helper + " and " + helped + " have now become friends!");
-                System.out.println(helper + "'s reputation in the eyes of " + helped + " has increased by 10!");
-                Relationship lab = DataManipulation.friendTo(helper, helped, 10);
-                lab.setProperty("goodLab", "true");
-                DataManipulation.friendTo(helped, helper, 0);
-            }
-            if ((Integer) helpernode.getProperty("prog") < 50) {
-                System.out.println("\n" + helper + " isn't very good at programming, so " + helper + " probably could not have finished those questions . . .");
-                System.out.println(helper + " and " + helped + " have now become friends!");
-                System.out.println(helper + "'s reputation in the eyes of " + helped + " has increased by 2!");
-                Relationship lab = DataManipulation.friendTo(helper, helped, 2);
-                lab.setProperty("goodLab", "false");
-                DataManipulation.friendTo(helped, helper, 0);
-            }
-        } else {
-            System.out.println("\nThey are not strangers. Are you lying to yourself?");
-        }
-    }
-
     public static void eventSix() {
         System.out.println("\nThis is a placeholder because the event has not currently been implemented yet <3\n");
         // How to check for duplicate nodes?
@@ -251,6 +251,28 @@ public class Events {
         Relationship oneTwo = nodeOne.createRelationshipTo(nodeTwo, RelationshipType.withName("IS_FRIENDS_WITH"));
         Relationship twoThree = nodeOne.createRelationshipTo(nodeTwo, RelationshipType.withName("IS_FRIENDS_WITH"));
         Relationship oneThree = nodeOne.createRelationshipTo(nodeTwo, RelationshipType.withName("IS_FRIENDS_WITH"));
+    }
+
+    public static void eventSeven() {
+        System.out.println("Select event :");
+        System.out.println("1. Bully");
+        System.out.println("2. Love Proposal");
+        int choice = input.nextInt();
+        switch (choice) {
+            case 1: {
+                Bully();
+                break;
+            }
+            case 2: {
+                loveProposal();
+                break;
+            }
+            default: {
+                System.out.println("Please type in a valid number option. Returning to main menu . . .");
+                Menus.mainMenu();
+
+            }
+        }
     }
 
     public static void eventSelector(int choice) {
@@ -289,28 +311,6 @@ public class Events {
             }
         }
         //mainMenu();
-    }
-
-    public static void eventSeven() {
-        System.out.println("Select event :");
-        System.out.println("1. Bully");
-        System.out.println("2. Love Proposal");
-        int choice = input.nextInt();
-        switch (choice) {
-            case 1: {
-                Bully();
-                break;
-            }
-            case 2: {
-                loveProposal();
-                break;
-            }
-            default: {
-                System.out.println("Please type in a valid number option. Returning to main menu . . .");
-                Menus.mainMenu();
-
-            }
-        }
     }
 
     public static void Bully() {

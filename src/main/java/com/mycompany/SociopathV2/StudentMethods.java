@@ -21,17 +21,6 @@ public class StudentMethods {
 
     public static Scanner input = new Scanner(System.in);
 
-    public static void displayProfile(String name) {
-        if (name.compareToIgnoreCase("exit") == 0) {
-            Menus.mainMenu();
-            return;
-        }
-        name = name.toUpperCase();
-        Result result = Sociopath.graphDb.execute("MATCH (s:STUDENT) -[r]-> (other:STUDENT) " + "WHERE  s.name= '" + name + "'" + "RETURN type(r)as relationship,other.name as name, r.rep as reputation_with");
-        System.out.println(result.resultAsString());
-        Menus.mainMenu();
-    }
-
     public static void initializeStudents() {
         Node Alice = Sociopath.graphDb.createNode(Sociopath.Labels.STUDENT);
         Node Bob = Sociopath.graphDb.createNode(Sociopath.Labels.STUDENT);
@@ -141,8 +130,23 @@ public class StudentMethods {
         ds.pack();
         ds.setLocationRelativeTo(null);
         ds.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        ds.setResizable(false);
     }
-
+    
+    public static void displayProfile(String name) {
+        if (name.compareToIgnoreCase("exit") == 0) {
+            Menus.mainMenu();
+            return;
+        }
+        jFrameDisplayProfile dp = new jFrameDisplayProfile(name);
+        dp.setVisible(true);
+        dp.pack();
+        dp.setLocationRelativeTo(null);
+        dp.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        dp.setResizable(false);
+        Menus.mainMenu();
+    }
+    
     public static Object[][] getAllStudents() {
         Object[][] res = new Object[10][5];
         int colcounter = 0;
