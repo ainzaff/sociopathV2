@@ -120,10 +120,6 @@ public class StudentMethods {
         DataManipulation.friendTo("Ian", "Joe", 3);
     }
 
-//    public static void displayStudents() {
-//        Result result = Sociopath.graphDb.execute("MATCH (s:STUDENT)" + "RETURN s.name as name,s.dive as diving_rate, s.lunchStart as lunch_starts_at,s.lunchPeriod as lunch_period");
-//        System.out.println(result.resultAsString());
-//    }
     public static void displayStudents() {
         jFrameDisplayStudents ds = new jFrameDisplayStudents();
         ds.setVisible(true);
