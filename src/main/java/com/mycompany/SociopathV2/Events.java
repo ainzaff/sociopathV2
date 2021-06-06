@@ -5,7 +5,6 @@
  */
 package com.mycompany.SociopathV2;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.NoSuchElementException;
@@ -16,8 +15,6 @@ import org.neo4j.graphdb.Direction;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Path;
 import org.neo4j.graphdb.Relationship;
-import org.neo4j.graphdb.RelationshipType;
-import org.neo4j.graphdb.ResourceIterable;
 import org.neo4j.graphdb.ResourceIterator;
 import org.neo4j.graphdb.Result;
 
@@ -207,8 +204,8 @@ public class Events {
             int index = 0;
             for (Path curr : pathlist) {
                 list.add(new LinkedList<Node>());
-                Iterable<Node> nodeslist = curr.nodes();
-                for (Node node : nodeslist) {
+                Iterable<Node> nodesList = curr.nodes();
+                for (Node node : nodesList) {
                     list.get(index).add(node);
                 }
                 index++;
@@ -235,7 +232,6 @@ public class Events {
     }
 
     public static void eventSix() {
-        System.out.println("\nThis is a placeholder because the event has not currently been implemented yet <3\n");
         // How to check for duplicate nodes?
         System.out.println("TEMP: How many friendships do you want to examine?\n");
 //        int n = Sociopath.input.nextInt();
@@ -265,6 +261,7 @@ public class Events {
         // TODO Fix path retrieval
         // https://community.neo4j.com/t/list-of-all-paths-dag/4453
         Iterable<Path> paths = DataManipulation.getAllPaths(nodeOne, nodeTwo);
+
 //        Iterable<Path> paths = DataManipulation.getAllPaths(nodeTwo, nodeThree);
 //        Iterable<Path> paths = DataManipulation.getAllPaths(nodeOne, nodeThree);
 
@@ -274,6 +271,12 @@ public class Events {
             ArrayList<Path> pathsList = new ArrayList<>();
             for (Path path : paths) {
                 pathsList.add(path);
+            }
+
+            LinkedList<LinkedList<Node>> list = new LinkedList<>();
+            for(Path path : pathsList) {
+                list.add(new LinkedList<Node>());
+
             }
 
             // Adds all nodesList in pathsList -> nodesListsList
@@ -299,7 +302,6 @@ public class Events {
         } catch (NoSuchElementException ex) {
             System.out.println("No paths available!");
         }
-
     }
 
     public static void eventSeven() {
@@ -309,7 +311,7 @@ public class Events {
         int choice = input.nextInt();
         switch (choice) {
             case 1: {
-                Bully();
+                bully();
                 break;
             }
             case 2: {
@@ -319,7 +321,6 @@ public class Events {
             default: {
                 System.out.println("Please type in a valid number option. Returning to main menu . . .");
                 Menus.mainMenu();
-
             }
         }
     }
@@ -362,11 +363,11 @@ public class Events {
         //mainMenu();
     }
 
-    public static void Bully() {
+    public static void bully() {
         input.nextLine();
         System.out.println("Who was the bully?");
         String bully = input.nextLine();
-        Node bullynode = DataManipulation.getNode(bully);
+        Node bullyNode = DataManipulation.getNode(bully);
         System.out.println("Which person was being bullied?");
         String bullied = input.nextLine();
         System.out.println("The small and weak " + bullied + " was preyed upon by the big bad bully , " + bully + "!");
@@ -375,7 +376,7 @@ public class Events {
         DataManipulation.hates(bullied, bully, -1);
         System.out.println("\nThe voices of " + bullied + " echoed through the school halls.");
         System.out.println("Everyone now knows that " + bully + " is bullying " + bullied + "\n");
-        Iterable<Relationship> list = bullynode.getRelationships();
+        Iterable<Relationship> list = bullyNode.getRelationships();
         for (Relationship r : list) {
             DataManipulation.incrementRep(r, -1);
         }
@@ -390,7 +391,7 @@ public class Events {
         System.out.println("Creeping closer, you realize who those two shady figures were. . .");
         System.out.println("\nWho was the one confessing their love?");
         String lover = input.nextLine().toUpperCase();
-        Node lovernode = DataManipulation.getNode(lover);
+        Node loverNode = DataManipulation.getNode(lover);
         System.out.println("\nWho was the one being confessed to?");
         String loved = input.nextLine().toUpperCase();
         if (lover.equals(loved)) {
@@ -427,7 +428,6 @@ public class Events {
             return;
         }
         System.out.println("I don't wanna waste anymore time with you. Try putting in the correct input next time. Returning to main menu . . .");
-
     }
 
 }

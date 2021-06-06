@@ -12,6 +12,7 @@ import java.util.NoSuchElementException;
 import java.util.Random;
 import java.util.Scanner;
 import java.util.Set;
+
 import org.neo4j.graphalgo.GraphAlgoFactory;
 import org.neo4j.graphalgo.PathFinder;
 import org.neo4j.graphdb.Direction;
@@ -24,7 +25,6 @@ import org.neo4j.graphdb.RelationshipType;
 import org.neo4j.graphdb.ResourceIterator;
 
 /**
- *
  * @author lenovo
  */
 public class DataManipulation {
@@ -145,7 +145,7 @@ public class DataManipulation {
         return Sociopath.graphDb.findNode(Sociopath.Labels.STUDENT, "name", name.toUpperCase());
     }
 
-    //Method for expanding path during traversal
+    // Method for expanding path during traversal
     public static Iterable<Path> getAllPaths(Node src, Node target) {
         PathExpander expander = PathExpanders.forType(Sociopath.Rels.IS_FRIENDS_WITH);
         //PathFinder<Path> allPath = GraphAlgoFactory.allPaths(expander, 10);
@@ -157,6 +157,7 @@ public class DataManipulation {
         return Sociopath.graphDb.findNodes(Sociopath.Labels.STUDENT);
     }
 
+    // Event 5
     public static void displayPath(LinkedList<LinkedList<Node>> list) {
         System.out.println("The following is the path from the rumour to your crush(left to right):");
         for (int i = 0; i < list.size(); i++) {
@@ -177,7 +178,7 @@ public class DataManipulation {
         for (int cost = 1; cost < 20; cost++) {
             for (int i = 0; i < list.size(); i++) {
                 if (list.get(i).get(cost).equals(crush)) {
-                    System.out.println("OH WAIT!!! After calculating, apparently you can't stop the rumour from reaching your crush");
+                    System.out.println("OH WAIT!!! After calculating, apparently you can't stop the rumour from reaching your crush.");
                     return;
                 }
             }
