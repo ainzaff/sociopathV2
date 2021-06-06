@@ -180,15 +180,15 @@ public class DataManipulation {
         int freq = 0;
         for (int i = 0; i < list.size(); i++) {
             LinkedList<Node> path = list.get(i);
-            if(path.size()==3) freq++;
+            if (path.size() == 3) freq++;
         }
-        if(freq>1) {
+        if (freq > 1) {
             System.out.println("There is no way you can stop the rumour from reaching your crush");
             return;
         }
-        
+
         for (int cost = 1; cost < 20; cost++) {
-            
+
             //Check previously removed node in path to prevent multiple convincing
             try {
                 ArrayList<Integer> saveIndex = new ArrayList<>();
@@ -200,16 +200,17 @@ public class DataManipulation {
                         }
                     }
                 }
-                
+
                 for (int i = 0; i < saveIndex.size(); i++) {
                     int j = saveIndex.get(i);
                     list.remove(j);
                     for (int k = 0; k < saveIndex.size(); k++) {
-                        saveIndex.set(k, saveIndex.get(k)-1);
+                        saveIndex.set(k, saveIndex.get(k) - 1);
                     }
                 }
-            } catch (IndexOutOfBoundsException ex) {}
-            
+            } catch (IndexOutOfBoundsException ex) {
+            }
+
             //Check whether crush exists in current level
             for (int i = 0; i < list.size(); i++) {
                 if (list.get(i).get(cost).equals(crush)) {
@@ -286,7 +287,7 @@ public class DataManipulation {
                     }
                 } else {
                     isRemoved.add(list.remove().get(cost));
-                    System.out.println("Day " + cost + ": Convince " + isRemoved.get(isRemoved.size()-1).getProperty("name"));
+                    System.out.println("Day " + cost + ": Convince " + isRemoved.get(isRemoved.size() - 1).getProperty("name"));
                 }
             }
             if (list.isEmpty()) {
@@ -295,5 +296,16 @@ public class DataManipulation {
             }
         }
     }
+
+    // Event 6
+    public static PathFinder<Path> instantiatePathFinder(int maxDepth) {
+        return GraphAlgoFactory.allSimplePaths(PathExpanders.allTypesAndDirections(), maxDepth);
+    }
+
+    // Event 6
+    public static String[] numWords = new String[]
+            {"Zero", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine",
+                    "Ten", "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen",
+                    "Eighteen", "Nineteen"};
 
 }

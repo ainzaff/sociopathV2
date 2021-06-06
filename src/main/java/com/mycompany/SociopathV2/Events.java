@@ -11,6 +11,8 @@ import java.util.NoSuchElementException;
 import java.util.Random;
 import java.util.Scanner;
 
+import org.neo4j.graphalgo.GraphAlgoFactory;
+import org.neo4j.graphalgo.PathFinder;
 import org.neo4j.graphdb.Direction;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Path;
@@ -232,70 +234,85 @@ public class Events {
     }
 
     public static void eventSix() {
-        // How to check for duplicate nodes?
-        System.out.println("TEMP: How many friendships do you want to examine?\n");
-//        int n = Sociopath.input.nextInt();
-        //        for(int i = 1; i <= n; i++) {
-        //            System.out.println("Friendship #" + i + " (enter TWO integers)");
-        //            int node1 = input.nextInt();
-        //            int node2 = input.nextInt();
-        //            // checks for duplicate inputs
-        //            while (node1 == node2) {
-        //                node2 = input.nextInt();
-        //            }
-        // For testing purposes. Manually initialized three nodes.
-        Node nodeOne = Sociopath.graphDb.createNode(Sociopath.Labels.STUDENT);
-        Node nodeTwo = Sociopath.graphDb.createNode(Sociopath.Labels.STUDENT);
-        Node nodeThree = Sociopath.graphDb.createNode(Sociopath.Labels.STUDENT);
+        DataManipulation dm = new DataManipulation();
 
-//        nodeOne.setProperty("name", "nodeOne");
-//        nodeTwo.setProperty("name", "nodeTwo");
+        // User input
+        System.out.println("How many friendships do you want to examine?\n");
+        int n = Sociopath.input.nextInt();
+
+        // Creates the nodes
+        Node[] nodesArray = new Node[n];
+        for (int i = 1; i <= n; i++) {
+            String name = "node" + dm.numWords[i];
+            nodesArray[i] = Sociopath.graphDb.createNode(Sociopath.Labels.STUDENT);
+            nodesArray[i].setProperty("name", name);
+        }
+
+        // Forms friendships between two nodes based on input
+        // How to match input String to existing nodes in db?
+        for (int i = 1; i <= n; i++) {
+            System.out.println("Friendship #" + i + " (enter TWO integers between 1-" + n + ")");
+            String node1 = input.nextLine();
+            String node2 = input.nextLine();
+            // checks for duplicate inputs
+            while (node1 == node2) {
+                node2 = input.nextLine();
+            }
+
+            // TODO Match input with existing nodes and form a friendship
+        }
+
         // ISSUE: Error "s1" is null in friendTo()
         // REASON: Because s1 is not an existing node in the original initialized Students graph
         // SOLUTION: Overloaded friendTo() method in DataManipulation
-        DataManipulation.friendTo("nodeOne", "nodeTwo");
-        DataManipulation.friendTo("nodeTwo", "nodeThree");
+        dm.friendTo("nodeOne", "nodeTwo");
+        dm.friendTo("nodeTwo", "nodeThree");
 //        DataManipulation.friendTo("nodeOne", "nodeThree");
 
         // ISSUE: Cannot retrieve paths
         // TODO Fix path retrieval
         // https://community.neo4j.com/t/list-of-all-paths-dag/4453
-        Iterable<Path> paths = DataManipulation.getAllPaths(nodeOne, nodeTwo);
-
-//        Iterable<Path> paths = DataManipulation.getAllPaths(nodeTwo, nodeThree);
-//        Iterable<Path> paths = DataManipulation.getAllPaths(nodeOne, nodeThree);
+        PathFinder<Path> pathFinder = DataManipulation.instantiatePathFinder(5);
+//        Iterable<Path> paths = pathFinder.findAllPaths(nodeOne, nodeThree);
 
         // Testing path
         try {
-            // Adds all paths in path1 -> pathsList
+            // Placeholder Iterable
+            // TODO remove
+            Iterable<Path> paths = DataManipulation.getAllPaths(nodesArray[1], nodesArray[2]);
+
+
+            // Adds all paths in paths -> pathsList
             ArrayList<Path> pathsList = new ArrayList<>();
             for (Path path : paths) {
                 pathsList.add(path);
             }
 
-            LinkedList<LinkedList<Node>> list = new LinkedList<>();
-            for(Path path : pathsList) {
-                list.add(new LinkedList<Node>());
-
-            }
-
-            // Adds all nodesList in pathsList -> nodesListsList
-            ArrayList<ArrayList<Node>> nodesListsList = new ArrayList<>();
+            // Adds all nodes in pathList -> nodesLList (linked list of linked lists)
+            LinkedList<LinkedList<Node>> nodesLList = new LinkedList<>();
             int index = 0;
-            for (Path path : paths) {
-                nodesListsList.add(new ArrayList<Node>());
-                Iterable<Node> nodesList = path.nodes();
+            for (Path path : pathsList) {
+                // creates a new linked list for every path
+                nodesLList.add(new LinkedList<Node>());
+                Iterable<Node> nodesIterable = path.nodes();
+                for (Node node : nodesIterable) {
+                    nodesLList.get(index).add(node);
+                }
+                index++;
             }
 
-            // Removes duplicate nodesList from nodesListsList
-            nodesListsList = DataManipulation.removeDuplicates(nodesListsList);
+            // Removes duplicate nodesList from nodesLList
+//            nodesLList = DataManipulation.removeDuplicates(nodesLList);
 
             // Output
-            // Traverses through nodesListsList and displays the nodes in each paths
-            int numFriendships = nodesListsList.size();
+            // Traverses through nodesLList and displays the nodes in each paths
+            int numFriendships = index;
             System.out.println("You can form " + numFriendships + " friendship(s):");
+
+            if (numFriendships == 0)
+                return;
             for (int i = 1; i <= numFriendships; i++) {
-                System.out.println(i + ". " + nodesListsList.get(i).toString());
+                System.out.println(i + ". " + nodesLList.get(i).toString());
             }
             return;
 
