@@ -237,12 +237,12 @@ public class Events {
         DataManipulation dm = new DataManipulation();
 
         // User input
-        System.out.println("How many friendships do you want to examine?\n");
+        System.out.println("\nHow many friendships do you want to examine?");
         int n = Sociopath.input.nextInt();
 
         // Creates the nodes
         Node[] nodesArray = new Node[n];
-        for (int i = 1; i <= n; i++) {
+        for (int i = 0; i < n; i++) {
             String name = "node" + dm.numWords[i];
             nodesArray[i] = Sociopath.graphDb.createNode(Sociopath.Labels.STUDENT);
             nodesArray[i].setProperty("name", name);
@@ -250,13 +250,27 @@ public class Events {
 
         // Forms friendships between two nodes based on input
         // How to match input String to existing nodes in db?
-        for (int i = 1; i <= n; i++) {
-            System.out.println("Friendship #" + i + " (enter TWO integers between 1-" + n + ")");
-            String node1 = input.nextLine();
-            String node2 = input.nextLine();
+        for (int i = 0; i < n; i++) {
+            System.out.println("Friendship #" + (i + 1) + " (enter TWO space-separated integers between 1-" + n + ". " +
+                    "Example: 1 2)");
+            String str = input.nextLine();
+            String tempStr[] = str.split(" ");
+
             // checks for duplicate inputs
-            while (node1 == node2) {
-                node2 = input.nextLine();
+            // Parse integers from input, store in tempInt[]
+            int[] tempInt = new int[n];
+            int index = 0;
+            for (String temp : tempStr) {
+                tempInt[index] = Integer.parseInt(temp);
+                index++;
+            }
+
+            while ((tempStr[0] == tempStr[1]) || tempInt[1] < 1 || tempInt[1] > n || tempInt[0] < 1 || tempInt[0] > n) {
+                System.out.println("Improper input!");
+                System.out.println("Friendship #" + i + " (enter TWO space-seperated integers between 1-" + n + ". " +
+                        "Example: 1 2)");
+                str = input.nextLine();
+                String temp[] = str.split(" ");
             }
 
             // TODO Match input with existing nodes and form a friendship
