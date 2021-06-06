@@ -135,9 +135,14 @@ public class StudentMethods {
         DataManipulation.friendTo("Ian", "Joe", 3);
         
         //Relay manipulation codes for testing purposes(Event 5)
-        //DataManipulation.friendTo("ALice", "Ian", 3);
-        //DataManipulation.friendTo("Ian", "Bob", 3);
+        //DataManipulation.friendTo("Ethan", "Daniel", 3);
+        //DataManipulation.friendTo("Guy", "Holly", 3);
+        //DataManipulation.friendTo("Ethan", "Guy", 3);
         //DataManipulation.friendTo("Bob", "Daniel", 3);
+        //DataManipulation.friendTo("Charlie", "Ethan", 3);
+        //DataManipulation.friendTo("Ian", "Bob", 3);
+        //DataManipulation.friendTo("Ethan", "Joe", 3);
+        
     }
 
     public static void displayStudents() {

@@ -158,7 +158,7 @@ public class DataManipulation {
         return Sociopath.graphDb.findNodes(Sociopath.Labels.STUDENT);
     }
 
-    // Event 5
+    /********************Event 5 METHODS*******************/
     public static void displayPath(LinkedList<LinkedList<Node>> list) {
         System.out.println("The following is the path from the rumour to your crush(left to right):");
         for (int i = 0; i < list.size(); i++) {
@@ -166,31 +166,17 @@ public class DataManipulation {
                 if (j == list.get(i).size() - 1) {
                     System.out.print(list.get(i).get(j).getProperty("name"));
                 } else {
-                    System.out.print(list.get(i).get(j).getProperty("name") + ">");
+                    System.out.print(list.get(i).get(j).getProperty("name") + "-->");
                 }
             }
             System.out.println("");
         }
         System.out.println("");
     }
-
-    public static void convince(LinkedList<LinkedList<Node>> list, Node crush) {
-        LinkedList<Node> isRemoved = new LinkedList<>();
-        //CHECKING STARTS
-        int freq = 0;
-        for (int i = 0; i < list.size(); i++) {
-            LinkedList<Node> path = list.get(i);
-            if (path.size() == 3) freq++;
-        }
-        if (freq > 1) {
-            System.out.println("There is no way you can stop the rumour from reaching your crush");
-            return;
-        }
-
-        for (int cost = 1; cost < 20; cost++) {
-
-            //Check previously removed node in path to prevent multiple convincing
-            try {
+    
+    //To remove elements from a linked list while looping through them
+    public static void listLiveRemoval(LinkedList<LinkedList<Node>> list, LinkedList<Node> isRemoved) {
+        try {
                 ArrayList<Integer> saveIndex = new ArrayList<>();
                 for (int i = 0; i < list.size(); i++) {
                     LinkedList<Node> checkpath = list.get(i);
@@ -210,6 +196,25 @@ public class DataManipulation {
                 }
             } catch (IndexOutOfBoundsException ex) {
             }
+    }
+
+    public static void convince(LinkedList<LinkedList<Node>> list, Node crush) {
+        LinkedList<Node> isRemoved = new LinkedList<>();
+        //CHECKING STARTS
+        int freq = 0;
+        for (int i = 0; i < list.size(); i++) {
+            LinkedList<Node> path = list.get(i);
+            if (path.size() == 3) freq++;
+        }
+        if (freq > 1) {
+            System.out.println("There is no way you can stop the rumour from reaching your crush");
+            return;
+        }
+
+        for (int cost = 1; cost < 20; cost++) {
+
+            //Check previously removed node in path to prevent multiple convincing
+            listLiveRemoval(list,isRemoved);
 
             //Check whether crush exists in current level
             for (int i = 0; i < list.size(); i++) {
@@ -240,6 +245,7 @@ public class DataManipulation {
             //Priority for people directly connected to crush
             for (int i = 0; i < list.size(); i++) {
                 if (list.get(i).get(cost + 1).equals(crush)) {
+                    isRemoved.add(list.get(i).get(cost));
                     //Check if same person
                     if (similaritycount != 0 && similarid.get(i) == 1) {
                         for (int j = 0; j < list.size() - 1; j++) {
@@ -250,9 +256,7 @@ public class DataManipulation {
                                     hasRemoved = true;
                                     break;
                                 } else {
-                                    isRemoved.add(list.get(i).get(cost));
-                                    list.remove(j);
-                                    list.remove(j + 1);
+                                    listLiveRemoval(list,isRemoved);
                                     hasRemoved = true;
                                     break;
                                 }
