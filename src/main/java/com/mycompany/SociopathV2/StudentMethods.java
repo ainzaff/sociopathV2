@@ -32,6 +32,7 @@ public class StudentMethods {
         Node Holly = Sociopath.graphDb.createNode(Sociopath.Labels.STUDENT);
         Node Ian = Sociopath.graphDb.createNode(Sociopath.Labels.STUDENT);
         Node Joe = Sociopath.graphDb.createNode(Sociopath.Labels.STUDENT);
+
         Alice.setProperty("name", "ALICE");
         Bob.setProperty("name", "BOB");
         Charlie.setProperty("name", "CHARLIE");
@@ -42,6 +43,7 @@ public class StudentMethods {
         Holly.setProperty("name", "HOLLY");
         Ian.setProperty("name", "IAN");
         Joe.setProperty("name", "JOE");
+
         Alice.setProperty("prog", 92);
         Bob.setProperty("prog", 88);
         Charlie.setProperty("prog", 10);
@@ -52,6 +54,7 @@ public class StudentMethods {
         Holly.setProperty("prog", 60);
         Ian.setProperty("prog", 70);
         Joe.setProperty("prog", 30);
+
         Alice.setProperty("dive", 92);
         Bob.setProperty("dive", 88);
         Charlie.setProperty("dive", 7);
@@ -62,6 +65,7 @@ public class StudentMethods {
         Holly.setProperty("dive", 50);
         Ian.setProperty("dive", 20);
         Joe.setProperty("dive", 70);
+
         Alice.setProperty("lunchStart", 1200);
         Bob.setProperty("lunchStart", 1300);
         Charlie.setProperty("lunchStart", 1330);
@@ -72,6 +76,7 @@ public class StudentMethods {
         Holly.setProperty("lunchStart", 1350);
         Ian.setProperty("lunchStart", 1110);
         Joe.setProperty("lunchStart", 1310);
+
         Alice.setProperty("avgLunchStart", 1200);
         Bob.setProperty("avgLunchStart", 1300);
         Charlie.setProperty("avgLunchStart", 1330);
@@ -82,6 +87,7 @@ public class StudentMethods {
         Holly.setProperty("avgLunchStart", 1350);
         Ian.setProperty("avgLunchStart", 1110);
         Joe.setProperty("avgLunchStart", 1310);
+
         Alice.setProperty("lunchPeriod", 30);
         Bob.setProperty("lunchPeriod", 40);
         Charlie.setProperty("lunchPeriod", 20);
@@ -92,6 +98,7 @@ public class StudentMethods {
         Holly.setProperty("lunchPeriod", 45);
         Ian.setProperty("lunchPeriod", 50);
         Joe.setProperty("lunchPeriod", 35);
+
         Alice.setProperty("avgLunchEnd", LunchMethods.getLunchEnd(Alice));
         Bob.setProperty("avgLunchEnd", LunchMethods.getLunchEnd(Bob));
         Charlie.setProperty("avgLunchEnd", LunchMethods.getLunchEnd(Charlie));
@@ -102,6 +109,7 @@ public class StudentMethods {
         Holly.setProperty("avgLunchEnd", LunchMethods.getLunchEnd(Holly));
         Ian.setProperty("avgLunchEnd", LunchMethods.getLunchEnd(Ian));
         Joe.setProperty("avgLunchEnd", LunchMethods.getLunchEnd(Joe));
+
         DataManipulation.friendTo("Alice", "Bob", 5);
         DataManipulation.friendTo("Bob", "Alice", 8);
         DataManipulation.friendTo("Alice", "Guy", 4);
@@ -118,6 +126,15 @@ public class StudentMethods {
         DataManipulation.friendTo("Joe", "Daniel", 7);
         DataManipulation.friendTo("Joe", "Ian", 4);
         DataManipulation.friendTo("Ian", "Joe", 3);
+
+        //Relay manipulation codes for testing purposes(Event 5)
+        //DataManipulation.friendTo("Ethan", "Daniel", 3);
+        //DataManipulation.friendTo("Guy", "Holly", 3);
+        //DataManipulation.friendTo("Ethan", "Guy", 3);
+        //DataManipulation.friendTo("Bob", "Daniel", 3);
+        //DataManipulation.friendTo("Charlie", "Ethan", 3);
+        //DataManipulation.friendTo("Ian", "Bob", 3);
+        //DataManipulation.friendTo("Ethan", "Joe", 3);
     }
 
     public static void displayStudents() {

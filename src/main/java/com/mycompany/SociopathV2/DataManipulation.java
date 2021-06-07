@@ -6,12 +6,14 @@
 package com.mycompany.SociopathV2;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.NoSuchElementException;
 import java.util.Random;
 import java.util.Scanner;
 import java.util.Set;
+
 import org.neo4j.graphalgo.GraphAlgoFactory;
 import org.neo4j.graphalgo.PathFinder;
 import org.neo4j.graphdb.Direction;
@@ -24,7 +26,6 @@ import org.neo4j.graphdb.RelationshipType;
 import org.neo4j.graphdb.ResourceIterator;
 
 /**
- *
  * @author lenovo
  */
 public class DataManipulation {
@@ -145,7 +146,7 @@ public class DataManipulation {
         return Sociopath.graphDb.findNode(Sociopath.Labels.STUDENT, "name", name.toUpperCase());
     }
 
-    //Method for expanding path during traversal
+    // Method for expanding path during traversal
     public static Iterable<Path> getAllPaths(Node src, Node target) {
         PathExpander expander = PathExpanders.forType(Sociopath.Rels.IS_FRIENDS_WITH);
         //PathFinder<Path> allPath = GraphAlgoFactory.allPaths(expander, 10);
@@ -157,6 +158,9 @@ public class DataManipulation {
         return Sociopath.graphDb.findNodes(Sociopath.Labels.STUDENT);
     }
 
+    /**
+     * ******************Event 5 METHODS******************
+     */
     public static void displayPath(LinkedList<LinkedList<Node>> list) {
         System.out.println("The following is the path from the rumour to your crush(left to right):");
         for (int i = 0; i < list.size(); i++) {
@@ -164,7 +168,7 @@ public class DataManipulation {
                 if (j == list.get(i).size() - 1) {
                     System.out.print(list.get(i).get(j).getProperty("name"));
                 } else {
-                    System.out.print(list.get(i).get(j).getProperty("name") + ">");
+                    System.out.print(list.get(i).get(j).getProperty("name") + "-->");
                 }
             }
             System.out.println("");
@@ -172,12 +176,54 @@ public class DataManipulation {
         System.out.println("");
     }
 
+    //To remove elements from a linked list while looping through them
+    public static void listLiveRemoval(LinkedList<LinkedList<Node>> list, LinkedList<Node> isRemoved) {
+        try {
+            ArrayList<Integer> saveIndex = new ArrayList<>();
+            for (int i = 0; i < list.size(); i++) {
+                LinkedList<Node> checkpath = list.get(i);
+                for (int j = 0; j < isRemoved.size(); j++) {
+                    if (checkpath.contains(isRemoved.get(j))) {
+                        saveIndex.add(i);
+                    }
+                }
+            }
+
+            for (int i = 0; i < saveIndex.size(); i++) {
+                int j = saveIndex.get(i);
+                list.remove(j);
+                for (int k = 0; k < saveIndex.size(); k++) {
+                    saveIndex.set(k, saveIndex.get(k) - 1);
+                }
+            }
+        } catch (IndexOutOfBoundsException ex) {
+        }
+    }
+
     public static void convince(LinkedList<LinkedList<Node>> list, Node crush) {
+        LinkedList<Node> isRemoved = new LinkedList<>();
         //CHECKING STARTS
+        int freq = 0;
+        for (int i = 0; i < list.size(); i++) {
+            LinkedList<Node> path = list.get(i);
+            if (path.size() == 3) {
+                freq++;
+            }
+        }
+        if (freq > 1) {
+            System.out.println("There is no way you can stop the rumour from reaching your crush");
+            return;
+        }
+
         for (int cost = 1; cost < 20; cost++) {
+
+            //Check previously removed node in path to prevent multiple convincing
+            listLiveRemoval(list, isRemoved);
+
+            //Check whether crush exists in current level
             for (int i = 0; i < list.size(); i++) {
                 if (list.get(i).get(cost).equals(crush)) {
-                    System.out.println("OH WAIT!!! After calculating, apparently you can't stop the rumour from reaching your crush");
+                    System.out.println("OH WAIT!!! After calculating, apparently you can't stop the rumour from reaching your crush.");
                     return;
                 }
             }
@@ -203,6 +249,7 @@ public class DataManipulation {
             //Priority for people directly connected to crush
             for (int i = 0; i < list.size(); i++) {
                 if (list.get(i).get(cost + 1).equals(crush)) {
+                    isRemoved.add(list.get(i).get(cost));
                     //Check if same person
                     if (similaritycount != 0 && similarid.get(i) == 1) {
                         for (int j = 0; j < list.size() - 1; j++) {
@@ -213,8 +260,7 @@ public class DataManipulation {
                                     hasRemoved = true;
                                     break;
                                 } else {
-                                    list.remove(j);
-                                    list.remove(j + 1);
+                                    listLiveRemoval(list, isRemoved);
                                     hasRemoved = true;
                                     break;
                                 }
@@ -222,6 +268,7 @@ public class DataManipulation {
                         }
                     } else {
                         System.out.println("Day " + cost + ": Convince " + list.get(i).get(cost).getProperty("name"));
+                        isRemoved.add(list.get(i).get(cost));
                         list.remove(i);
                         hasRemoved = true;
                         break;
@@ -231,7 +278,7 @@ public class DataManipulation {
 
             if (!hasRemoved) {
                 //Check if same person
-                if (similaritycount != 0 && similarid.getLast() == 1) {
+                if (similaritycount != 0 && similarid.getFirst() == 1) {
                     for (int j = 0; j < list.size() - 1; j++) {
                         if (list.get(j).get(cost).equals(list.get(j + 1).get(cost))) {
                             System.out.println("Day " + cost + ": Convince " + list.get(j).get(cost).getProperty("name"));
@@ -239,6 +286,7 @@ public class DataManipulation {
                                 list.clear();
                                 break;
                             } else {
+                                isRemoved.add(list.get(j).get(cost));
                                 list.remove(j);
                                 list.remove(j + 1);
                                 break;
@@ -246,7 +294,8 @@ public class DataManipulation {
                         }
                     }
                 } else {
-                    System.out.println("Day " + cost + ": Convince " + list.remove().get(cost).getProperty("name"));
+                    isRemoved.add(list.remove().get(cost));
+                    System.out.println("Day " + cost + ": Convince " + isRemoved.get(isRemoved.size() - 1).getProperty("name"));
                 }
             }
             if (list.isEmpty()) {
@@ -255,5 +304,15 @@ public class DataManipulation {
             }
         }
     }
+
+    // Event 6
+    public static PathFinder<Path> instantiatePathFinder(int maxDepth) {
+        return GraphAlgoFactory.allSimplePaths(PathExpanders.allTypesAndDirections(), maxDepth);
+    }
+
+    // Event 6
+    public static String[] numWords = new String[]{"Zero", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine",
+        "Ten", "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen",
+        "Eighteen", "Nineteen"};
 
 }

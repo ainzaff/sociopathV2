@@ -5,19 +5,18 @@
  */
 package com.mycompany.SociopathV2;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.NoSuchElementException;
 import java.util.Random;
 import java.util.Scanner;
 
+import org.neo4j.graphalgo.GraphAlgoFactory;
+import org.neo4j.graphalgo.PathFinder;
 import org.neo4j.graphdb.Direction;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Path;
 import org.neo4j.graphdb.Relationship;
-import org.neo4j.graphdb.RelationshipType;
-import org.neo4j.graphdb.ResourceIterable;
 import org.neo4j.graphdb.ResourceIterator;
 import org.neo4j.graphdb.Result;
 
@@ -207,8 +206,8 @@ public class Events {
             int index = 0;
             for (Path curr : pathlist) {
                 list.add(new LinkedList<Node>());
-                Iterable<Node> nodeslist = curr.nodes();
-                for (Node node : nodeslist) {
+                Iterable<Node> nodesList = curr.nodes();
+                for (Node node : nodesList) {
                     list.get(index).add(node);
                 }
                 index++;
@@ -235,71 +234,104 @@ public class Events {
     }
 
     public static void eventSix() {
-        System.out.println("\nThis is a placeholder because the event has not currently been implemented yet <3\n");
-        // How to check for duplicate nodes?
-        System.out.println("TEMP: How many friendships do you want to examine?\n");
-//        int n = Sociopath.input.nextInt();
-        //        for(int i = 1; i <= n; i++) {
-        //            System.out.println("Friendship #" + i + " (enter TWO integers)");
-        //            int node1 = input.nextInt();
-        //            int node2 = input.nextInt();
-        //            // checks for duplicate inputs
-        //            while (node1 == node2) {
-        //                node2 = input.nextInt();
-        //            }
-        // For testing purposes. Manually initialized three nodes.
-        Node nodeOne = Sociopath.graphDb.createNode(Sociopath.Labels.STUDENT);
-        Node nodeTwo = Sociopath.graphDb.createNode(Sociopath.Labels.STUDENT);
-        Node nodeThree = Sociopath.graphDb.createNode(Sociopath.Labels.STUDENT);
+        DataManipulation dm = new DataManipulation();
 
-//        nodeOne.setProperty("name", "nodeOne");
-//        nodeTwo.setProperty("name", "nodeTwo");
+        // User input
+        System.out.println("\nHow many friendships do you want to examine?");
+        int n = Sociopath.input.nextInt();
+
+        // Creates the nodes
+        Node[] nodesArray = new Node[n];
+        for (int i = 0; i < n; i++) {
+            String name = "node" + dm.numWords[i];
+            nodesArray[i] = Sociopath.graphDb.createNode(Sociopath.Labels.STUDENT);
+            nodesArray[i].setProperty("name", name);
+        }
+
+        // Forms friendships between two nodes based on input
+        // How to match input String to existing nodes in db?
+        for (int i = 0; i < n; i++) {
+            System.out.println("Friendship #" + (i + 1) + " (enter TWO space-separated integers between 1-" + n + ". "
+                    + "Example: 1 2)");
+            String str = input.nextLine();
+            String tempStr[] = str.split(" ");
+
+            // checks for duplicate inputs
+            // Parse integers from input, store in tempInt[]
+            int[] tempInt = new int[n];
+            int index = 0;
+            for (String temp : tempStr) {
+                tempInt[index] = Integer.parseInt(temp);
+                index++;
+            }
+
+            while ((tempStr[0] == tempStr[1]) || tempInt[1] < 1 || tempInt[1] > n || tempInt[0] < 1 || tempInt[0] > n) {
+                System.out.println("Improper input!");
+                System.out.println("Friendship #" + i + " (enter TWO space-seperated integers between 1-" + n + ". "
+                        + "Example: 1 2)");
+                str = input.nextLine();
+                String temp[] = str.split(" ");
+            }
+
+            // TODO Match input with existing nodes and form a friendship
+        }
+
         // ISSUE: Error "s1" is null in friendTo()
         // REASON: Because s1 is not an existing node in the original initialized Students graph
         // SOLUTION: Overloaded friendTo() method in DataManipulation
-        DataManipulation.friendTo("nodeOne", "nodeTwo");
-        DataManipulation.friendTo("nodeTwo", "nodeThree");
+        dm.friendTo("nodeOne", "nodeTwo");
+        dm.friendTo("nodeTwo", "nodeThree");
 //        DataManipulation.friendTo("nodeOne", "nodeThree");
 
         // ISSUE: Cannot retrieve paths
         // TODO Fix path retrieval
         // https://community.neo4j.com/t/list-of-all-paths-dag/4453
-        Iterable<Path> paths = DataManipulation.getAllPaths(nodeOne, nodeTwo);
-//        Iterable<Path> paths = DataManipulation.getAllPaths(nodeTwo, nodeThree);
-//        Iterable<Path> paths = DataManipulation.getAllPaths(nodeOne, nodeThree);
+        PathFinder<Path> pathFinder = DataManipulation.instantiatePathFinder(5);
+//        Iterable<Path> paths = pathFinder.findAllPaths(nodeOne, nodeThree);
 
         // Testing path
         try {
-            // Adds all paths in path1 -> pathsList
+            // Placeholder Iterable
+            // TODO remove
+            Iterable<Path> paths = DataManipulation.getAllPaths(nodesArray[1], nodesArray[2]);
+
+            // Adds all paths in paths -> pathsList
             ArrayList<Path> pathsList = new ArrayList<>();
             for (Path path : paths) {
                 pathsList.add(path);
             }
 
-            // Adds all nodesList in pathsList -> nodesListsList
-            ArrayList<ArrayList<Node>> nodesListsList = new ArrayList<>();
+            // Adds all nodes in pathList -> nodesLList (linked list of linked lists)
+            LinkedList<LinkedList<Node>> nodesLList = new LinkedList<>();
             int index = 0;
-            for (Path path : paths) {
-                nodesListsList.add(new ArrayList<Node>());
-                Iterable<Node> nodesList = path.nodes();
+            for (Path path : pathsList) {
+                // creates a new linked list for every path
+                nodesLList.add(new LinkedList<Node>());
+                Iterable<Node> nodesIterable = path.nodes();
+                for (Node node : nodesIterable) {
+                    nodesLList.get(index).add(node);
+                }
+                index++;
             }
 
-            // Removes duplicate nodesList from nodesListsList
-            nodesListsList = DataManipulation.removeDuplicates(nodesListsList);
-
+            // Removes duplicate nodesList from nodesLList
+//            nodesLList = DataManipulation.removeDuplicates(nodesLList);
             // Output
-            // Traverses through nodesListsList and displays the nodes in each paths
-            int numFriendships = nodesListsList.size();
+            // Traverses through nodesLList and displays the nodes in each paths
+            int numFriendships = index;
             System.out.println("You can form " + numFriendships + " friendship(s):");
+
+            if (numFriendships == 0) {
+                return;
+            }
             for (int i = 1; i <= numFriendships; i++) {
-                System.out.println(i + ". " + nodesListsList.get(i).toString());
+                System.out.println(i + ". " + nodesLList.get(i).toString());
             }
             return;
 
         } catch (NoSuchElementException ex) {
             System.out.println("No paths available!");
         }
-
     }
 
     public static void eventSeven() {
@@ -309,7 +341,7 @@ public class Events {
         int choice = input.nextInt();
         switch (choice) {
             case 1: {
-                Bully();
+                bully();
                 break;
             }
             case 2: {
@@ -319,7 +351,6 @@ public class Events {
             default: {
                 System.out.println("Please type in a valid number option. Returning to main menu . . .");
                 Menus.mainMenu();
-
             }
         }
     }
@@ -362,11 +393,11 @@ public class Events {
         //mainMenu();
     }
 
-    public static void Bully() {
+    public static void bully() {
         input.nextLine();
         System.out.println("Who was the bully?");
         String bully = input.nextLine();
-        Node bullynode = DataManipulation.getNode(bully);
+        Node bullyNode = DataManipulation.getNode(bully);
         System.out.println("Which person was being bullied?");
         String bullied = input.nextLine();
         System.out.println("The small and weak " + bullied + " was preyed upon by the big bad bully , " + bully + "!");
@@ -375,7 +406,7 @@ public class Events {
         DataManipulation.hates(bullied, bully, -1);
         System.out.println("\nThe voices of " + bullied + " echoed through the school halls.");
         System.out.println("Everyone now knows that " + bully + " is bullying " + bullied + "\n");
-        Iterable<Relationship> list = bullynode.getRelationships();
+        Iterable<Relationship> list = bullyNode.getRelationships();
         for (Relationship r : list) {
             DataManipulation.incrementRep(r, -1);
         }
@@ -390,7 +421,7 @@ public class Events {
         System.out.println("Creeping closer, you realize who those two shady figures were. . .");
         System.out.println("\nWho was the one confessing their love?");
         String lover = input.nextLine().toUpperCase();
-        Node lovernode = DataManipulation.getNode(lover);
+        Node loverNode = DataManipulation.getNode(lover);
         System.out.println("\nWho was the one being confessed to?");
         String loved = input.nextLine().toUpperCase();
         if (lover.equals(loved)) {
@@ -427,7 +458,6 @@ public class Events {
             return;
         }
         System.out.println("I don't wanna waste anymore time with you. Try putting in the correct input next time. Returning to main menu . . .");
-
     }
 
 }
