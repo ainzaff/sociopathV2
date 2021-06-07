@@ -167,32 +167,34 @@ public class Events {
     }
 
     public static void eventFive() {
-        //Randomizer
-        String[] name = {"ALICE", "BOB", "CHARLIE", "DANIEL", "ETHAN", "FINN", "GUY", "HOLLY", "IAN", "JOE"};
+        //Get all nodes and randomize crush and rumour
+        ResourceIterator<Node> allStudents = DataManipulation.getAllNodes();
+        ArrayList<Node> studentlist = new ArrayList<>();
+        while(allStudents.hasNext()) {
+            Node student = allStudents.next();
+            studentlist.add(student);
+        }
         Random r = new Random();
-        String rumor = name[r.nextInt(10)];
-        String crush = name[r.nextInt(10)];
-        while (crush == rumor) {
-            rumor = name[r.nextInt(10)];
+        Node rumor = studentlist.get(r.nextInt(studentlist.size()));
+        Node crush = studentlist.get(r.nextInt(studentlist.size()));
+        while (rumor.equals(crush)) {
+            rumor = studentlist.get(r.nextInt(studentlist.size()));
         }
 
         //Text
-        System.out.println("You have a crush who is " + crush + " but there is someone who has a rumour about you and he/she is " + rumor);
+        System.out.println("You have a crush on " + crush.getProperty("name") + " but there is someone who has a rumour about you and he/she is " + rumor.getProperty("name"));
         System.out.println("");
 
-        //Initialize source and target nodes
-        Node src = DataManipulation.getNode(rumor);
-        Node target = DataManipulation.getNode(crush);
-
         //Traverse and return the path
-        Iterable<Path> all = DataManipulation.getAllPaths(src, target);
+        Iterable<Path> all = DataManipulation.getAllPaths(rumor, crush);//Returns all paths found
         try {
+            //To collect paths found into an ArrayList from Iterable above
             ArrayList<Path> pathlist = new ArrayList<>();
             for (Path curr : all) {
                 pathlist.add(curr);
             }
 
-            //To collect the nodes in the path
+            //To create a list that holds lists of paths which contains lists of nodes
             ArrayList<ArrayList<Node>> list = new ArrayList<>();
             int index = 0;
             for (Path curr : pathlist) {
@@ -204,20 +206,16 @@ public class Events {
                 index++;
             }
 
-            //Filter duplicate paths
+            //Filter duplicate paths obtained by the path finder framework
             list = DataManipulation.removeDuplicates(list);
 
-            //Filter for empty paths or direct connection
-            if (list.size() == 0) {
+            //Filter for empty paths
+            if (list.isEmpty()) {
                 System.out.println("Luckily, it is impossible for the rumour to reach your crush");
                 return;
             }
-            if (list.get(0).size() == 2) {
-                System.out.println("There is no way you can stop the rumour from reaching your crush");
-                return;
-            }
             DataManipulation.displayPath(list);
-            DataManipulation.convincer(list, target);
+            DataManipulation.convincer(list, crush);
 
         } catch (NoSuchElementException ex) {
             System.out.println("Luckily, it is impossible for the rumour to reach your crush");
