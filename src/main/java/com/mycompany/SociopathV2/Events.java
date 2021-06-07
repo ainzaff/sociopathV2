@@ -193,10 +193,10 @@ public class Events {
             }
 
             //To collect the nodes in the path
-            LinkedList<LinkedList<Node>> list = new LinkedList<>();
+            ArrayList<ArrayList<Node>> list = new ArrayList<>();
             int index = 0;
             for (Path curr : pathlist) {
-                list.add(new LinkedList<Node>());
+                list.add(new ArrayList<Node>());
                 Iterable<Node> nodesList = curr.nodes();
                 for (Node node : nodesList) {
                     list.get(index).add(node);
@@ -207,7 +207,7 @@ public class Events {
             //Filter duplicate paths
             list = DataManipulation.removeDuplicates(list);
 
-            //Output
+            //Filter for empty paths or direct connection
             if (list.size() == 0) {
                 System.out.println("Luckily, it is impossible for the rumour to reach your crush");
                 return;
@@ -217,7 +217,7 @@ public class Events {
                 return;
             }
             DataManipulation.displayPath(list);
-            DataManipulation.convince(list, target);
+            DataManipulation.convincer(list, target);
 
         } catch (NoSuchElementException ex) {
             System.out.println("Luckily, it is impossible for the rumour to reach your crush");
@@ -282,9 +282,9 @@ public class Events {
 
         // TODO Print all paths
         List<Iterable<Node>> list = new ArrayList<>();
-        for (Path path : pathFinder.findAllPaths(node1, node2)) {
-            list.add(path.nodes());
-        }
+        //for (Path path : pathFinder.findAllPaths(node1, node2)) {
+        //    list.add(path.nodes());
+        //}
         for(Iterable<Node> x : list) {
             for(Node node : x) {
                 System.out.print(node.getProperty("name") + " ");
