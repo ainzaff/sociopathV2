@@ -157,7 +157,9 @@ public class DataManipulation {
         return Sociopath.graphDb.findNodes(Sociopath.Labels.STUDENT);
     }
 
-    /********************Event 5 METHODS*******************/
+    /**
+     * ******************Event 5 METHODS******************
+     */
     public static void displayPath(LinkedList<LinkedList<Node>> list) {
         System.out.println("The following is the path from the rumour to your crush(left to right):");
         for (int i = 0; i < list.size(); i++) {
@@ -172,29 +174,29 @@ public class DataManipulation {
         }
         System.out.println("");
     }
-    
+
     //To remove elements from a linked list while looping through them
     public static void listLiveRemoval(LinkedList<LinkedList<Node>> list, LinkedList<Node> isRemoved) {
         try {
-                ArrayList<Integer> saveIndex = new ArrayList<>();
-                for (int i = 0; i < list.size(); i++) {
-                    LinkedList<Node> checkpath = list.get(i);
-                    for (int j = 0; j < isRemoved.size(); j++) {
-                        if (checkpath.contains(isRemoved.get(j))) {
-                            saveIndex.add(i);
-                        }
+            ArrayList<Integer> saveIndex = new ArrayList<>();
+            for (int i = 0; i < list.size(); i++) {
+                LinkedList<Node> checkpath = list.get(i);
+                for (int j = 0; j < isRemoved.size(); j++) {
+                    if (checkpath.contains(isRemoved.get(j))) {
+                        saveIndex.add(i);
                     }
                 }
-
-                for (int i = 0; i < saveIndex.size(); i++) {
-                    int j = saveIndex.get(i);
-                    list.remove(j);
-                    for (int k = 0; k < saveIndex.size(); k++) {
-                        saveIndex.set(k, saveIndex.get(k) - 1);
-                    }
-                }
-            } catch (IndexOutOfBoundsException ex) {
             }
+
+            for (int i = 0; i < saveIndex.size(); i++) {
+                int j = saveIndex.get(i);
+                list.remove(j);
+                for (int k = 0; k < saveIndex.size(); k++) {
+                    saveIndex.set(k, saveIndex.get(k) - 1);
+                }
+            }
+        } catch (IndexOutOfBoundsException ex) {
+        }
     }
 
     public static void convince(LinkedList<LinkedList<Node>> list, Node crush) {
@@ -203,7 +205,9 @@ public class DataManipulation {
         int freq = 0;
         for (int i = 0; i < list.size(); i++) {
             LinkedList<Node> path = list.get(i);
-            if (path.size() == 3) freq++;
+            if (path.size() == 3) {
+                freq++;
+            }
         }
         if (freq > 1) {
             System.out.println("There is no way you can stop the rumour from reaching your crush");
@@ -213,7 +217,7 @@ public class DataManipulation {
         for (int cost = 1; cost < 20; cost++) {
 
             //Check previously removed node in path to prevent multiple convincing
-            listLiveRemoval(list,isRemoved);
+            listLiveRemoval(list, isRemoved);
 
             //Check whether crush exists in current level
             for (int i = 0; i < list.size(); i++) {
@@ -255,7 +259,7 @@ public class DataManipulation {
                                     hasRemoved = true;
                                     break;
                                 } else {
-                                    listLiveRemoval(list,isRemoved);
+                                    listLiveRemoval(list, isRemoved);
                                     hasRemoved = true;
                                     break;
                                 }
@@ -306,9 +310,8 @@ public class DataManipulation {
     }
 
     // Event 6
-    public static String[] numWords = new String[]
-            {"Zero", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine",
-                    "Ten", "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen",
-                    "Eighteen", "Nineteen"};
+    public static String[] numWords = new String[]{"Zero", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine",
+        "Ten", "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen",
+        "Eighteen", "Nineteen"};
 
 }
