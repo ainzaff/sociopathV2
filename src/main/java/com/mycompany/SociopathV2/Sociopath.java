@@ -32,8 +32,9 @@ public class Sociopath {
     public static void main(String[] args) {
         graphDb.beginTx();
         StudentMethods.initializeStudents();
-        Menus.mainMenu();
+        //Menus.mainMenu();
         //studentMenu();
+        Events.eventSix();
 
     }
 
