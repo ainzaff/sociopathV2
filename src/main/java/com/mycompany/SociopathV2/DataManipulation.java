@@ -160,7 +160,7 @@ public class DataManipulation {
     /**
      * ******************Event 5 METHODS******************
      */
-    public static void displayPath(LinkedList<LinkedList<Node>> list) {
+    public static void displayPath(ArrayList<ArrayList<Node>> list) {
         System.out.println("The following is the path from the rumour to your crush(left to right):");
         for (int i = 0; i < list.size(); i++) {
             for (int j = 0; j < list.get(i).size(); j++) {
@@ -174,134 +174,49 @@ public class DataManipulation {
         }
         System.out.println("");
     }
-
-    //To remove elements from a linked list while looping through them
-    public static void listLiveRemoval(LinkedList<LinkedList<Node>> list, LinkedList<Node> isRemoved) {
-        try {
-            ArrayList<Integer> saveIndex = new ArrayList<>();
+    
+    public static void convincer(ArrayList<ArrayList<Node>> list, Node crush) {
+        ArrayList<Node> isRemoved = new ArrayList<>();
+        int cost = 1;
+        while(!list.isEmpty()) {
+            int currPathIndex = 0;
+            int currPathSize = list.get(currPathIndex).size();
             for (int i = 0; i < list.size(); i++) {
-                LinkedList<Node> checkpath = list.get(i);
-                for (int j = 0; j < isRemoved.size(); j++) {
-                    if (checkpath.contains(isRemoved.get(j))) {
-                        saveIndex.add(i);
-                    }
+                
+                //Go for shortest paths first
+                if(list.get(i).size()<currPathSize) {
+                    currPathIndex = i;
+                    currPathSize = list.get(i).size();
                 }
-            }
-
-            for (int i = 0; i < saveIndex.size(); i++) {
-                int j = saveIndex.get(i);
-                list.remove(j);
-                for (int k = 0; k < saveIndex.size(); k++) {
-                    saveIndex.set(k, saveIndex.get(k) - 1);
-                }
-            }
-        } catch (IndexOutOfBoundsException ex) {
-        }
-    }
-
-    public static void convince(LinkedList<LinkedList<Node>> list, Node crush) {
-        LinkedList<Node> isRemoved = new LinkedList<>();
-        //CHECKING STARTS
-        int freq = 0;
-        for (int i = 0; i < list.size(); i++) {
-            LinkedList<Node> path = list.get(i);
-            if (path.size() == 3) {
-                freq++;
-            }
-        }
-        if (freq > 1) {
-            System.out.println("There is no way you can stop the rumour from reaching your crush");
-            return;
-        }
-
-        for (int cost = 1; cost < 20; cost++) {
-
-            //Check previously removed node in path to prevent multiple convincing
-            listLiveRemoval(list, isRemoved);
-
-            //Check whether crush exists in current level
-            for (int i = 0; i < list.size(); i++) {
-                if (list.get(i).get(cost).equals(crush)) {
-                    System.out.println("OH WAIT!!! After calculating, apparently you can't stop the rumour from reaching your crush.");
+                
+                //Check whether current node in the depth is crush
+                if(list.get(i).get(cost).equals(crush)) {
+                    System.out.println("There is no way you can stop the rumour from reaching your crush");
                     return;
                 }
             }
-
-            boolean hasRemoved = false;
-            //Check for similar nodes
-            int similaritycount = 0;
-            LinkedList<Integer> similarid = new LinkedList<>();
-            LinkedList<String> getSimilar = new LinkedList<>();
+            
+            //Check for removed node and add it to the removed list
+            if(!isRemoved.contains(list.get(currPathIndex).get(cost))) {
+                isRemoved.add(list.get(currPathIndex).get(cost));
+            }
+            
+            //Remove paths that contains previously removed nodes
             for (int i = 0; i < list.size(); i++) {
-                getSimilar.add(list.get(i).get(cost).getProperty("name").toString());
-            }
-            for (int i = 0; i < getSimilar.size() - 1; i++) {
-                similarid.add(0);
-                if (getSimilar.get(i).equalsIgnoreCase(getSimilar.get(i + 1))) {
-                    similaritycount++;
-                    similarid.set(i, 1);
-                    similarid.add(0);
-                    similarid.set(i + 1, 1);
+                if(isRemoved.contains(list.get(i).get(cost))) {
+                    list.remove(i);
+                    i--;
                 }
             }
-
-            //Priority for people directly connected to crush
-            for (int i = 0; i < list.size(); i++) {
-                if (list.get(i).get(cost + 1).equals(crush)) {
-                    isRemoved.add(list.get(i).get(cost));
-                    //Check if same person
-                    if (similaritycount != 0 && similarid.get(i) == 1) {
-                        for (int j = 0; j < list.size() - 1; j++) {
-                            if (list.get(j).get(cost).equals(list.get(j + 1).get(cost))) {
-                                System.out.println("Day " + cost + ": Convince " + list.get(i).get(cost).getProperty("name"));
-                                if (similaritycount == list.size() - 1) { //This means all same node, so clear all
-                                    list.clear();
-                                    hasRemoved = true;
-                                    break;
-                                } else {
-                                    listLiveRemoval(list, isRemoved);
-                                    hasRemoved = true;
-                                    break;
-                                }
-                            }
-                        }
-                    } else {
-                        System.out.println("Day " + cost + ": Convince " + list.get(i).get(cost).getProperty("name"));
-                        isRemoved.add(list.get(i).get(cost));
-                        list.remove(i);
-                        hasRemoved = true;
-                        break;
-                    }
-                }
-            }
-
-            if (!hasRemoved) {
-                //Check if same person
-                if (similaritycount != 0 && similarid.getFirst() == 1) {
-                    for (int j = 0; j < list.size() - 1; j++) {
-                        if (list.get(j).get(cost).equals(list.get(j + 1).get(cost))) {
-                            System.out.println("Day " + cost + ": Convince " + list.get(j).get(cost).getProperty("name"));
-                            if (similaritycount == list.size() - 1) {
-                                list.clear();
-                                break;
-                            } else {
-                                isRemoved.add(list.get(j).get(cost));
-                                list.remove(j);
-                                list.remove(j + 1);
-                                break;
-                            }
-                        }
-                    }
-                } else {
-                    isRemoved.add(list.remove().get(cost));
-                    System.out.println("Day " + cost + ": Convince " + isRemoved.get(isRemoved.size() - 1).getProperty("name"));
-                }
-            }
-            if (list.isEmpty()) {
-                System.out.println("You're safe!");
-                return;
-            }
+            cost++;
         }
+        
+        //Last output
+        System.out.println("The way to convince are as below");
+        for (int i = 0; i < isRemoved.size(); i++) {
+            System.out.println("Day "+(i+1)+": Convince "+isRemoved.get(i).getProperty("name"));
+        }
+        System.out.println("You're safe!\n");
     }
 
     // Event 6
