@@ -5,20 +5,11 @@
  */
 package com.mycompany.SociopathV2;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.NoSuchElementException;
-import java.util.Random;
-import java.util.Scanner;
+import java.util.*;
 
 import org.neo4j.graphalgo.GraphAlgoFactory;
 import org.neo4j.graphalgo.PathFinder;
-import org.neo4j.graphdb.Direction;
-import org.neo4j.graphdb.Node;
-import org.neo4j.graphdb.Path;
-import org.neo4j.graphdb.Relationship;
-import org.neo4j.graphdb.ResourceIterator;
-import org.neo4j.graphdb.Result;
+import org.neo4j.graphdb.*;
 
 /**
  * @author lenovo
@@ -235,104 +226,86 @@ public class Events {
 
     public static void eventSix() {
         DataManipulation dm = new DataManipulation();
+        ArrayList<Node> nodesList = new ArrayList<Node>();
 
         // User input
         System.out.println("\nHow many friendships do you want to examine?");
         int n = Sociopath.input.nextInt();
 
-        // Creates the nodes
-        Node[] nodesArray = new Node[n];
+        // New addition
+        // Creates nodes and forms a relationship
+        System.out.println("Enter TWO space-separated integers. Example: 1 2)");
         for (int i = 0; i < n; i++) {
-            String name = "node" + dm.numWords[i];
-            nodesArray[i] = Sociopath.graphDb.createNode(Sociopath.Labels.STUDENT);
-            nodesArray[i].setProperty("name", name);
-        }
+            String str1 = input.next();
+            String str2 = input.next();
 
-        // Forms friendships between two nodes based on input
-        // How to match input String to existing nodes in db?
-        for (int i = 0; i < n; i++) {
-            System.out.println("Friendship #" + (i + 1) + " (enter TWO space-separated integers between 1-" + n + ". " +
-                    "Example: 1 2)");
-            String str = input.nextLine();
-            String tempStr[] = str.split(" ");
-
-            // checks for duplicate inputs
-            // Parse integers from input, store in tempInt[]
-            int[] tempInt = new int[n];
-            int index = 0;
-            for (String temp : tempStr) {
-                tempInt[index] = Integer.parseInt(temp);
-                index++;
-            }
-
-            while ((tempStr[0] == tempStr[1]) || tempInt[1] < 1 || tempInt[1] > n || tempInt[0] < 1 || tempInt[0] > n) {
-                System.out.println("Improper input!");
-                System.out.println("Friendship #" + i + " (enter TWO space-seperated integers between 1-" + n + ". " +
-                        "Example: 1 2)");
-                str = input.nextLine();
-                String temp[] = str.split(" ");
-            }
-
-            // TODO Match input with existing nodes and form a friendship
-        }
-
-        // ISSUE: Error "s1" is null in friendTo()
-        // REASON: Because s1 is not an existing node in the original initialized Students graph
-        // SOLUTION: Overloaded friendTo() method in DataManipulation
-        dm.friendTo("nodeOne", "nodeTwo");
-        dm.friendTo("nodeTwo", "nodeThree");
-//        DataManipulation.friendTo("nodeOne", "nodeThree");
-
-        // ISSUE: Cannot retrieve paths
-        // TODO Fix path retrieval
-        // https://community.neo4j.com/t/list-of-all-paths-dag/4453
-        PathFinder<Path> pathFinder = DataManipulation.instantiatePathFinder(5);
-//        Iterable<Path> paths = pathFinder.findAllPaths(nodeOne, nodeThree);
-
-        // Testing path
-        try {
-            // Placeholder Iterable
-            // TODO remove
-            Iterable<Path> paths = DataManipulation.getAllPaths(nodesArray[1], nodesArray[2]);
-
-
-            // Adds all paths in paths -> pathsList
-            ArrayList<Path> pathsList = new ArrayList<>();
-            for (Path path : paths) {
-                pathsList.add(path);
-            }
-
-            // Adds all nodes in pathList -> nodesLList (linked list of linked lists)
-            LinkedList<LinkedList<Node>> nodesLList = new LinkedList<>();
-            int index = 0;
-            for (Path path : pathsList) {
-                // creates a new linked list for every path
-                nodesLList.add(new LinkedList<Node>());
-                Iterable<Node> nodesIterable = path.nodes();
-                for (Node node : nodesIterable) {
-                    nodesLList.get(index).add(node);
+            // Filter node1 duplicates
+//            // Filters duplicate str1
+//            Sociopath.graphDb.schema()
+//                    .constraintFor(Label.label("STUDENT"))
+//                    .assertPropertyIsUnique("name")
+//                    .create();
+            for (Node node : nodesList) {
+                if (node.getProperty("name").equals(str1) || node == null) {
+                    continue;
+                } else if (!node.getProperty("name").equals(str1)) {
+                    Node node1 = Sociopath.graphDb.createNode(Sociopath.Labels.STUDENT);
+                    node1.setProperty("name", str1);
+                    nodesList.add(node1);
                 }
-                index++;
             }
 
-            // Removes duplicate nodesList from nodesLList
-//            nodesLList = DataManipulation.removeDuplicates(nodesLList);
-
-            // Output
-            // Traverses through nodesLList and displays the nodes in each paths
-            int numFriendships = index;
-            System.out.println("You can form " + numFriendships + " friendship(s):");
-
-            if (numFriendships == 0)
-                return;
-            for (int i = 1; i <= numFriendships; i++) {
-                System.out.println(i + ". " + nodesLList.get(i).toString());
+            // Filter node2 duplicates
+            for (Node node : nodesList) {
+                if (node.getProperty("name").equals(str2) || node == null) {
+                    continue;
+                } else if (!node.getProperty("name").equals(str2)) {
+                    Node node2 = Sociopath.graphDb.createNode(Sociopath.Labels.STUDENT);
+                    node2.setProperty("name", str2);
+                    nodesList.add(node2);
+                }
             }
-            return;
 
-        } catch (NoSuchElementException ex) {
-            System.out.println("No paths available!");
+//
+//            // Filters duplicate str2
+//            Sociopath.graphDb.schema()
+//                    .constraintFor(Label.label("STUDENT"))
+//                    .assertPropertyIsUnique(str2)
+//                    .create();
+
+            dm.friendTo(str1, str2);
         }
+
+        // Uses allSimplePaths
+        PathFinder<Path> pathFinder = GraphAlgoFactory.allSimplePaths(
+                PathExpanders.forDirection(Direction.OUTGOING), n + 5);
+
+        // TODO Print all paths
+        List<Iterable<Node>> list = new ArrayList<>();
+        for (Path path : pathFinder.findAllPaths(node1, node2)) {
+            list.add(path.nodes());
+        }
+        for(Iterable<Node> x : list) {
+            for(Node node : x) {
+                System.out.print(node.getProperty("name") + " ");
+            }
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     }
 
     public static void eventSeven() {

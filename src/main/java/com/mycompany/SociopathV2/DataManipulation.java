@@ -71,14 +71,13 @@ public class DataManipulation {
         return relationship;
     }
 
-    // Overloaded friendTo() for eventSix()
+    // Overload
     public static Relationship friendTo(String name1, String name2) {
-        // Creates two new students
-        Node student1 = Sociopath.graphDb.createNode(Sociopath.Labels.STUDENT);
-        Node student2 = Sociopath.graphDb.createNode(Sociopath.Labels.STUDENT);
+        // Find node
+        Node s1 = Sociopath.graphDb.findNode(Sociopath.Labels.STUDENT, "name", name1.toUpperCase());
+        Node s2 = Sociopath.graphDb.findNode(Sociopath.Labels.STUDENT, "name", name2.toUpperCase());
+        Relationship relationship = s1.createRelationshipTo(s2, Sociopath.Rels.IS_FRIENDS_WITH);
 
-        // Forms a friendship
-        Relationship relationship = student1.createRelationshipTo(student2, Sociopath.Rels.IS_FRIENDS_WITH);
         return relationship;
     }
 
