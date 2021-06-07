@@ -251,8 +251,8 @@ public class Events {
         // Forms friendships between two nodes based on input
         // How to match input String to existing nodes in db?
         for (int i = 0; i < n; i++) {
-            System.out.println("Friendship #" + (i + 1) + " (enter TWO space-separated integers between 1-" + n + ". " +
-                    "Example: 1 2)");
+            System.out.println("Friendship #" + (i + 1) + " (enter TWO space-separated integers between 1-" + n + ". "
+                    + "Example: 1 2)");
             String str = input.nextLine();
             String tempStr[] = str.split(" ");
 
@@ -267,8 +267,8 @@ public class Events {
 
             while ((tempStr[0] == tempStr[1]) || tempInt[1] < 1 || tempInt[1] > n || tempInt[0] < 1 || tempInt[0] > n) {
                 System.out.println("Improper input!");
-                System.out.println("Friendship #" + i + " (enter TWO space-seperated integers between 1-" + n + ". " +
-                        "Example: 1 2)");
+                System.out.println("Friendship #" + i + " (enter TWO space-seperated integers between 1-" + n + ". "
+                        + "Example: 1 2)");
                 str = input.nextLine();
                 String temp[] = str.split(" ");
             }
@@ -295,7 +295,6 @@ public class Events {
             // TODO remove
             Iterable<Path> paths = DataManipulation.getAllPaths(nodesArray[1], nodesArray[2]);
 
-
             // Adds all paths in paths -> pathsList
             ArrayList<Path> pathsList = new ArrayList<>();
             for (Path path : paths) {
@@ -317,14 +316,14 @@ public class Events {
 
             // Removes duplicate nodesList from nodesLList
 //            nodesLList = DataManipulation.removeDuplicates(nodesLList);
-
             // Output
             // Traverses through nodesLList and displays the nodes in each paths
             int numFriendships = index;
             System.out.println("You can form " + numFriendships + " friendship(s):");
 
-            if (numFriendships == 0)
+            if (numFriendships == 0) {
                 return;
+            }
             for (int i = 1; i <= numFriendships; i++) {
                 System.out.println(i + ". " + nodesLList.get(i).toString());
             }
