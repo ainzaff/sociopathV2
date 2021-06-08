@@ -224,39 +224,37 @@ public class Events {
         }
     }
 
-       public static void eventSix() {
+    public static void eventSix() {
         // User input
         System.out.println("\nHow many friendships do you want to examine?");
         int n = Sociopath.input.nextInt();
-        Graph graph = new Graph(n*2);
+        Graph graph = new Graph(n * 2);
         ArrayList<Integer> list = new ArrayList<>();
 
         // New addition
         // Creates nodes and forms a relationship
-        System.out.println("Enter TWO space-separated integers. Example: 1 2)");
+        System.out.println("Enter TWO space-separated integers. Example: 1 2");
         for (int i = 0; i < n; i++) {
             int node1 = input.nextInt();
-            if (!list.contains(node1)){
+            if (!list.contains(node1)) {
                 list.add(node1);
             }
             int node2 = input.nextInt();
-            if (!list.contains(node2)){
+            if (!list.contains(node2)) {
                 list.add(node2);
             }
-            graph.addEdge(node1,node2);
-
+            graph.addEdge(node1, node2);
         }
-        
+
         // return all paths from each source node to each end node
-        for (int i : list){
-            for (int k : list){
-                if (i==k){
+        for (int i : list) {
+            for (int k : list) {
+                if (i == k) {
                     continue;
                 }
                 graph.printAllPaths(i, k);
             }
         }
-
     }
 
     public static void eventSeven() {
