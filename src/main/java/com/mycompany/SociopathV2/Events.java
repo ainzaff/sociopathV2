@@ -7,8 +7,6 @@ package com.mycompany.SociopathV2;
 
 import java.util.*;
 
-import org.neo4j.graphalgo.GraphAlgoFactory;
-import org.neo4j.graphalgo.PathFinder;
 import org.neo4j.graphdb.*;
 
 /**
@@ -170,7 +168,7 @@ public class Events {
         //Get all nodes and randomize crush and rumour
         ResourceIterator<Node> allStudents = DataManipulation.getAllNodes();
         ArrayList<Node> studentlist = new ArrayList<>();
-        while(allStudents.hasNext()) {
+        while (allStudents.hasNext()) {
             Node student = allStudents.next();
             studentlist.add(student);
         }
@@ -222,7 +220,7 @@ public class Events {
         }
     }
 
-       public static void eventSix() {
+    public static void eventSix() {
 //        // User input
 //        System.out.println("\nHow many friendships do you want to examine?");
 //        int n = Sociopath.input.nextInt();
@@ -230,7 +228,7 @@ public class Events {
 //        ArrayList<Integer> list = new ArrayList<>();
 //
 //        // New addition
-//        // Creates nodes and forms a relationship
+//        // Creates nodes and forms a relationships
 //        System.out.println("Enter TWO space-separated integers. Example: 1 2)");
 //        for (int i = 0; i < n; i++) {
 //            int node1 = input.nextInt();
@@ -262,7 +260,7 @@ public class Events {
 //        int n = Sociopath.input.nextInt();
 //
 //        // New addition
-//        // Creates nodes and forms a relationship
+//        // Creates nodes and forms a relationships
 //        System.out.println("Enter TWO space-separated integers. Example: 1 2)");
 //        for (int i = 0; i < n; i++) {
 //            String str1 = input.next();
@@ -320,98 +318,100 @@ public class Events {
 //            }
 //        }
         DataManipulation dm = new DataManipulation();
-        ArrayList<Node> nodesList = new ArrayList<Node>();
-        ArrayList<String> relationship = new ArrayList<>();
-        ArrayList<String> integerInput =  new ArrayList<>();
-        
+        ArrayList<Node> nodesList = new ArrayList<>();
+        ArrayList<String> relationships = new ArrayList<>();
+        ArrayList<String> takenInts = new ArrayList<>();
+
         System.out.println("\nHow many friendships do you want to examine?");
         int n = Sociopath.input.nextInt();
-         
+
         System.out.println("Enter TWO space-separated integers. Example: 1 2)");
         for (int i = 0; i < n; i++) {
+            // Takes input
             String str1 = input.next();
             String str2 = input.next();
-            String relay = str1+str2;
-            relationship.add(relay);
-            if(!integerInput.contains(str1)){
-                integerInput.add(str1);
-            }
-            if(!integerInput.contains(str2)){
-                integerInput.add(str2);
-            }
+
+            String relay = str1 + str2;
+            relationships.add(relay);
+
+            // Tracks similar inputs to filter duplicates
+            if (!takenInts.contains(str1))
+                takenInts.add(str1);
+            if (!takenInts.contains(str2))
+                takenInts.add(str2);
         }
-        
-        for(int i = 0; i < n; i++){
+        displayPathsE6(dm, nodesList, relationships, takenInts, n);
+    }
+
+    // Computes the paths
+    private static void displayPathsE6(DataManipulation dm, ArrayList<Node> nodesList, ArrayList<String> relationships, ArrayList<String> takenInts, int n) {
+        // Creates n nodes
+        for (int i = 0; i < n; i++) {
             Node node = Sociopath.graphDb.createNode(Sociopath.Labels.STUDENT);
-            node.setProperty("name", integerInput.get(i));
+            node.setProperty("name", takenInts.get(i));
             nodesList.add(node);
         }
-        
-        for(int i = 0; i < n; i++){
-            String[] relationshipSplit = relationship.get(i).split("");
-            String first = relationshipSplit[0];
-            String second = relationshipSplit[1];
+
+        // Forms friendships between nodes
+        for (int i = 0; i < n; i++) {
+            String[] relationshipSplit = relationships.get(i).split("");
+
+            // TODO test
+            String first = relationshipSplit[i];
+            String second = relationshipSplit[i+1];
             dm.friendTo(first, second);
-            i++;
         }
-        
-        ArrayList<ArrayList<Node>> list = new ArrayList<>();
-        ArrayList<Iterable<Path>> all = new ArrayList<>();
-        for(int i = 0; i < integerInput.size(); i++){
-            for(int j = 0; j < integerInput.size(); j++){
-                all.add(DataManipulation.getAllPaths(nodesList.get(i), nodesList.get(j)));
+
+        ArrayList<Iterable<Path>> pathsIterableList = new ArrayList<>();
+        ArrayList<ArrayList<Node>> nodesListsList = new ArrayList<>();
+
+        // Retrieves all paths between all nodes
+        // add to pathsIterableList
+        for (int i = 0; i < takenInts.size(); i++) {
+            for (int j = 0; j < takenInts.size(); j++) {
+                pathsIterableList.add(DataManipulation.getAllPaths(nodesList.get(i), nodesList.get(j)));
             }
         }
-        
-        for(int i=0;i<all.size();i++){
-            ArrayList<Path> pathlist = new ArrayList<>();
-                for (Path curr : all.get(i)) {
-                    pathlist.add(curr);
+
+        for (int i = 0; i < pathsIterableList.size(); i++) {
+            // Retrieves all paths Iterable from pathsIterableList
+            // add to pathsList
+            ArrayList<Path> pathsList = new ArrayList<>();
+            for (Path path : pathsIterableList.get(i)) {
+                pathsList.add(path);
+            }
+
+            // Retrieves all nodes from each paths in pathsList
+            // add to node Iterable
+            int index = 0;
+            for (Path path : pathsList) {
+                nodesListsList.add(new ArrayList<Node>());
+                Iterable<Node> nodesIterable = path.nodes();
+
+                // Retrieves all nodes from nodes Iterable
+                // add to nodesListList
+                for (Node node : nodesIterable) {
+                    nodesListsList.get(index).add(node);
                 }
-                
-                int index = 0;
-                for (Path curr : pathlist) {
-                    list.add(new ArrayList<Node>());
-                    Iterable<Node> nodes = curr.nodes();
-                    for (Node node : nodes) {
-                        list.get(index).add(node);
-                    }
-                    index++;
-                }
-                
-                list = DataManipulation.removeDuplicates(list);
-                display(list);
+                index++;
+            }
+
+            nodesListsList = DataManipulation.removeDuplicates(nodesListsList);
+            displayPathE6Util(nodesListsList);
         }
-        //display(list);
-        
-//        ArrayList<Path> pathlist = new ArrayList<>();
-//                for (Path curr : all) {
-//                    pathlist.add(curr);
-//                }
-//                
-//                int index = 0;
-//                for (Path curr : pathlist) {
-//                    list.add(new ArrayList<Node>());
-//                    Iterable<Node> nodes = curr.nodes();
-//                    for (Node node : nodes) {
-//                        list.get(index).add(node);
-//                    }
-//                    index++;
-//                }
-//                
-//                list = DataManipulation.removeDuplicates(list);
-//        display(list);
-        
     }
-    
-    public static void display(ArrayList<ArrayList<Node>> list){
-        for (int i = 0; i < list.size(); i++) {
-            for (int j = 0; j < list.get(i).size(); j++) {
-                if (j == list.get(i).size() - 1) {
-                    System.out.print(list.get(i).get(j).getProperty("name"));
-                } else {
-                    System.out.print(list.get(i).get(j).getProperty("name") + "-->");
-                }
+
+    // To actually display the paths
+    public static void displayPathE6Util(ArrayList<ArrayList<Node>> nodesList) {
+        // For every ArrayList<Node> in nodesList
+        for (int i = 0; i < nodesList.size(); i++) {
+            // For every nodes in the ArrayList<Node>
+            for (int j = 0; j < nodesList.get(i).size(); j++) {
+                // If last node is reached
+                if (j == nodesList.get(i).size() - 1)
+                    System.out.print(nodesList.get(i).get(j).getProperty("name"));
+                else
+                    System.out.print(nodesList.get(i).get(j).getProperty("name") + "-->");
             }
             System.out.println("");
         }
