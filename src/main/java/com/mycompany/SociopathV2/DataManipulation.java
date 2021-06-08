@@ -161,7 +161,7 @@ public class DataManipulation {
      * ******************Event 5 METHODS******************
      */
     public static void displayPath(ArrayList<ArrayList<Node>> list) {
-        System.out.println("The following is the path from the rumour to your crush(left to right):");
+        System.out.println("The following is the path from the rumour to your crush:");
         for (int i = 0; i < list.size(); i++) {
             for (int j = 0; j < list.get(i).size(); j++) {
                 if (j == list.get(i).size() - 1) {
@@ -176,7 +176,9 @@ public class DataManipulation {
     }
     
     public static void convincer(ArrayList<ArrayList<Node>> list, Node crush) {
-        ArrayList<Node> isRemoved = new ArrayList<>();
+        ArrayList<Node> isRemoved = new ArrayList<>();  //List to hold removed/convinced person
+        
+        //Traverse through nodes and check paths according to depth/cost
         int cost = 1;
         while(!list.isEmpty()) {
             int currPathIndex = 0;
@@ -189,26 +191,26 @@ public class DataManipulation {
                     currPathSize = list.get(i).size();
                 }
                 
-                //Check whether current node in the depth is crush
+                //Check whether current node in the depth is crush,if true then impossible
                 if(list.get(i).get(cost).equals(crush)) {
                     System.out.println("There is no way you can stop the rumour from reaching your crush");
                     return;
                 }
             }
             
-            //Check for removed node and add it to the removed list
+            //Convince person that is not yet in isRemoved list
             if(!isRemoved.contains(list.get(currPathIndex).get(cost))) {
                 isRemoved.add(list.get(currPathIndex).get(cost));
             }
             
-            //Remove paths that contains previously removed nodes
+            //Filter paths that contains previously removed nodes to avoid multiple convincing
             for (int i = 0; i < list.size(); i++) {
                 if(isRemoved.contains(list.get(i).get(cost))) {
                     list.remove(i);
                     i--;
                 }
             }
-            cost++;
+            cost++; //Iterate to enter the next depth
         }
         
         //Last output

@@ -167,32 +167,34 @@ public class Events {
     }
 
     public static void eventFive() {
-        //Randomizer
-        String[] name = {"ALICE", "BOB", "CHARLIE", "DANIEL", "ETHAN", "FINN", "GUY", "HOLLY", "IAN", "JOE"};
+        //Get all nodes and randomize crush and rumour
+        ResourceIterator<Node> allStudents = DataManipulation.getAllNodes();
+        ArrayList<Node> studentlist = new ArrayList<>();
+        while(allStudents.hasNext()) {
+            Node student = allStudents.next();
+            studentlist.add(student);
+        }
         Random r = new Random();
-        String rumor = name[r.nextInt(10)];
-        String crush = name[r.nextInt(10)];
-        while (crush == rumor) {
-            rumor = name[r.nextInt(10)];
+        Node rumor = studentlist.get(r.nextInt(studentlist.size()));
+        Node crush = studentlist.get(r.nextInt(studentlist.size()));
+        while (rumor.equals(crush)) {
+            rumor = studentlist.get(r.nextInt(studentlist.size()));
         }
 
         //Text
-        System.out.println("You have a crush who is " + crush + " but there is someone who has a rumour about you and he/she is " + rumor);
+        System.out.println("You have a crush on " + crush.getProperty("name") + " but there is someone who has a rumour about you and he/she is " + rumor.getProperty("name"));
         System.out.println("");
 
-        //Initialize source and target nodes
-        Node src = DataManipulation.getNode(rumor);
-        Node target = DataManipulation.getNode(crush);
-
         //Traverse and return the path
-        Iterable<Path> all = DataManipulation.getAllPaths(src, target);
+        Iterable<Path> all = DataManipulation.getAllPaths(rumor, crush);//Returns all paths found
         try {
+            //To collect paths found into an ArrayList from Iterable above
             ArrayList<Path> pathlist = new ArrayList<>();
             for (Path curr : all) {
                 pathlist.add(curr);
             }
 
-            //To collect the nodes in the path
+            //To create a list that holds lists of paths which contains lists of nodes
             ArrayList<ArrayList<Node>> list = new ArrayList<>();
             int index = 0;
             for (Path curr : pathlist) {
@@ -204,57 +206,216 @@ public class Events {
                 index++;
             }
 
-            //Filter duplicate paths
+            //Filter duplicate paths obtained by the path finder framework
             list = DataManipulation.removeDuplicates(list);
 
-            //Filter for empty paths or direct connection
-            if (list.size() == 0) {
+            //Filter for empty paths
+            if (list.isEmpty()) {
                 System.out.println("Luckily, it is impossible for the rumour to reach your crush");
                 return;
             }
-            if (list.get(0).size() == 2) {
-                System.out.println("There is no way you can stop the rumour from reaching your crush");
-                return;
-            }
             DataManipulation.displayPath(list);
-            DataManipulation.convincer(list, target);
+            DataManipulation.convincer(list, crush);
 
         } catch (NoSuchElementException ex) {
             System.out.println("Luckily, it is impossible for the rumour to reach your crush");
         }
     }
 
-    public static void eventSix() {
-        // User input
+       public static void eventSix() {
+//        // User input
+//        System.out.println("\nHow many friendships do you want to examine?");
+//        int n = Sociopath.input.nextInt();
+//        Graph graph = new Graph(n*2);
+//        ArrayList<Integer> list = new ArrayList<>();
+//
+//        // New addition
+//        // Creates nodes and forms a relationship
+//        System.out.println("Enter TWO space-separated integers. Example: 1 2)");
+//        for (int i = 0; i < n; i++) {
+//            int node1 = input.nextInt();
+//            if (!list.contains(node1)){
+//                list.add(node1);
+//            }
+//            int node2 = input.nextInt();
+//            if (!list.contains(node2)){
+//                list.add(node2);
+//            }
+//            graph.addEdge(node1,node2);
+//
+//        }
+//        
+//        // return all paths from each source node to each end node
+//        for (int i : list){
+//            for (int k : list){
+//                if (i==k){
+//                    continue;
+//                }
+//                graph.printAllPaths(i, k);
+//            }
+//        }
+//        DataManipulation dm = new DataManipulation();
+//        ArrayList<Node> nodesList = new ArrayList<Node>();
+
+//        // User input
+//        System.out.println("\nHow many friendships do you want to examine?");
+//        int n = Sociopath.input.nextInt();
+//
+//        // New addition
+//        // Creates nodes and forms a relationship
+//        System.out.println("Enter TWO space-separated integers. Example: 1 2)");
+//        for (int i = 0; i < n; i++) {
+//            String str1 = input.next();
+//            String str2 = input.next();
+//
+//            // Filter node1 duplicates
+//            // Filters duplicate str1
+//           Sociopath.graphDb.schema()
+//                    .constraintFor(Label.label("STUDENT"))
+//                    .assertPropertyIsUnique("name")
+///                   .create();
+//            for (Node node : nodesList) {
+//                if (node.getProperty("name").equals(str1) || node == null) {
+//                    continue;
+//                } else if (!node.getProperty("name").equals(str1)) {
+//                    Node node1 = Sociopath.graphDb.createNode(Sociopath.Labels.STUDENT);
+//                    node1.setProperty("name", str1);
+//                    nodesList.add(node1);
+//                }
+//            }
+//
+//            // Filter node2 duplicates
+//            for (Node node : nodesList) {
+//                if (node.getProperty("name").equals(str2) || node == null) {
+//                    continue;
+//                } else if (!node.getProperty("name").equals(str2)) {
+//                    Node node2 = Sociopath.graphDb.createNode(Sociopath.Labels.STUDENT);
+//                    node2.setProperty("name", str2);
+//                    nodesList.add(node2);
+//                }
+//            }
+//
+//
+//           Filters duplicate str2
+//            Sociopath.graphDb.schema()
+//                    .constraintFor(Label.label("STUDENT"))
+//                    .assertPropertyIsUnique(str2)
+//                   .create();
+//
+//            dm.friendTo(str1, str2);
+//        }
+//
+//        // Uses allSimplePaths
+//        PathFinder<Path> pathFinder = GraphAlgoFactory.allSimplePaths(
+//                PathExpanders.forDirection(Direction.OUTGOING), n + 5);
+//
+//        // TODO Print all paths
+//        List<Iterable<Node>> list = new ArrayList<>();
+//        for (Path path : pathFinder.findAllPaths(node1, node2)) {
+//            list.add(path.nodes());
+//        }
+//        for(Iterable<Node> x : list) {
+//            for(Node node : x) {
+//                System.out.print(node.getProperty("name") + " ");
+//            }
+//        }
+        DataManipulation dm = new DataManipulation();
+        ArrayList<Node> nodesList = new ArrayList<Node>();
+        ArrayList<String> relationship = new ArrayList<>();
+        ArrayList<String> integerInput =  new ArrayList<>();
+        
         System.out.println("\nHow many friendships do you want to examine?");
         int n = Sociopath.input.nextInt();
-        Graph graph = new Graph(n * 2);
-        ArrayList<Integer> list = new ArrayList<>();
-
-        // New addition
-        // Creates nodes and forms a relationship
-        System.out.println("Enter TWO space-separated integers. Example: 1 2");
+         
+        System.out.println("Enter TWO space-separated integers. Example: 1 2)");
         for (int i = 0; i < n; i++) {
-            int node1 = input.nextInt();
-            if (!list.contains(node1)) {
-                list.add(node1);
+            String str1 = input.next();
+            String str2 = input.next();
+            String relay = str1+str2;
+            relationship.add(relay);
+            if(!integerInput.contains(str1)){
+                integerInput.add(str1);
             }
-            int node2 = input.nextInt();
-            if (!list.contains(node2)) {
-                list.add(node2);
+            if(!integerInput.contains(str2)){
+                integerInput.add(str2);
             }
-            graph.addEdge(node1, node2);
         }
-
-        // return all paths from each source node to each end node
-        for (int i : list) {
-            for (int k : list) {
-                if (i == k) {
-                    continue;
+        
+        for(int i = 0; i < n; i++){
+            Node node = Sociopath.graphDb.createNode(Sociopath.Labels.STUDENT);
+            node.setProperty("name", integerInput.get(i));
+            nodesList.add(node);
+        }
+        
+        for(int i = 0; i < n; i++){
+            String[] relationshipSplit = relationship.get(i).split("");
+            String first = relationshipSplit[0];
+            String second = relationshipSplit[1];
+            dm.friendTo(first, second);
+            i++;
+        }
+        
+        ArrayList<ArrayList<Node>> list = new ArrayList<>();
+        ArrayList<Iterable<Path>> all = new ArrayList<>();
+        for(int i = 0; i < integerInput.size(); i++){
+            for(int j = 0; j < integerInput.size(); j++){
+                all.add(DataManipulation.getAllPaths(nodesList.get(i), nodesList.get(j)));
+            }
+        }
+        
+        for(int i=0;i<all.size();i++){
+            ArrayList<Path> pathlist = new ArrayList<>();
+                for (Path curr : all.get(i)) {
+                    pathlist.add(curr);
                 }
-                graph.printAllPaths(i, k);
-            }
+                
+                int index = 0;
+                for (Path curr : pathlist) {
+                    list.add(new ArrayList<Node>());
+                    Iterable<Node> nodes = curr.nodes();
+                    for (Node node : nodes) {
+                        list.get(index).add(node);
+                    }
+                    index++;
+                }
+                
+                list = DataManipulation.removeDuplicates(list);
+                display(list);
         }
+        //display(list);
+        
+//        ArrayList<Path> pathlist = new ArrayList<>();
+//                for (Path curr : all) {
+//                    pathlist.add(curr);
+//                }
+//                
+//                int index = 0;
+//                for (Path curr : pathlist) {
+//                    list.add(new ArrayList<Node>());
+//                    Iterable<Node> nodes = curr.nodes();
+//                    for (Node node : nodes) {
+//                        list.get(index).add(node);
+//                    }
+//                    index++;
+//                }
+//                
+//                list = DataManipulation.removeDuplicates(list);
+//        display(list);
+        
+    }
+    
+    public static void display(ArrayList<ArrayList<Node>> list){
+        for (int i = 0; i < list.size(); i++) {
+            for (int j = 0; j < list.get(i).size(); j++) {
+                if (j == list.get(i).size() - 1) {
+                    System.out.print(list.get(i).get(j).getProperty("name"));
+                } else {
+                    System.out.print(list.get(i).get(j).getProperty("name") + "-->");
+                }
+            }
+            System.out.println("");
+        }
+        System.out.println("");
     }
 
     public static void eventSeven() {

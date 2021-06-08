@@ -34,6 +34,7 @@ public class Sociopath {
         StudentMethods.initializeStudents();
         Menus.mainMenu();
         //studentMenu();
+        //Events.eventSix();
 
     }
 
