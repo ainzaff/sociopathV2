@@ -355,10 +355,8 @@ public class Events {
         // Forms friendships between nodes
         for (int i = 0; i < n; i++) {
             String[] relationshipSplit = relationships.get(i).split("");
-
-            // TODO test
-            String first = relationshipSplit[i];
-            String second = relationshipSplit[i+1];
+            String first = relationshipSplit[0];
+            String second = relationshipSplit[1];
             dm.friendTo(first, second);
         }
 
@@ -402,16 +400,20 @@ public class Events {
     }
 
     // To actually display the paths
-    public static void displayPathE6Util(ArrayList<ArrayList<Node>> nodesList) {
-        // For every ArrayList<Node> in nodesList
-        for (int i = 0; i < nodesList.size(); i++) {
-            // For every nodes in the ArrayList<Node>
-            for (int j = 0; j < nodesList.get(i).size(); j++) {
-                // If last node is reached
-                if (j == nodesList.get(i).size() - 1)
-                    System.out.print(nodesList.get(i).get(j).getProperty("name"));
+    public static void displayPathE6Util(ArrayList<ArrayList<Node>> nodesListsList) {
+        // For every nodesList in nodesListsList
+        for (int i = 0; i < nodesListsList.size(); i++) {
+            ArrayList<Node> nodesList = nodesListsList.get(i);
+            // For every nodes in nodesList
+            for (int j = 0; j < nodesList.size(); j++) {
+                // If first node
+                if (j == 0)
+                    System.out.print("[" + nodesList.get(j).getProperty("name") + ", ");
+                // If last node
+                else if (j == nodesList.size() - 1)
+                    System.out.print(nodesList.get(j).getProperty("name") + "]");
                 else
-                    System.out.print(nodesList.get(i).get(j).getProperty("name") + "-->");
+                    System.out.print(nodesList.get(j).getProperty("name") + ", ");
             }
             System.out.println("");
         }
