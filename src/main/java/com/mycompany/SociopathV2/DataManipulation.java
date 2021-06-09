@@ -158,7 +158,7 @@ public class DataManipulation {
     }
 
     /**
-     * ******************Event 5 METHODS******************
+     * ******************EVENT 5 METHODS******************
      */
     public static void displayPath(ArrayList<ArrayList<Node>> list) {
         System.out.println("The following is the path from the rumour to your crush:");
@@ -174,62 +174,145 @@ public class DataManipulation {
         }
         System.out.println("");
     }
-    
+
     public static void convincer(ArrayList<ArrayList<Node>> list, Node crush) {
         ArrayList<Node> isRemoved = new ArrayList<>();  //List to hold removed/convinced person
-        
+
         //Traverse through nodes and check paths according to depth/cost
         int cost = 1;
-        while(!list.isEmpty()) {
+        while (!list.isEmpty()) {
             int currPathIndex = 0;
             int currPathSize = list.get(currPathIndex).size();
             for (int i = 0; i < list.size(); i++) {
-                
+
                 //Go for shortest paths first
-                if(list.get(i).size()<currPathSize) {
+                if (list.get(i).size() < currPathSize) {
                     currPathIndex = i;
                     currPathSize = list.get(i).size();
                 }
-                
+
                 //Check whether current node in the depth is crush,if true then impossible
-                if(list.get(i).get(cost).equals(crush)) {
+                if (list.get(i).get(cost).equals(crush)) {
                     System.out.println("There is no way you can stop the rumour from reaching your crush");
                     return;
                 }
             }
-            
+
             //Convince person that is not yet in isRemoved list
-            if(!isRemoved.contains(list.get(currPathIndex).get(cost))) {
+            if (!isRemoved.contains(list.get(currPathIndex).get(cost))) {
                 isRemoved.add(list.get(currPathIndex).get(cost));
             }
-            
+
             //Filter paths that contains previously removed nodes to avoid multiple convincing
             for (int i = 0; i < list.size(); i++) {
-                if(isRemoved.contains(list.get(i).get(cost))) {
+                if (isRemoved.contains(list.get(i).get(cost))) {
                     list.remove(i);
                     i--;
                 }
             }
             cost++; //Iterate to enter the next depth
         }
-        
+
         //Last output
         System.out.println("The way to convince are as below");
         for (int i = 0; i < isRemoved.size(); i++) {
-            System.out.println("Day "+(i+1)+": Convince "+isRemoved.get(i).getProperty("name"));
+            System.out.println("Day " + (i + 1) + ": Convince " + isRemoved.get(i).getProperty("name"));
         }
         System.out.println("You're safe!\n");
     }
 
-    // Event 6
-    public static PathFinder<Path> instantiatePathFinder(int maxDepth) {
-        return GraphAlgoFactory.allSimplePaths(PathExpanders.allTypesAndDirections(), maxDepth);
+    /**
+     * ******************EVENT 6 METHODS******************
+     */
+    // TODO Add try-catch when user inputs more than n number of nodes
+    // TODO Sort output by length
+    // Computes the paths
+    public static void displayPathsE6(DataManipulation dm, ArrayList<Node> inputNodesList, ArrayList<String> relationships, ArrayList<String> takenInts, int n) {
+        // Creates n nodes labeled by user inputs
+        for (int i = 0; i < n; i++) {
+            Node node = Sociopath.graphDb.createNode(Sociopath.Labels.STUDENT);
+            node.setProperty("name", takenInts.get(i));
+            inputNodesList.add(node);
+        }
+
+        // Forms friendships between nodes
+        for (int i = 0; i < n; i++) {
+            String[] relationshipSplit = relationships.get(i).split("");
+            String first = relationshipSplit[0];
+            String second = relationshipSplit[1];
+            dm.friendTo(first, second);
+        }
+
+        ArrayList<Iterable<Path>> pathsIterablesList = new ArrayList<>();
+
+        // Retrieves all pathsList between all nodes
+        // add to pathsIterablesList
+        for (int i = 0; i < takenInts.size(); i++) {
+            for (int j = i + 1; j < takenInts.size(); j++) {
+                pathsIterablesList.add(dm.getAllPaths(inputNodesList.get(i), inputNodesList.get(j)));
+            }
+        }
+
+        // Retrieves all pathsList Iterable from pathsIterablesList
+        // add to pathsList
+        ArrayList<Path> pathsList = new ArrayList<>();
+        pathsList = new ArrayList<>();
+        for (Iterable<Path> pathsIterable : pathsIterablesList) {
+            // Retrieves all paths from pathsIterable
+            // add to pathsList
+            for (Path tempPaths : pathsIterable) {
+                pathsList.add(tempPaths);
+            }
+        }
+
+        // Retrieves all nodesList (paths) from pathsList
+        // add to nodesIterable
+        // !--> path == nodesList
+        // index tracks number of paths
+        ArrayList<ArrayList<Node>> nodesListsList = new ArrayList<>();
+        int index = 0;
+        for (Path nodesList : pathsList) {
+            // nodes() returns nodesIterable
+            Iterable<Node> nodesIterable = nodesList.nodes();
+
+            // Add a new nodesList in nodesListsList
+            nodesListsList.add(new ArrayList<Node>());
+
+            // Retrieves all nodes from nodesIterable
+            // add to the newly created nodesList in nodesListList
+            for (Node node : nodesIterable) {
+                // nodesListsList.get(i) returns a nodeList
+                nodesListsList.get(index).add(node);
+            }
+            index++;
+        }
+        nodesListsList = dm.removeDuplicates(nodesListsList);
+        displayPathE6Util(nodesListsList);
     }
 
-    // Event 6
+    // To actually display the paths
+    public static void displayPathE6Util(ArrayList<ArrayList<Node>> nodesListsList) {
+
+        for (ArrayList<Node> nodesList : nodesListsList) {
+            for (int i = 0; i < nodesList.size(); i++) {
+                // If first node
+                if (i == 0) {
+                    System.out.print("[" + nodesList.get(i).getProperty("name") + ", ");
+                }
+                // If last node
+                else if (i == nodesList.size() - 1) {
+                    System.out.print(nodesList.get(i).getProperty("name") + "]");
+                    System.out.println();
+                } else {
+                    System.out.print(nodesList.get(i).getProperty("name") + ", ");
+                }
+            }
+        }
+    }
+
     public static String[] numWords = new String[]{"Zero", "one", "two", "three", "four", "five", "six", "seven",
             "eight", "nine",
-        "ten", "eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen", "seventeen",
-        "eighteen", "nineteen"};
+            "ten", "eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen", "seventeen",
+            "eighteen", "nineteen"};
 
 }
