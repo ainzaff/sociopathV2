@@ -5,14 +5,7 @@
  */
 package com.mycompany.SociopathV2;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.LinkedHashSet;
-import java.util.LinkedList;
-import java.util.NoSuchElementException;
-import java.util.Random;
-import java.util.Scanner;
-import java.util.Set;
+import java.util.*;
 
 import org.neo4j.graphalgo.GraphAlgoFactory;
 import org.neo4j.graphalgo.PathFinder;
@@ -224,7 +217,6 @@ public class DataManipulation {
     /**
      * ******************EVENT 6 METHODS******************
      */
-    // TODO Add try-catch when user inputs more than n number of nodes
     // TODO Sort output by length
     // Computes the paths
     public static void displayPathsE6(DataManipulation dm, ArrayList<Node> inputNodesList, ArrayList<String> relationships, ArrayList<String> takenInts, int n) {
@@ -286,13 +278,14 @@ public class DataManipulation {
             }
             index++;
         }
-        nodesListsList = dm.removeDuplicates(nodesListsList);
-        displayPathE6Util(nodesListsList, index);
+        nodesListsList = removeDuplicates(nodesListsList);
+        nodesListsList.sort(Comparator.comparing(List::size));
+        displayPathsE6Util(nodesListsList, index);
     }
 
     // To actually display the paths
-    public static void displayPathE6Util(ArrayList<ArrayList<Node>> nodesListsList, int n) {
-        System.out.println("You can form " + n + " friendships: ");
+    public static void displayPathsE6Util(ArrayList<ArrayList<Node>> nodesListsList, int n) {
+        System.out.println("You can form " + numWords[n] + " friendships: ");
         for (ArrayList<Node> nodesList : nodesListsList) {
             for (int i = 0; i < nodesList.size(); i++) {
                 // If first node
@@ -308,6 +301,7 @@ public class DataManipulation {
                 }
             }
         }
+        System.out.println();
     }
 
     public static String[] numWords = new String[]{"Zero", "one", "two", "three", "four", "five", "six", "seven",

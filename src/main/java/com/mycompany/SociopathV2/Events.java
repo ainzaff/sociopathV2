@@ -234,7 +234,6 @@ public class Events {
             // Takes input
             String str1 = input.next();
             String str2 = input.next();
-            System.out.println();
 
             // If user enters more than n nodes, re-prompt an input
             if (takenInts.size() == n) {
