@@ -344,6 +344,8 @@ public class Events {
         displayPathsE6(dm, nodesList, relationships, takenInts, n);
     }
 
+    // TODO Add try-catch when user inputs more than n number of nodes
+    // TODO Sort output by length
     // Computes the paths
     private static void displayPathsE6(DataManipulation dm, ArrayList<Node> inputNodesList, ArrayList<String> relationships, ArrayList<String> takenInts, int n) {
         // Creates n nodes labeled by user inputs
@@ -383,45 +385,68 @@ public class Events {
             }
         }
 
-        // TODO Checkpoint
-        // Retrieves all nodesList from each paths in pathsList
+        // TODO Debug checkpoint
+        // Retrieves all nodesList (paths) from pathsList
         // add to nodesIterable
+        // !--> path == nodesList
+        // index tracks number of paths
         ArrayList<ArrayList<Node>> nodesListsList = new ArrayList<>();
         int index = 0;
         for (Path nodesList : pathsList) {
-            nodesListsList.add(new ArrayList<Node>());
+            // nodes() returns nodesIterable
             Iterable<Node> nodesIterable = nodesList.nodes();
 
-            // Retrieves all nodes from nodes Iterable
-            // add to nodesListList
+            // Add a new nodesList in nodesListsList
+            nodesListsList.add(new ArrayList<Node>());
+
+            // Retrieves all nodes from nodesIterable
+            // add to the newly created nodesList in nodesListList
             for (Node node : nodesIterable) {
+                // nodesListsList.get(i) returns a nodeList
                 nodesListsList.get(index).add(node);
             }
             index++;
-            nodesListsList = dm.removeDuplicates(nodesListsList);
         }
+        nodesListsList = dm.removeDuplicates(nodesListsList);
         displayPathE6Util(nodesListsList);
     }
 
     // To actually display the paths
     private static void displayPathE6Util(ArrayList<ArrayList<Node>> nodesListsList) {
-        // For every nodesList in nodesListsList
-        for (int i = 0; i < nodesListsList.size(); i++) {
-            ArrayList<Node> nodesList = nodesListsList.get(i);
-            // For every nodes in nodesList
-            for (int j = 0; j < nodesList.size(); j++) {
+        for (ArrayList<Node> nodesList : nodesListsList) {
+            for (int i = 0; i < nodesList.size(); i++) {
                 // If first node
-                if (j == 0)
-                    System.out.print("[" + nodesList.get(j).getProperty("name") + ", ");
-                    // If last node
-                else if (j == nodesList.size() - 1)
-                    System.out.print(nodesList.get(j).getProperty("name") + "]");
-                else
-                    System.out.print(nodesList.get(j).getProperty("name") + ", ");
+                if (i == 0) {
+                    System.out.print("[" + nodesList.get(i).getProperty("name") + ", ");
+                }
+                // If last node
+                else if (i == nodesList.size() - 1) {
+                    System.out.print(nodesList.get(i).getProperty("name") + "]");
+                    System.out.println();
+                } else {
+                    System.out.print(nodesList.get(i).getProperty("name") + ", ");
+                }
             }
-            System.out.println("");
         }
-        System.out.println("");
+
+
+//        // For every nodesList in nodesListsList
+//        for (int i = 0; i < nodesListsList.size(); i++) {
+//            ArrayList<Node> nodesList = nodesListsList.get(i);
+//            // For every nodes in nodesList
+//            for (int j = 0; j < nodesList.size(); j++) {
+//                // If first node
+//                if (j == 0)
+//                    System.out.print("[" + nodesList.get(j).getProperty("name") + ", ");
+//                    // If last node
+//                else if (j == nodesList.size() - 1)
+//                    System.out.print(nodesList.get(j).getProperty("name") + "]");
+//                else
+//                    System.out.print(nodesList.get(j).getProperty("name") + ", ");
+//            }
+//            System.out.println("");
+//        }
+//        System.out.println("");
     }
 
     public static void eventSeven() {
