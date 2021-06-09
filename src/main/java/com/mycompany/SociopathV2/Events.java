@@ -325,7 +325,7 @@ public class Events {
         System.out.print("\nHow many friendships do you want to examine? --> ");
         int n = Sociopath.input.nextInt();
 
-        System.out.println("\nEnter TWO space-separated integers. (Example: 1 2)");
+        System.out.println("\nEnter " + dm.numWords[n] + "friendships between " + dm.numWords[n] + "people. (Example: 1 2)");
         for (int i = 0; i < n; i++) {
             // Takes input
             String str1 = input.next();
@@ -385,7 +385,6 @@ public class Events {
             }
         }
 
-        // TODO Debug checkpoint
         // Retrieves all nodesList (paths) from pathsList
         // add to nodesIterable
         // !--> path == nodesList
@@ -413,6 +412,7 @@ public class Events {
 
     // To actually display the paths
     private static void displayPathE6Util(ArrayList<ArrayList<Node>> nodesListsList) {
+
         for (ArrayList<Node> nodesList : nodesListsList) {
             for (int i = 0; i < nodesList.size(); i++) {
                 // If first node
@@ -428,25 +428,6 @@ public class Events {
                 }
             }
         }
-
-
-//        // For every nodesList in nodesListsList
-//        for (int i = 0; i < nodesListsList.size(); i++) {
-//            ArrayList<Node> nodesList = nodesListsList.get(i);
-//            // For every nodes in nodesList
-//            for (int j = 0; j < nodesList.size(); j++) {
-//                // If first node
-//                if (j == 0)
-//                    System.out.print("[" + nodesList.get(j).getProperty("name") + ", ");
-//                    // If last node
-//                else if (j == nodesList.size() - 1)
-//                    System.out.print(nodesList.get(j).getProperty("name") + "]");
-//                else
-//                    System.out.print(nodesList.get(j).getProperty("name") + ", ");
-//            }
-//            System.out.println("");
-//        }
-//        System.out.println("");
     }
 
     public static void eventSeven() {

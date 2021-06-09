@@ -227,8 +227,9 @@ public class DataManipulation {
     }
 
     // Event 6
-    public static String[] numWords = new String[]{"Zero", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine",
-        "Ten", "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen",
-        "Eighteen", "Nineteen"};
+    public static String[] numWords = new String[]{"Zero", "one", "two", "three", "four", "five", "six", "seven",
+            "eight", "nine",
+        "ten", "eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen", "seventeen",
+        "eighteen", "nineteen"};
 
 }
