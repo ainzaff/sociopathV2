@@ -9,14 +9,9 @@ import java.util.*;
 
 import org.neo4j.graphalgo.GraphAlgoFactory;
 import org.neo4j.graphalgo.PathFinder;
-import org.neo4j.graphdb.Direction;
-import org.neo4j.graphdb.Node;
-import org.neo4j.graphdb.Path;
-import org.neo4j.graphdb.PathExpander;
-import org.neo4j.graphdb.PathExpanders;
-import org.neo4j.graphdb.Relationship;
-import org.neo4j.graphdb.RelationshipType;
-import org.neo4j.graphdb.ResourceIterator;
+import org.neo4j.graphdb.*;
+
+import static com.mycompany.SociopathV2.Sociopath.graphDb;
 
 /**
  * @author lenovo
@@ -43,8 +38,8 @@ public class DataManipulation {
     }
 
     public static Relationship getRelationship(String s1, String s2, RelationshipType rt) {
-        Node src = Sociopath.graphDb.findNode(Sociopath.Labels.STUDENT, "name", s1.toUpperCase());
-        Node target = Sociopath.graphDb.findNode(Sociopath.Labels.STUDENT, "name", s2.toUpperCase());
+        Node src = graphDb.findNode(Sociopath.Labels.STUDENT, "name", s1.toUpperCase());
+        Node target = graphDb.findNode(Sociopath.Labels.STUDENT, "name", s2.toUpperCase());
         Relationship relay;
         Iterable<Relationship> relationships = src.getRelationships(Direction.OUTGOING, rt);
         for (Relationship relationship : relationships) {
@@ -57,8 +52,8 @@ public class DataManipulation {
     }
 
     public static Relationship friendTo(String name1, String name2, int repTo) {
-        Node s1 = Sociopath.graphDb.findNode(Sociopath.Labels.STUDENT, "name", name1.toUpperCase());
-        Node s2 = Sociopath.graphDb.findNode(Sociopath.Labels.STUDENT, "name", name2.toUpperCase());
+        Node s1 = graphDb.findNode(Sociopath.Labels.STUDENT, "name", name1.toUpperCase());
+        Node s2 = graphDb.findNode(Sociopath.Labels.STUDENT, "name", name2.toUpperCase());
         Relationship relationship = s1.createRelationshipTo(s2, Sociopath.Rels.IS_FRIENDS_WITH);
         relationship.setProperty("rep", repTo);
         return relationship;
@@ -67,8 +62,8 @@ public class DataManipulation {
     // Overload
     public static Relationship friendTo(String name1, String name2) {
         // Find node
-        Node s1 = Sociopath.graphDb.findNode(Sociopath.Labels.STUDENT, "name", name1.toUpperCase());
-        Node s2 = Sociopath.graphDb.findNode(Sociopath.Labels.STUDENT, "name", name2.toUpperCase());
+        Node s1 = graphDb.findNode(Sociopath.Labels.STUDENT, "name", name1.toUpperCase());
+        Node s2 = graphDb.findNode(Sociopath.Labels.STUDENT, "name", name2.toUpperCase());
         Relationship relationship = s1.createRelationshipTo(s2, Sociopath.Rels.IS_FRIENDS_WITH);
 
         return relationship;
@@ -79,16 +74,16 @@ public class DataManipulation {
     }
 
     public static Relationship knowsOf(String name1, String name2, int repTo) {
-        Node s1 = Sociopath.graphDb.findNode(Sociopath.Labels.STUDENT, "name", name1.toUpperCase());
-        Node s2 = Sociopath.graphDb.findNode(Sociopath.Labels.STUDENT, "name", name2.toUpperCase());
+        Node s1 = graphDb.findNode(Sociopath.Labels.STUDENT, "name", name1.toUpperCase());
+        Node s2 = graphDb.findNode(Sociopath.Labels.STUDENT, "name", name2.toUpperCase());
         Relationship relationship = s1.createRelationshipTo(s2, Sociopath.Rels.KNOWS_OF);
         relationship.setProperty("rep", repTo);
         return relationship;
     }
 
     public static boolean isFriendsWith(String s1, String s2) {
-        Node src = Sociopath.graphDb.findNode(Sociopath.Labels.STUDENT, "name", s1.toUpperCase());
-        Node target = Sociopath.graphDb.findNode(Sociopath.Labels.STUDENT, "name", s2.toUpperCase());
+        Node src = graphDb.findNode(Sociopath.Labels.STUDENT, "name", s1.toUpperCase());
+        Node target = graphDb.findNode(Sociopath.Labels.STUDENT, "name", s2.toUpperCase());
         Iterable<Relationship> relationships = src.getRelationships(Direction.OUTGOING, Sociopath.Rels.IS_FRIENDS_WITH);
         for (Relationship relationship : relationships) {
             if (relationship.getEndNode().equals(target)) {
@@ -99,8 +94,8 @@ public class DataManipulation {
     }
 
     public static boolean isLoversWith(String s1, String s2) {
-        Node src = Sociopath.graphDb.findNode(Sociopath.Labels.STUDENT, "name", s1.toUpperCase());
-        Node target = Sociopath.graphDb.findNode(Sociopath.Labels.STUDENT, "name", s2.toUpperCase());
+        Node src = graphDb.findNode(Sociopath.Labels.STUDENT, "name", s1.toUpperCase());
+        Node target = graphDb.findNode(Sociopath.Labels.STUDENT, "name", s2.toUpperCase());
         Iterable<Relationship> relationships = src.getRelationships(Direction.OUTGOING, Sociopath.Rels.LOVES);
         for (Relationship relationship : relationships) {
             if (relationship.getEndNode().equals(target)) {
@@ -111,31 +106,31 @@ public class DataManipulation {
     }
 
     public static Relationship bullies(String name1, String name2, int repTo) {
-        Node s1 = Sociopath.graphDb.findNode(Sociopath.Labels.STUDENT, "name", name1.toUpperCase());
-        Node s2 = Sociopath.graphDb.findNode(Sociopath.Labels.STUDENT, "name", name2.toUpperCase());
+        Node s1 = graphDb.findNode(Sociopath.Labels.STUDENT, "name", name1.toUpperCase());
+        Node s2 = graphDb.findNode(Sociopath.Labels.STUDENT, "name", name2.toUpperCase());
         Relationship relationship = s1.createRelationshipTo(s2, Sociopath.Rels.BULLIES);
         relationship.setProperty("rep", repTo);
         return relationship;
     }
 
     public static Relationship hates(String name1, String name2, int repTo) {
-        Node s1 = Sociopath.graphDb.findNode(Sociopath.Labels.STUDENT, "name", name1.toUpperCase());
-        Node s2 = Sociopath.graphDb.findNode(Sociopath.Labels.STUDENT, "name", name2.toUpperCase());
+        Node s1 = graphDb.findNode(Sociopath.Labels.STUDENT, "name", name1.toUpperCase());
+        Node s2 = graphDb.findNode(Sociopath.Labels.STUDENT, "name", name2.toUpperCase());
         Relationship relationship = s1.createRelationshipTo(s2, Sociopath.Rels.HATES);
         relationship.setProperty("rep", repTo);
         return relationship;
     }
 
     public static Relationship loves(String name1, String name2, int repTo) {
-        Node s1 = Sociopath.graphDb.findNode(Sociopath.Labels.STUDENT, "name", name1.toUpperCase());
-        Node s2 = Sociopath.graphDb.findNode(Sociopath.Labels.STUDENT, "name", name2.toUpperCase());
+        Node s1 = graphDb.findNode(Sociopath.Labels.STUDENT, "name", name1.toUpperCase());
+        Node s2 = graphDb.findNode(Sociopath.Labels.STUDENT, "name", name2.toUpperCase());
         Relationship relationship = s1.createRelationshipTo(s2, Sociopath.Rels.LOVES);
         relationship.setProperty("rep", repTo);
         return relationship;
     }
 
     public static Node getNode(String name) {
-        return Sociopath.graphDb.findNode(Sociopath.Labels.STUDENT, "name", name.toUpperCase());
+        return graphDb.findNode(Sociopath.Labels.STUDENT, "name", name.toUpperCase());
     }
 
     // Method for expanding path during traversal
@@ -147,7 +142,7 @@ public class DataManipulation {
     }
 
     public static ResourceIterator<Node> getAllNodes() {
-        return Sociopath.graphDb.findNodes(Sociopath.Labels.STUDENT);
+        return graphDb.findNodes(Sociopath.Labels.STUDENT);
     }
 
     /**
@@ -217,12 +212,12 @@ public class DataManipulation {
     /**
      * ******************EVENT 6 METHODS******************
      */
-    // TODO Sort output by length
+    // TODO Clear nodes after running the event
     // Computes the paths
     public static void displayPathsE6(DataManipulation dm, ArrayList<Node> inputNodesList, ArrayList<String> relationships, ArrayList<String> takenInts, int n) {
         // Creates n nodes labeled by user inputs
         for (int i = 0; i < n; i++) {
-            Node node = Sociopath.graphDb.createNode(Sociopath.Labels.STUDENT);
+            Node node = graphDb.createNode(Sociopath.Labels.STUDENT);
             node.setProperty("name", takenInts.get(i));
             inputNodesList.add(node);
         }
@@ -281,6 +276,19 @@ public class DataManipulation {
         nodesListsList = removeDuplicates(nodesListsList);
         nodesListsList.sort(Comparator.comparing(List::size));
         displayPathsE6Util(nodesListsList, index);
+        clearAllE6(nodesListsList);
+    }
+
+    // To delete the created nodes to avoid future nodes duplication errors
+    public static void clearAllE6(ArrayList<ArrayList<Node>> nodesListsList) {
+        for (ArrayList<Node> nodesList : nodesListsList) {
+            for (Node node : nodesList) {
+                try (Transaction tx = graphDb.beginTx()) {
+                    node.delete();
+                    tx.success();
+                } catch (Exception e) {}
+            }
+        }
     }
 
     // To actually display the paths
