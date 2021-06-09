@@ -355,16 +355,15 @@ public class Events {
 
         // Forms friendships between nodes
         for (int i = 0; i < n; i++) {
-            String[] relationshipSplit = relationships.get(i). split("");
+            String[] relationshipSplit = relationships.get(i).split("");
             String first = relationshipSplit[0];
             String second = relationshipSplit[1];
             dm.friendTo(first, second);
         }
 
         ArrayList<Iterable<Path>> pathsIterablesList = new ArrayList<>();
-        ArrayList<ArrayList<Node>> nodesListsList = new ArrayList<>();
 
-        // Retrieves all paths between all nodes
+        // Retrieves all pathsList between all nodes
         // add to pathsIterablesList
         for (int i = 0; i < takenInts.size(); i++) {
             for (int j = i + 1; j < takenInts.size(); j++) {
@@ -372,32 +371,36 @@ public class Events {
             }
         }
 
-        // Retrieves all paths Iterable from pathsIterablesList
+        // Retrieves all pathsList Iterable from pathsIterablesList
         // add to pathsList
-        for (int i = 0; i < pathsIterablesList.size(); i++) {
-            ArrayList<Path> pathsIterable = new ArrayList<>();
-            for (Path tempPathsIterable : pathsIterablesList.get(i)) {
-                pathsIterable.add(tempPathsIterable);
+        ArrayList<Path> pathsList = new ArrayList<>();
+        pathsList = new ArrayList<>();
+        for (Iterable<Path> pathsIterable : pathsIterablesList) {
+            // Retrieves all paths from pathsIterable
+            // add to pathsList
+            for (Path tempPaths : pathsIterable) {
+                pathsList.add(tempPaths);
             }
-
-            // Retrieves all nodes from each paths in pathsIterable
-            // add to node Iterable
-            int index = 0;
-            for (Path path : pathsIterable) {
-                nodesListsList.add(new ArrayList<Node>());
-                Iterable<Node> nodesIterable = path.nodes();
-
-                // Retrieves all nodes from nodes Iterable
-                // add to nodesListList
-                for (Node node : nodesIterable) {
-                    nodesListsList.get(index).add(node);
-                }
-                index++;
-                nodesListsList = dm.removeDuplicates(nodesListsList);
-            }
-
-            displayPathE6Util(nodesListsList);
         }
+
+        // TODO Checkpoint
+        // Retrieves all nodesList from each paths in pathsList
+        // add to nodesIterable
+        ArrayList<ArrayList<Node>> nodesListsList = new ArrayList<>();
+        int index = 0;
+        for (Path nodesList : pathsList) {
+            nodesListsList.add(new ArrayList<Node>());
+            Iterable<Node> nodesIterable = nodesList.nodes();
+
+            // Retrieves all nodes from nodes Iterable
+            // add to nodesListList
+            for (Node node : nodesIterable) {
+                nodesListsList.get(index).add(node);
+            }
+            index++;
+            nodesListsList = dm.removeDuplicates(nodesListsList);
+        }
+        displayPathE6Util(nodesListsList);
     }
 
     // To actually display the paths
@@ -410,7 +413,7 @@ public class Events {
                 // If first node
                 if (j == 0)
                     System.out.print("[" + nodesList.get(j).getProperty("name") + ", ");
-                // If last node
+                    // If last node
                 else if (j == nodesList.size() - 1)
                     System.out.print(nodesList.get(j).getProperty("name") + "]");
                 else
