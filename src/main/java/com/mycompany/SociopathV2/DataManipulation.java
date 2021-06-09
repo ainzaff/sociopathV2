@@ -212,7 +212,6 @@ public class DataManipulation {
     /**
      * ******************EVENT 6 METHODS******************
      */
-    // TODO Clear nodes after running the event
     // Computes the paths
     public static void displayPathsE6(DataManipulation dm, ArrayList<Node> inputNodesList, ArrayList<String> relationships, ArrayList<String> takenInts, int n) {
         // Creates n nodes labeled by user inputs
