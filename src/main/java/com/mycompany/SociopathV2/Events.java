@@ -234,20 +234,22 @@ public class Events {
             // Takes input
             String str1 = input.next();
             String str2 = input.next();
+            System.out.println();
 
             // If user enters more than n nodes, re-prompt an input
             if (takenInts.size() == n) {
-                if (!takenInts.contains(str1) || !takenInts.contains(str2)) {
-                    System.out.println("You entered more than " + n + " nodes. Try again.");
+                while (!takenInts.contains(str1) || !takenInts.contains(str2)) {
+                    System.out.println("You entered more than " + n + " nodes. Try again.\n");
                     str1 = input.next();
                     str2 = input.next();
+                    System.out.println();
                 }
             }
 
             String relay = str1 + str2;
             relationships.add(relay);
 
-            // Tracks similar inputs to filter duplicates
+            // Filters duplicate nodes
             if (!takenInts.contains(str1)) {
                 takenInts.add(str1);
             }
