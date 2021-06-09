@@ -322,10 +322,10 @@ public class Events {
         ArrayList<String> relationships = new ArrayList<>();
         ArrayList<String> takenInts = new ArrayList<>();
 
-        System.out.println("\nHow many friendships do you want to examine?");
+        System.out.print("\nHow many friendships do you want to examine? --> ");
         int n = Sociopath.input.nextInt();
 
-        System.out.println("Enter TWO space-separated integers. Example: 1 2)");
+        System.out.println("\nEnter TWO space-separated integers. (Example: 1 2)");
         for (int i = 0; i < n; i++) {
             // Takes input
             String str1 = input.next();
@@ -340,49 +340,50 @@ public class Events {
             if (!takenInts.contains(str2))
                 takenInts.add(str2);
         }
+        System.out.println();
         displayPathsE6(dm, nodesList, relationships, takenInts, n);
     }
 
     // Computes the paths
-    private static void displayPathsE6(DataManipulation dm, ArrayList<Node> nodesList, ArrayList<String> relationships, ArrayList<String> takenInts, int n) {
-        // Creates n nodes
+    private static void displayPathsE6(DataManipulation dm, ArrayList<Node> inputNodesList, ArrayList<String> relationships, ArrayList<String> takenInts, int n) {
+        // Creates n nodes labeled by user inputs
         for (int i = 0; i < n; i++) {
             Node node = Sociopath.graphDb.createNode(Sociopath.Labels.STUDENT);
             node.setProperty("name", takenInts.get(i));
-            nodesList.add(node);
+            inputNodesList.add(node);
         }
 
         // Forms friendships between nodes
         for (int i = 0; i < n; i++) {
-            String[] relationshipSplit = relationships.get(i).split("");
+            String[] relationshipSplit = relationships.get(i). split("");
             String first = relationshipSplit[0];
             String second = relationshipSplit[1];
             dm.friendTo(first, second);
         }
 
-        ArrayList<Iterable<Path>> pathsIterableList = new ArrayList<>();
+        ArrayList<Iterable<Path>> pathsIterablesList = new ArrayList<>();
         ArrayList<ArrayList<Node>> nodesListsList = new ArrayList<>();
 
         // Retrieves all paths between all nodes
-        // add to pathsIterableList
+        // add to pathsIterablesList
         for (int i = 0; i < takenInts.size(); i++) {
-            for (int j = 0; j < takenInts.size(); j++) {
-                pathsIterableList.add(DataManipulation.getAllPaths(nodesList.get(i), nodesList.get(j)));
+            for (int j = i + 1; j < takenInts.size(); j++) {
+                pathsIterablesList.add(dm.getAllPaths(inputNodesList.get(i), inputNodesList.get(j)));
             }
         }
 
-        for (int i = 0; i < pathsIterableList.size(); i++) {
-            // Retrieves all paths Iterable from pathsIterableList
-            // add to pathsList
-            ArrayList<Path> pathsList = new ArrayList<>();
-            for (Path path : pathsIterableList.get(i)) {
-                pathsList.add(path);
+        // Retrieves all paths Iterable from pathsIterablesList
+        // add to pathsList
+        for (int i = 0; i < pathsIterablesList.size(); i++) {
+            ArrayList<Path> pathsIterable = new ArrayList<>();
+            for (Path tempPathsIterable : pathsIterablesList.get(i)) {
+                pathsIterable.add(tempPathsIterable);
             }
 
-            // Retrieves all nodes from each paths in pathsList
+            // Retrieves all nodes from each paths in pathsIterable
             // add to node Iterable
             int index = 0;
-            for (Path path : pathsList) {
+            for (Path path : pathsIterable) {
                 nodesListsList.add(new ArrayList<Node>());
                 Iterable<Node> nodesIterable = path.nodes();
 
@@ -392,15 +393,15 @@ public class Events {
                     nodesListsList.get(index).add(node);
                 }
                 index++;
+                nodesListsList = dm.removeDuplicates(nodesListsList);
             }
 
-            nodesListsList = DataManipulation.removeDuplicates(nodesListsList);
             displayPathE6Util(nodesListsList);
         }
     }
 
     // To actually display the paths
-    public static void displayPathE6Util(ArrayList<ArrayList<Node>> nodesListsList) {
+    private static void displayPathE6Util(ArrayList<ArrayList<Node>> nodesListsList) {
         // For every nodesList in nodesListsList
         for (int i = 0; i < nodesListsList.size(); i++) {
             ArrayList<Node> nodesList = nodesListsList.get(i);
