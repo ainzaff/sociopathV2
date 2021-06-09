@@ -287,12 +287,12 @@ public class DataManipulation {
             index++;
         }
         nodesListsList = dm.removeDuplicates(nodesListsList);
-        displayPathE6Util(nodesListsList);
+        displayPathE6Util(nodesListsList, index);
     }
 
     // To actually display the paths
-    public static void displayPathE6Util(ArrayList<ArrayList<Node>> nodesListsList) {
-
+    public static void displayPathE6Util(ArrayList<ArrayList<Node>> nodesListsList, int n) {
+        System.out.println("You can form " + n + " friendships: ");
         for (ArrayList<Node> nodesList : nodesListsList) {
             for (int i = 0; i < nodesList.size(); i++) {
                 // If first node
