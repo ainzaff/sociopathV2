@@ -294,7 +294,7 @@ public class DataManipulation {
 
     // To actually display the paths
     public static void displayPathsE6Util(ArrayList<ArrayList<Node>> nodesListsList, int n) {
-        System.out.println("You can form " + numWords[n] + " friendships: ");
+        System.out.println("You can form " + n + " friendships: ");
         for (ArrayList<Node> nodesList : nodesListsList) {
             for (int i = 0; i < nodesList.size(); i++) {
                 // If first node

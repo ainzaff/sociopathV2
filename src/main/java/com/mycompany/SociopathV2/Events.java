@@ -322,10 +322,10 @@ public class Events {
     public static void bully() {
         input.nextLine();
         System.out.println("Who was the bully?");
-        String bully = input.nextLine();
+        String bully = input.nextLine().toUpperCase();
         Node bullyNode = DataManipulation.getNode(bully);
         System.out.println("Which person was being bullied?");
-        String bullied = input.nextLine();
+        String bullied = input.nextLine().toUpperCase();
         System.out.println("The small and weak " + bullied + " was preyed upon by the big bad bully , " + bully + "!");
         DataManipulation.bullies(bully, bullied, -1);
         System.out.println(bullied + " now hates " + bully);

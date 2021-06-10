@@ -10,7 +10,7 @@ import javax.swing.table.DefaultTableModel;
 
 /**
  *
- * @author Syaamil Faiq
+ * @author Syaamil Faiq jabbar
  */
 public class jFrameDisplayStudents extends javax.swing.JFrame {
 
@@ -23,7 +23,7 @@ public class jFrameDisplayStudents extends javax.swing.JFrame {
     }
     
     public void fetch(){
-        String[] column = {"NAME", "DIVING RATE", "LUNCH STARTS", "LUNCH PERIOD"};
+        String[] column = {"NAME", "DIVING RATE", "LUNCH STARTS", "LUNCH PERIOD", "PROGRAMMING SKILL"};
         Object[][] data = getAllStudents();
         DefaultTableModel model = new DefaultTableModel(data, column); 
         jTable1.setModel(model);

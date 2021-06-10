@@ -86,8 +86,7 @@ public class LunchMethods {
     static public int getNewLunchEnd(Node s1) {
         int lunchStart = getNewLunchStart(s1);
         int lunchPeriod = getNewLunchPeriod(s1);
-        int hour = 0;
-        int lunchEnd = lunchStart - lunchPeriod;
+        int lunchEnd = lunchStart + lunchPeriod;
 
         return changeToTime(lunchEnd);
     }
@@ -162,10 +161,11 @@ public class LunchMethods {
                 }
                 //if not friends: create new relationship
                 if (!DataManipulation.isFriendsWith(user, name)) {
-                    DataManipulation.friendTo(user, name, 0);
+                    DataManipulation.friendTo(user, name, 1);
                     DataManipulation.friendTo(name, user, 1);
-                    System.out.println(user + " now knows " + name + "!");
+                    System.out.println(user + " is now friends with " + name + "!");
                 }
+                continue;
             }
             //if end within users period
             if (end >= userStart && end <= userEnd) {
@@ -179,7 +179,7 @@ public class LunchMethods {
                 if (!DataManipulation.isFriendsWith(user, name)) {
                     DataManipulation.friendTo(user, name, 0);
                     DataManipulation.friendTo(name, user, 1);
-                    System.out.println(user + " now knows " + name + "!");
+                    System.out.println(user + " is now friends with " + name + "!");
 
                 }
             }

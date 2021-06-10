@@ -151,7 +151,7 @@ public class StudentMethods {
     }
     
     public static Object[][] getAllStudents() {
-        Object[][] res = new Object[10][5];
+        Object[][] res = new Object[10][6];
         int colcounter = 0;
         int rowcounter = 0;
         ResourceIterator<Node> list = DataManipulation.getAllNodes();
@@ -167,6 +167,8 @@ public class StudentMethods {
             colcounter++;
             res[rowcounter][colcounter] = s.getProperty("lunchPeriod");
             colcounter++;
+            res[rowcounter][colcounter] = s.getProperty("prog");
+            colcounter++;
             rowcounter++;
         }
 
@@ -176,13 +178,13 @@ public class StudentMethods {
     public static Object[][] getProfile(Node s1) {
         Object[][] res = new Object[100][4];
         int rowcounter = 0;
-        Iterable<Relationship> list = s1.getRelationships(Direction.OUTGOING);
+        Iterable<Relationship> list = s1.getRelationships(Direction.INCOMING);
 
         for (Relationship r : list) {
             int colcounter = 0;
             res[rowcounter][colcounter] = (Object) r.getType().toString();
             colcounter++;
-            res[rowcounter][colcounter] = r.getEndNode().getProperty("name");
+            res[rowcounter][colcounter] = r.getStartNode().getProperty("name");
             colcounter++;
             res[rowcounter][colcounter] = r.getProperty("rep");
             rowcounter++;
