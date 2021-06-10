@@ -136,7 +136,6 @@ public class DataManipulation {
     // Method for expanding path during traversal
     public static Iterable<Path> getAllPaths(Node src, Node target) {
         PathExpander expander = PathExpanders.forType(Sociopath.Rels.IS_FRIENDS_WITH);
-        //PathFinder<Path> allPath = GraphAlgoFactory.allPaths(expander, 10);
         PathFinder<Path> allPath = GraphAlgoFactory.allSimplePaths(expander, 50);
         return allPath.findAllPaths(src, target);
     }
