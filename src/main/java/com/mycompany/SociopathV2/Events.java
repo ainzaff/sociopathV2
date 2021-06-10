@@ -226,7 +226,7 @@ public class Events {
         ArrayList<String> relationships = new ArrayList<>();
         ArrayList<String> takenInts = new ArrayList<>();
 
-        System.out.print("\nHow many friendships do you want to examine? --> ");
+        System.out.println("\nHow many friendships do you want to examine? --> ");
         int n = Sociopath.input.nextInt();
 
         System.out.println("\nEnter " + dm.numWords[n] + " friendships between " + dm.numWords[n] + " people. (Example: 1 2)\n");
