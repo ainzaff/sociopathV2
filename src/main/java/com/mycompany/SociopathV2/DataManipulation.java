@@ -285,7 +285,8 @@ public class DataManipulation {
                 try (Transaction tx = graphDb.beginTx()) {
                     node.delete();
                     tx.success();
-                } catch (Exception e) {}
+                } catch (Exception e) {
+                }
             }
         }
     }
