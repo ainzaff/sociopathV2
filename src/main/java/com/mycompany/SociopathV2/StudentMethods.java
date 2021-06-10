@@ -11,7 +11,6 @@ import org.neo4j.graphdb.Direction;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Relationship;
 import org.neo4j.graphdb.ResourceIterator;
-import org.neo4j.graphdb.Result;
 
 /**
  *
@@ -126,15 +125,6 @@ public class StudentMethods {
         DataManipulation.friendTo("Joe", "Daniel", 7);
         DataManipulation.friendTo("Joe", "Ian", 4);
         DataManipulation.friendTo("Ian", "Joe", 3);
-
-        //Relay manipulation codes for testing purposes(Event 5)
-        //DataManipulation.friendTo("Ethan", "Daniel", 3);
-        //DataManipulation.friendTo("Guy", "Holly", 3);
-        //DataManipulation.friendTo("Ethan", "Guy", 3);
-        //DataManipulation.friendTo("Bob", "Daniel", 3);
-        //DataManipulation.friendTo("Charlie", "Ethan", 3);
-        //DataManipulation.friendTo("Ian", "Bob", 3);
-        //DataManipulation.friendTo("Ethan", "Joe", 3);
     }
 
     public static void displayStudents() {
