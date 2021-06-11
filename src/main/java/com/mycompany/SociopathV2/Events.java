@@ -139,7 +139,7 @@ public class Events {
     public static void eventFour() {
         int counter = 0;
         LinkedList<Integer> bookList = new LinkedList<>();
-        System.out.println("\nOn a lazy Sunday afternoon, you decide to volunteer at the library. The librarian, Jabbar, has asked you to arrange some books.");
+        System.out.println("\nOn a lazy Sunday afternoon, you decided to volunteer at the library. The librarian, Jabbar, has asked you to arrange some books.");
         System.out.println("Enter number of books: ");
         int numOfBooks = Sociopath.input.nextInt();
         Sociopath.input.nextLine();
@@ -162,7 +162,6 @@ public class Events {
             counter = i;
         }
         System.out.println("Rounds needed: " + counter);
-        Menus.mainMenu();
     }
 
     public static void eventFive() {
