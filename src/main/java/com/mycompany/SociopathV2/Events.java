@@ -257,8 +257,8 @@ public class Events {
                 if (!takenInts.contains(str2)) {
                     takenInts.add(str2);
                 }
-            } catch (InputMismatchException e) {
-                System.out.println("You entered an unsupported character(s).");
+            } catch (Exception e) {
+                System.out.println("You entered an unsupported character(s). PKlease try again.");
                 eventSix();
             }
         }
