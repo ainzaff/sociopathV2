@@ -8,6 +8,7 @@ package com.mycompany.SociopathV2;
 import java.util.*;
 
 import org.neo4j.graphdb.*;
+import org.neo4j.unsafe.impl.batchimport.input.Input;
 
 /**
  * @author lenovo
@@ -226,34 +227,39 @@ public class Events {
         ArrayList<String> relationships = new ArrayList<>();
         ArrayList<String> takenInts = new ArrayList<>();
 
+        // Input
         System.out.println("\nHow many friendships do you want to examine? --> ");
         int n = Sociopath.input.nextInt();
 
         System.out.println("\nEnter " + dm.numWords[n] + " friendships between " + dm.numWords[n] + " people. (Example: 1 2)\n");
         for (int i = 0; i < n; i++) {
-            // Takes input
-            String str1 = input.next();
-            String str2 = input.next();
+            try {
+                // Takes input
+                String str1 = input.next();
+                String str2 = input.next();
 
-            // If user enters more than n nodes, re-prompt an input
-            if (takenInts.size() == n) {
-                while (!takenInts.contains(str1) || !takenInts.contains(str2)) {
-                    System.out.println("You entered more than " + n + " nodes. Try again.\n");
-                    str1 = input.next();
-                    str2 = input.next();
-                    System.out.println();
+                // If user enters more than n nodes, re-prompt an input
+                if (takenInts.size() == n) {
+                    while (!takenInts.contains(str1) || !takenInts.contains(str2)) {
+                        System.out.println("You entered more than " + n + " integers. Try again.\n");
+                        str1 = input.next();
+                        str2 = input.next();
+                        System.out.println();
+                    }
                 }
-            }
+                String relay = str1 + str2;
+                relationships.add(relay);
 
-            String relay = str1 + str2;
-            relationships.add(relay);
-
-            // Filters duplicate nodes
-            if (!takenInts.contains(str1)) {
-                takenInts.add(str1);
-            }
-            if (!takenInts.contains(str2)) {
-                takenInts.add(str2);
+                // Filters duplicate nodes
+                if (!takenInts.contains(str1)) {
+                    takenInts.add(str1);
+                }
+                if (!takenInts.contains(str2)) {
+                    takenInts.add(str2);
+                }
+            } catch (InputMismatchException e) {
+                System.out.println("You entered an unsupported character(s).");
+                eventSix();
             }
         }
         System.out.println();
