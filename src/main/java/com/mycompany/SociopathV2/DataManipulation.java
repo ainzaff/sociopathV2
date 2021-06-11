@@ -211,13 +211,12 @@ public class DataManipulation {
     /**
      * ******************EVENT 6 METHODS******************
      */
-    // TODO Clear nodes after running the event
     // Computes the paths
-    public static void displayPathsE6(DataManipulation dm, ArrayList<Node> inputNodesList, ArrayList<String> relationships, ArrayList<String> takenInts, int n) {
+    public static void displayPathsE6(DataManipulation dm, ArrayList<Node> inputNodesList, ArrayList<String> relationships, ArrayList<String> taken, int n) {
         // Creates n nodes labeled by user inputs
         for (int i = 0; i < n; i++) {
             Node node = graphDb.createNode(Sociopath.Labels.STUDENT);
-            node.setProperty("name", takenInts.get(i));
+            node.setProperty("name", taken.get(i));
             inputNodesList.add(node);
         }
 
@@ -233,8 +232,8 @@ public class DataManipulation {
 
         // Retrieves all pathsList between all nodes
         // add to pathsIterablesList
-        for (int i = 0; i < takenInts.size(); i++) {
-            for (int j = i + 1; j < takenInts.size(); j++) {
+        for (int i = 0; i < taken.size(); i++) {
+            for (int j = i + 1; j < taken.size(); j++) {
                 pathsIterablesList.add(dm.getAllPaths(inputNodesList.get(i), inputNodesList.get(j)));
             }
         }
@@ -242,7 +241,6 @@ public class DataManipulation {
         // Retrieves all pathsList Iterable from pathsIterablesList
         // add to pathsList
         ArrayList<Path> pathsList = new ArrayList<>();
-        pathsList = new ArrayList<>();
         for (Iterable<Path> pathsIterable : pathsIterablesList) {
             // Retrieves all paths from pathsIterable
             // add to pathsList
@@ -258,6 +256,7 @@ public class DataManipulation {
         ArrayList<ArrayList<Node>> nodesListsList = new ArrayList<>();
         int index = 0;
         for (Path nodesList : pathsList) {
+            // Adds all nodes in nodesList into nodesIterable
             // nodes() returns nodesIterable
             Iterable<Node> nodesIterable = nodesList.nodes();
 

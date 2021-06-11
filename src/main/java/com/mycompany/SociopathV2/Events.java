@@ -224,45 +224,58 @@ public class Events {
         DataManipulation dm = new DataManipulation();
         ArrayList<Node> nodesList = new ArrayList<>();
         ArrayList<String> relationships = new ArrayList<>();
-        ArrayList<String> takenInts = new ArrayList<>();
+        ArrayList<String> taken = new ArrayList<>();
 
         // Input
         System.out.println("\nHow many friendships do you want to examine? --> ");
         int n = Sociopath.input.nextInt();
 
-        System.out.println("\nEnter " + dm.numWords[n] + " friendships between " + dm.numWords[n] + " people. (Example: 1 2)\n");
+        System.out.println("\nEnter " + n + " friendships between " + n + " people. (Example: 1 2 or A B)\n");
         for (int i = 0; i < n; i++) {
             try {
                 // Takes input
                 String friend1 = input.next();
                 String friend2 = input.next();
 
-                // If user enters more than n nodes, re-prompt an input
-                if (takenInts.size() == n) {
-                    while (!takenInts.contains(friend1) || !takenInts.contains(friend2)) {
-                        System.out.println("You entered more than " + n + " integers. Try again.\n");
+                /**
+                 * Filtering conditions to re-prompt inputs
+                 */
+                // If same characters are entered
+                if (friend1 == friend2) {
+                    System.out.println("You entered the same character twice. Try again.");
+                    friend1 = input.next();
+                    friend2 = input.next();
+                    System.out.println();
+                }
+                // If user enters more than n nodes
+                if (taken.size() == n) {
+                    while (!taken.contains(friend1) || !taken.contains(friend2)) {
+                        System.out.println("You entered more than " + n + " characters. Try again.\n");
                         friend1 = input.next();
                         friend2 = input.next();
                         System.out.println();
                     }
                 }
+                // Filters duplicate nodes
+                if (!taken.contains(friend1))
+                    taken.add(friend1);
+                if (!taken.contains(friend2))
+                    taken.add(friend2);
+
+                // Concatenates friend1 and friend2
+                // add into relationships
                 String relay = friend1 + friend2;
                 relationships.add(relay);
+            }
 
-                // Filters duplicate nodes
-                if (!takenInts.contains(friend1)) {
-                    takenInts.add(friend1);
-                }
-                if (!takenInts.contains(friend2)) {
-                    takenInts.add(friend2);
-                }
-            } catch (Exception e) {
+            // TODO Fix try-catch
+            catch (Exception e) {
                 System.out.println("You entered an unsupported character. Please try again.");
                 eventSix();
             }
         }
         System.out.println();
-        dm.displayPathsE6(dm, nodesList, relationships, takenInts, n);
+        dm.displayPathsE6(dm, nodesList, relationships, taken, n);
     }
 
     public static void eventSeven() {
