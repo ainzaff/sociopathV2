@@ -14,7 +14,6 @@ import java.util.Scanner;
  */
 public class Menus {
 
-    public static Scanner input = new Scanner(System.in);
     
     public static void mainMenu() {
         Scanner in = new Scanner(System.in);
@@ -48,16 +47,22 @@ public class Menus {
     }
 
     public static void studentMenu() {
+        Scanner input = new Scanner(System.in);
         System.out.println("\nDisplaying students . . .\n");
         StudentMethods.displayStudents();
         System.out.println("\nWhich student's profile would you like to check?");
         System.out.println("Type exit to go back to main menu\n");
-        Sociopath.input.nextLine();
-        String name = Sociopath.input.nextLine();
+        try{
+        String name = input.nextLine();
         StudentMethods.displayProfile(name);
+        }
+        catch(Exception e){
+            System.out.println("Please enter a valid student's name.");
+        }
     }
 
     public static void eventMenu() {
+        Scanner input = new Scanner(System.in);
         int choice;
         System.out.println("\nWhich event happened? \n");
         System.out.println("1. Teaching a stranger to solve lab questions ");
@@ -67,8 +72,13 @@ public class Menus {
         System.out.println("5. Meet your crush ");
         System.out.println("6. Friendship ");
         System.out.println("7. Social Dynamics Events\n");
-        choice = Sociopath.input.nextInt();
+        try{
+        choice = input.nextInt();
         Events.eventSelector(choice);
+        }
+        catch(Exception e){
+            System.out.println("Please enter an integer!");
+        }
     }
 
 }

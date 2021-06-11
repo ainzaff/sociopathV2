@@ -15,154 +15,171 @@ import org.neo4j.unsafe.impl.batchimport.input.Input;
  */
 public class Events {
 
-    public static Scanner input = new Scanner(System.in);
-
     public static void eventOne() {
-        Sociopath.input.nextLine();
-        System.out.println("\nWho was helping the stranger with their lab questions?");
-        String helper = Sociopath.input.nextLine().toUpperCase();
-        System.out.println("\nWho was the stranger?");
-        String helped = Sociopath.input.nextLine().toUpperCase();
-        if (helper.equals(helped)) {
-            System.out.println("\n Now you're not even making sense . . .");
-            return;
-        }
-        Node helpernode = DataManipulation.getNode(helper);
-        Node helpednode = DataManipulation.getNode(helped);
-        if (!DataManipulation.isFriendsWith(helper, helped)) {
-            if ((Integer) helpernode.getProperty("prog") >= 50) {
-                System.out.println("\nAhh, I see. " + helper + " is quite good at programming . . .");
-                System.out.println(helper + " and " + helped + " have now become friends!");
-                System.out.println(helper + "'s reputation in the eyes of " + helped + " has increased by 10!");
-                Relationship lab = DataManipulation.friendTo(helper, helped, 10);
-                lab.setProperty("goodLab", "true");
-                DataManipulation.friendTo(helped, helper, 0);
+        Scanner input = new Scanner(System.in);
+        try {
+            System.out.println("\nWho was helping the stranger with their lab questions?");
+            String helper = input.nextLine().toUpperCase();
+            System.out.println("\nWho was the stranger?");
+            String helped = input.nextLine().toUpperCase();
+            if (helper.equals(helped)) {
+                System.out.println("\n Now you're not even making sense . . .");
+                return;
             }
-            if ((Integer) helpernode.getProperty("prog") < 50) {
-                System.out.println("\n" + helper + " isn't very good at programming, so " + helper + " probably could not have finished those questions . . .");
-                System.out.println(helper + " and " + helped + " have now become friends!");
-                System.out.println(helper + "'s reputation in the eyes of " + helped + " has increased by 2!");
-                Relationship lab = DataManipulation.friendTo(helper, helped, 2);
-                lab.setProperty("goodLab", "false");
-                DataManipulation.friendTo(helped, helper, 0);
+            Node helpernode = DataManipulation.getNode(helper);
+            Node helpednode = DataManipulation.getNode(helped);
+            if (!DataManipulation.isFriendsWith(helper, helped)) {
+                if ((Integer) helpernode.getProperty("prog") >= 50) {
+                    System.out.println("\nAhh, I see. " + helper + " is quite good at programming . . .");
+                    System.out.println(helper + " and " + helped + " have now become friends!");
+                    System.out.println(helper + "'s reputation in the eyes of " + helped + " has increased by 10!");
+                    Relationship lab = DataManipulation.friendTo(helper, helped, 10);
+                    lab.setProperty("goodLab", "true");
+                    DataManipulation.friendTo(helped, helper, 0);
+                }
+                if ((Integer) helpernode.getProperty("prog") < 50) {
+                    System.out.println("\n" + helper + " isn't very good at programming, so " + helper + " probably could not have finished those questions . . .");
+                    System.out.println(helper + " and " + helped + " have now become friends!");
+                    System.out.println(helper + "'s reputation in the eyes of " + helped + " has increased by 2!");
+                    Relationship lab = DataManipulation.friendTo(helper, helped, 2);
+                    lab.setProperty("goodLab", "false");
+                    DataManipulation.friendTo(helped, helper, 0);
+                }
+            } else {
+                System.out.println("\nThey are not strangers. Are you lying to yourself?");
             }
-        } else {
-            System.out.println("\nThey are not strangers. Are you lying to yourself?");
+        } catch (Exception e) {
+            System.out.println("Please enter a valid student's name.");
         }
     }
 
     public static void eventTwo() {
-        Sociopath.input.nextLine();
-        System.out.println("\nWho was the first person chit-chatting?");
-        String person1 = Sociopath.input.nextLine().toUpperCase();
-        System.out.println("\nWho was the second person chit-chatting?");
-        String person2 = Sociopath.input.nextLine().toUpperCase();
-        if (person1.equals(person2)) {
-            System.out.println("\n Now you're not even making sense . . .");
-            return;
-        }
-        if (!DataManipulation.isFriendsWith(person1, person2)) {
-            System.out.println("\nImpossible. They do not know each other!");
-            return;
-        }
-        if (DataManipulation.isFriendsWith(person1, person2)) {
-            System.out.println("Which student were they talking about?");
-            String talked = Sociopath.input.nextLine().toUpperCase();
-            if (talked.equals(person2) || talked.equals(person1)) {
+        Scanner input = new Scanner(System.in);
+        try {
+            System.out.println("\nWho was the first person chit-chatting?");
+            String person1 = input.nextLine().toUpperCase();
+            System.out.println("\nWho was the second person chit-chatting?");
+            String person2 = input.nextLine().toUpperCase();
+            if (person1.equals(person2)) {
                 System.out.println("\n Now you're not even making sense . . .");
                 return;
             }
-            if (!DataManipulation.isFriendsWith(person1, talked)) {
-                System.out.println("\nThat's a lie! " + person1 + " and " + talked + " haven't even met!");
+            if (!DataManipulation.isFriendsWith(person1, person2)) {
+                System.out.println("\nImpossible. They do not know each other!");
                 return;
             }
-            Node talkednode = DataManipulation.getNode(talked);
-            Node person1node = DataManipulation.getNode(person1);
-            Iterable<Relationship> relationships = talkednode.getRelationships(Direction.OUTGOING, Sociopath.Rels.IS_FRIENDS_WITH);
-            for (Relationship relay : relationships) {
-                if (!relay.hasProperty("goodLab")) {
-                    continue;
-                }
-                if (relay.getProperty("goodLab").equals("true")) {
-                    System.out.println("\nLuckily, " + talked + " did a good job helping " + person1 + " with the lab questions . . .");
-                    if (DataManipulation.isFriendsWith(person2, talked)) {
-                        DataManipulation.incrementRep(DataManipulation.getRelationship(person2, talked, Sociopath.Rels.IS_FRIENDS_WITH), (int) Math.floor(0.5 * (int) relay.getProperty("rep")));
-                        System.out.println(person2 + " is already friends with " + talked + "\nThis incident has caused " + talked + "'s reputation from " + person2 + "'s perspective to increase by " + (int) Math.floor(0.5 * (int) relay.getProperty("rep")) + "!");
-                        return;
-                    }
-                    DataManipulation.knowsOf(person2, talked, (int) Math.floor(0.5 * (int) relay.getProperty("rep")));
-                    System.out.println(person2 + " now knows of " + talked + " !");
-                    System.out.println(talked + "'s reputation in the eyes (or in this case, ears) of " + person2 + " has increased by " + (int) Math.floor(0.5 * (int) relay.getProperty("rep")) + "!");
+            if (DataManipulation.isFriendsWith(person1, person2)) {
+                System.out.println("Which student were they talking about?");
+                String talked = input.nextLine().toUpperCase();
+                if (talked.equals(person2) || talked.equals(person1)) {
+                    System.out.println("\n Now you're not even making sense . . .");
                     return;
                 }
-                if (relay.getProperty("goodLab").equals("false")) {
-                    System.out.println("\n" + talked + " must have messed up when helping " + person1 + " with the lab questions . . .");
-                    if (DataManipulation.isFriendsWith(person2, talked)) {
-                        DataManipulation.incrementRep(DataManipulation.getRelationship(person2, talked, Sociopath.Rels.IS_FRIENDS_WITH), (int) Math.floor(-1 * (int) relay.getProperty("rep")));
-                        System.out.println(person2 + " is already friends with " + talked + "\nThis incident has caused " + talked + "'s reputation from " + person2 + "'s perspective to decrease by " + (int) Math.floor(1 * (int) relay.getProperty("rep")) + "!");
-                        return;
-                    }
-                    DataManipulation.knowsOf(person2, talked, (int) Math.floor(-1 * (int) relay.getProperty("rep")));
-                    System.out.println(person2 + " now knows of " + talked + " !");
-                    System.out.println(talked + "'s reputation in the eyes (or in this case, ears) of " + person2 + " has decreased by " + (int) Math.floor(-1 * (int) relay.getProperty("rep")) + "!");
+                if (!DataManipulation.isFriendsWith(person1, talked)) {
+                    System.out.println("\nThat's a lie! " + person1 + " and " + talked + " haven't even met!");
                     return;
                 }
+                Node talkednode = DataManipulation.getNode(talked);
+                Node person1node = DataManipulation.getNode(person1);
+                Iterable<Relationship> relationships = talkednode.getRelationships(Direction.OUTGOING, Sociopath.Rels.IS_FRIENDS_WITH);
+                for (Relationship relay : relationships) {
+                    if (!relay.hasProperty("goodLab")) {
+                        continue;
+                    }
+                    if (relay.getProperty("goodLab").equals("true")) {
+                        System.out.println("\nLuckily, " + talked + " did a good job helping " + person1 + " with the lab questions . . .");
+                        if (DataManipulation.isFriendsWith(person2, talked)) {
+                            DataManipulation.incrementRep(DataManipulation.getRelationship(person2, talked, Sociopath.Rels.IS_FRIENDS_WITH), (int) Math.floor(0.5 * (int) relay.getProperty("rep")));
+                            System.out.println(person2 + " is already friends with " + talked + "\nThis incident has caused " + talked + "'s reputation from " + person2 + "'s perspective to increase by " + (int) Math.floor(0.5 * (int) relay.getProperty("rep")) + "!");
+                            return;
+                        }
+                        DataManipulation.knowsOf(person2, talked, (int) Math.floor(0.5 * (int) relay.getProperty("rep")));
+                        System.out.println(person2 + " now knows of " + talked + " !");
+                        System.out.println(talked + "'s reputation in the eyes (or in this case, ears) of " + person2 + " has increased by " + (int) Math.floor(0.5 * (int) relay.getProperty("rep")) + "!");
+                        return;
+                    }
+                    if (relay.getProperty("goodLab").equals("false")) {
+                        System.out.println("\n" + talked + " must have messed up when helping " + person1 + " with the lab questions . . .");
+                        if (DataManipulation.isFriendsWith(person2, talked)) {
+                            DataManipulation.incrementRep(DataManipulation.getRelationship(person2, talked, Sociopath.Rels.IS_FRIENDS_WITH), (int) Math.floor(-1 * (int) relay.getProperty("rep")));
+                            System.out.println(person2 + " is already friends with " + talked + "\nThis incident has caused " + talked + "'s reputation from " + person2 + "'s perspective to decrease by " + (int) Math.floor(1 * (int) relay.getProperty("rep")) + "!");
+                            return;
+                        }
+                        DataManipulation.knowsOf(person2, talked, (int) Math.floor(-1 * (int) relay.getProperty("rep")));
+                        System.out.println(person2 + " now knows of " + talked + " !");
+                        System.out.println(talked + "'s reputation in the eyes (or in this case, ears) of " + person2 + " has decreased by " + (int) Math.floor(-1 * (int) relay.getProperty("rep")) + "!");
+                        return;
+                    }
+                }
+                System.out.println("Lies! " + talked + " did not help " + person1 + " with their lab questions!");
             }
-            System.out.println("Lies! "+ talked + " did not help "+ person1 + " with their lab questions!");
+        } catch (Exception e) {
+            System.out.println("Please enter a valid student's name.");
         }
     }
 
     public static void eventThree() {
-        Sociopath.input.nextLine();
-        System.out.println("\nWho is going to use this unrivaled algorithm to obtain maximum reputation by having lunch?");
-        String user = input.nextLine().toUpperCase();
-        Node usernode = DataManipulation.getNode(user);
-        System.out.println("\nVery well, " + user + " , proceed with caution.");
-        LunchMethods.nextDay();
-        System.out.println("Through meticulous calculation , Sociopath has decided who to have lunch with to gain the most rep\n");
-        System.out.println("Day : " + (LunchMethods.getDayCounter() - 1));
-        //set averages first before getting them
-        ResourceIterator<Node> list = DataManipulation.getAllNodes();
-        while (list.hasNext()) {
-            Node s = list.next();
-            LunchMethods.setNewAvgLunchStart(s);
-            LunchMethods.setNewAvgLunchEnd(s);
+        Scanner input = new Scanner(System.in);
+        try {
+            System.out.println("\nWho is going to use this unrivaled algorithm to obtain maximum reputation by having lunch?");
+            String user = input.nextLine().toUpperCase();
+            Node usernode = DataManipulation.getNode(user);
+            System.out.println("\nVery well, " + user + " , proceed with caution.");
+            LunchMethods.nextDay();
+
+            System.out.println("Through meticulous calculation , Sociopath has decided who to have lunch with to gain the most rep\n");
+            System.out.println("Day : " + (LunchMethods.getDayCounter() - 1));
+            //set averages first before getting them
+            ResourceIterator<Node> list = DataManipulation.getAllNodes();
+            while (list.hasNext()) {
+                Node s = list.next();
+                LunchMethods.setNewAvgLunchStart(s);
+                LunchMethods.setNewAvgLunchEnd(s);
+            }
+            Result result = Sociopath.graphDb.execute("MATCH (s:STUDENT)" + "RETURN s.name as name, s.avgLunchStart as average_lunch_start,s.avgLunchEnd as average_lunch_end");
+            System.out.println(result.resultAsString());
+            System.out.println("\nUser : " + user);
+            System.out.println("User's average lunchStart : " + LunchMethods.getAvgLunchStart(usernode));
+            System.out.println("User's average lunchEnd : " + LunchMethods.getAvgLunchEnd(usernode));
+            System.out.println("\n" + user + " should have lunch with the following :\n");
+            LunchMethods.lunchAlgo(user, LunchMethods.getAvgLunchStart(usernode), LunchMethods.getAvgLunchEnd(usernode));
+        } catch (Exception e) {
+            System.out.println("Event was not executed properly.Please enter a valid student's name.");
+            eventThree();
         }
-        Result result = Sociopath.graphDb.execute("MATCH (s:STUDENT)" + "RETURN s.name as name, s.avgLunchStart as average_lunch_start,s.avgLunchEnd as average_lunch_end");
-        System.out.println(result.resultAsString());
-        System.out.println("\nUser : " + user);
-        System.out.println("User's average lunchStart : " + LunchMethods.getAvgLunchStart(usernode));
-        System.out.println("User's average lunchEnd : " + LunchMethods.getAvgLunchEnd(usernode));
-        System.out.println("\n" + user + " should have lunch with the following :\n");
-        LunchMethods.lunchAlgo(user, LunchMethods.getAvgLunchStart(usernode), LunchMethods.getAvgLunchEnd(usernode));
     }
 
     public static void eventFour() {
-        int counter = 0;
-        LinkedList<Integer> bookList = new LinkedList<>();
-        System.out.println("\nOn a lazy Sunday afternoon, you decided to volunteer at the library. The librarian, Jabbar, has asked you to arrange some books.");
-        System.out.println("Enter number of books: ");
-        int numOfBooks = Sociopath.input.nextInt();
-        Sociopath.input.nextLine();
-        System.out.println("Enter books' heights: ");
-        String bookHeightsInput = Sociopath.input.nextLine();
-        //split space
-        String[] bookHeights = bookHeightsInput.split(" ");
-        //push book height elements into a list while parse into integer
-        for (int i = 0; i < numOfBooks; i++) {
-            bookList.push(Integer.parseInt(bookHeights[i]));
-        }
-        for (int i = 0; i < bookList.size(); i++) {
-            for (int j = 0; j < bookList.size(); j++) {
-                if (j == bookList.size() - 1) {
-                    break;
-                } else if (bookList.get(j) > bookList.get(j + 1)) {
-                    bookList.remove(j + 1);
-                }
+        Scanner input = new Scanner(System.in);
+        try {
+            int counter = 0;
+            LinkedList<Integer> bookList = new LinkedList<>();
+            System.out.println("\nOn a lazy Sunday afternoon, you decided to volunteer at the library. The librarian, Jabbar, has asked you to arrange some books.");
+            System.out.println("Enter number of books: ");
+            int numOfBooks = Sociopath.input.nextInt();
+            Sociopath.input.nextLine();
+            System.out.println("Enter books' heights: ");
+            String bookHeightsInput = Sociopath.input.nextLine();
+            //split space
+            String[] bookHeights = bookHeightsInput.split(" ");
+            //push book height elements into a list while parse into integer
+            for (int i = 0; i < numOfBooks; i++) {
+                bookList.push(Integer.parseInt(bookHeights[i]));
             }
-            counter = i;
+            for (int i = 0; i < bookList.size(); i++) {
+                for (int j = 0; j < bookList.size(); j++) {
+                    if (j == bookList.size() - 1) {
+                        break;
+                    } else if (bookList.get(j) > bookList.get(j + 1)) {
+                        bookList.remove(j + 1);
+                    }
+                }
+                counter = i;
+            }
+            System.out.println("Rounds needed: " + counter);
+        } catch (Exception e) {
+            System.out.println("Please enter the number of books and the book's heights in a String with blank spaces in between.");
         }
-        System.out.println("Rounds needed: " + counter);
     }
 
     public static void eventFive() {
@@ -222,6 +239,7 @@ public class Events {
     }
 
     public static void eventSix() {
+        Scanner input = new Scanner(System.in);
         DataManipulation dm = new DataManipulation();
         ArrayList<Node> nodesList = new ArrayList<>();
         ArrayList<String> relationships = new ArrayList<>();
@@ -258,18 +276,18 @@ public class Events {
                     }
                 }
                 // Filters duplicate nodes
-                if (!taken.contains(friend1))
+                if (!taken.contains(friend1)) {
                     taken.add(friend1);
-                if (!taken.contains(friend2))
+                }
+                if (!taken.contains(friend2)) {
                     taken.add(friend2);
+                }
 
                 // Concatenates friend1 and friend2
                 // add into relationships
                 String relay = friend1 + friend2;
                 relationships.add(relay);
-            }
-
-            // TODO Fix try-catch
+            } // TODO Fix try-catch
             catch (Exception e) {
                 System.out.println("You entered an unsupported character. Please try again.");
                 eventSix();
@@ -277,26 +295,33 @@ public class Events {
         }
         System.out.println();
         dm.displayPathsE6(dm, nodesList, relationships, taken, n);
+
     }
 
     public static void eventSeven() {
-        System.out.println("Select event :");
-        System.out.println("1. Bully");
-        System.out.println("2. Love Proposal");
-        int choice = input.nextInt();
-        switch (choice) {
-            case 1: {
-                bully();
-                break;
+        Scanner input = new Scanner(System.in);
+        try {
+            System.out.println("Select event :");
+            System.out.println("1. Bully");
+            System.out.println("2. Love Proposal");
+            int choice = input.nextInt();
+            switch (choice) {
+                case 1: {
+                    bully();
+                    break;
+                }
+                case 2: {
+                    loveProposal();
+                    break;
+                }
+                default: {
+                    System.out.println("Please type in a valid number option. Returning to main menu . . .");
+                    Menus.mainMenu();
+                }
             }
-            case 2: {
-                loveProposal();
-                break;
-            }
-            default: {
-                System.out.println("Please type in a valid number option. Returning to main menu . . .");
-                Menus.mainMenu();
-            }
+        } catch (Exception e) {
+            System.out.println("Please enter an integer!");
+            eventSeven();
         }
     }
 
@@ -339,70 +364,80 @@ public class Events {
     }
 
     public static void bully() {
-        input.nextLine();
-        System.out.println("Who was the bully?");
-        String bully = input.nextLine().toUpperCase();
-        Node bullyNode = DataManipulation.getNode(bully);
-        System.out.println("Which person was being bullied?");
-        String bullied = input.nextLine().toUpperCase();
-        System.out.println("The small and weak " + bullied + " was preyed upon by the big bad bully , " + bully + "!");
-        DataManipulation.bullies(bully, bullied, -1);
-        System.out.println(bullied + " now hates " + bully);
-        DataManipulation.hates(bullied, bully, -1);
-        System.out.println("\nThe voices of " + bullied + " echoed through the school halls.");
-        System.out.println("Everyone now knows that " + bully + " is bullying " + bullied + "\n");
-        Iterable<Relationship> list = bullyNode.getRelationships();
-        for (Relationship r : list) {
-            DataManipulation.incrementRep(r, -1);
-        }
+        Scanner input = new Scanner(System.in);
+        try {
+            System.out.println("Who was the bully?");
+            String bully = input.nextLine().toUpperCase();
+            Node bullyNode = DataManipulation.getNode(bully);
+            System.out.println("Which person was being bullied?");
+            String bullied = input.nextLine().toUpperCase();
+            System.out.println("The small and weak " + bullied + " was preyed upon by the big bad bully , " + bully + "!");
+            DataManipulation.bullies(bully, bullied, -1);
+            System.out.println(bullied + " now hates " + bully);
+            DataManipulation.hates(bullied, bully, -1);
+            System.out.println("\nThe voices of " + bullied + " echoed through the school halls.");
+            System.out.println("Everyone now knows that " + bully + " is bullying " + bullied + "\n");
+            Iterable<Relationship> list = bullyNode.getRelationships();
+            for (Relationship r : list) {
+                DataManipulation.incrementRep(r, -1);
+            }
 
-        System.out.println("-1 Reputation for every relationship that " + bully + " has");
+            System.out.println("-1 Reputation for every relationship that " + bully + " has");
+        } catch (Exception e) {
+            System.out.println("\nEvent was not executed properly.Please enter a valid student's name.\n");
+            bully();
+        }
     }
 
     public static void loveProposal() {
-        input.nextLine();
-        System.out.println("\nYou were walking home from school when you saw two shady figures on your way out.");
-        System.out.println("Using your ultimate stealth, you creep behind them unnoticed to hear that one of the shady figures had confessed their love to the other!");
-        System.out.println("Creeping closer, you realize who those two shady figures were. . .");
-        System.out.println("\nWho was the one confessing their love?");
-        String lover = input.nextLine().toUpperCase();
-        Node loverNode = DataManipulation.getNode(lover);
-        System.out.println("\nWho was the one being confessed to?");
-        String loved = input.nextLine().toUpperCase();
-        if (lover.equals(loved)) {
-            System.out.println("\n Now you're not even making sense . . .");
-            return;
-        }
-        if (DataManipulation.isLoversWith(loved, lover)) {
-            System.out.println("\nThey are already lovers. \nReturning to main menu . . .");
-            return;
-        }
+        Scanner input = new Scanner(System.in);
+        try {
+            System.out.println("\nYou were walking home from school when you saw two shady figures on your way out.");
+            System.out.println("Using your ultimate stealth, you creep behind them unnoticed to hear that one of the shady figures had confessed their love to the other!");
+            System.out.println("Creeping closer, you realize who those two shady figures were. . .");
+            System.out.println("\nWho was the one confessing their love?");
+            String lover = input.nextLine().toUpperCase();
+            Node loverNode = DataManipulation.getNode(lover);
+            System.out.println("\nWho was the one being confessed to?");
+            String loved = input.nextLine().toUpperCase();
+            if (lover.equals(loved)) {
+                System.out.println("\n Now you're not even making sense . . .");
+                return;
+            }
+            if (DataManipulation.isLoversWith(loved, lover)) {
+                System.out.println("\nThey are already lovers. \nReturning to main menu . . .");
+                return;
+            }
 
-        System.out.println("\nWell, stop being dramatic! Did they accept the proposal? (YES/NO)");
-        String choice = input.nextLine();
-        if (choice.equalsIgnoreCase("yes")) {
-            //if already have a crush
-            if (DataManipulation.isLoversWith(lover, loved)) {
-                DataManipulation.incrementRep(DataManipulation.getRelationship(lover, loved, Sociopath.Rels.LOVES), 10);
+            System.out.println("\nWell, stop being dramatic! Did they accept the proposal? (YES/NO)");
+            String choice = input.nextLine();
+            if (choice.equalsIgnoreCase("yes")) {
+                //if already have a crush
+                if (DataManipulation.isLoversWith(lover, loved)) {
+                    DataManipulation.incrementRep(DataManipulation.getRelationship(lover, loved, Sociopath.Rels.LOVES), 10);
+                }
+                if (!DataManipulation.isLoversWith(lover, loved)) {
+                    DataManipulation.loves(lover, loved, 20);
+                }
+                DataManipulation.loves(loved, lover, 20);
+                System.out.println("\n" + lover + " and " + loved + " are now lovers!\n");
+                return;
             }
-            if (!DataManipulation.isLoversWith(lover, loved)) {
-                DataManipulation.loves(lover, loved, 20);
+            if (choice.equalsIgnoreCase("no")) {
+                System.out.println("\nThat's too bad. . .");
+                if (DataManipulation.isLoversWith(lover, loved)) {
+                    DataManipulation.incrementRep(DataManipulation.getRelationship(lover, loved, Sociopath.Rels.LOVES), 1);
+                    System.out.println("Through every rejection, " + lover + "'s crush on " + loved + " grows bigger and bigger!");
+                }
+                DataManipulation.loves(lover, loved, 10);
+                System.out.println(lover + " still has a crush on " + loved + ", but " + loved + " does not feel the same way . . .");
+                return;
             }
-            DataManipulation.loves(loved, lover, 20);
-            System.out.println("\n" + lover + " and " + loved + " are now lovers!\n");
-            return;
+            System.out.println("I don't wanna waste anymore time with you. Try putting in the correct input next time. Returning to main menu . . .");
+        } catch (Exception e) {
+            System.out.println("Event was not executed properly.Please enter a valid student's name.");
+            loveProposal();
         }
-        if (choice.equalsIgnoreCase("no")) {
-            System.out.println("\nThat's too bad. . .");
-            if (DataManipulation.isLoversWith(lover, loved)) {
-                DataManipulation.incrementRep(DataManipulation.getRelationship(lover, loved, Sociopath.Rels.LOVES), 1);
-                System.out.println("Through every rejection, " + lover + "'s crush on " + loved + " grows bigger and bigger!");
-            }
-            DataManipulation.loves(lover, loved, 10);
-            System.out.println(lover + " still has a crush on " + loved + ", but " + loved + " does not feel the same way . . .");
-            return;
-        }
-        System.out.println("I don't wanna waste anymore time with you. Try putting in the correct input next time. Returning to main menu . . .");
     }
 
 }
