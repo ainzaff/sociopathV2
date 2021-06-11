@@ -235,30 +235,30 @@ public class Events {
         for (int i = 0; i < n; i++) {
             try {
                 // Takes input
-                String str1 = input.next();
-                String str2 = input.next();
+                String friend1 = input.next();
+                String friend2 = input.next();
 
                 // If user enters more than n nodes, re-prompt an input
                 if (takenInts.size() == n) {
-                    while (!takenInts.contains(str1) || !takenInts.contains(str2)) {
+                    while (!takenInts.contains(friend1) || !takenInts.contains(friend2)) {
                         System.out.println("You entered more than " + n + " integers. Try again.\n");
-                        str1 = input.next();
-                        str2 = input.next();
+                        friend1 = input.next();
+                        friend2 = input.next();
                         System.out.println();
                     }
                 }
-                String relay = str1 + str2;
+                String relay = friend1 + friend2;
                 relationships.add(relay);
 
                 // Filters duplicate nodes
-                if (!takenInts.contains(str1)) {
-                    takenInts.add(str1);
+                if (!takenInts.contains(friend1)) {
+                    takenInts.add(friend1);
                 }
-                if (!takenInts.contains(str2)) {
-                    takenInts.add(str2);
+                if (!takenInts.contains(friend2)) {
+                    takenInts.add(friend2);
                 }
             } catch (Exception e) {
-                System.out.println("You entered an unsupported character(s). Please try again.");
+                System.out.println("You entered an unsupported character. Please try again.");
                 eventSix();
             }
         }
