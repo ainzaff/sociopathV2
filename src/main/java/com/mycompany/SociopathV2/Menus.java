@@ -17,10 +17,10 @@ public class Menus {
     public static Scanner input = new Scanner(System.in);
     
     public static void mainMenu() {
+        Scanner in = new Scanner(System.in);
         try {
             int choice = 0;
             while (choice != 1 || choice != 2 || choice != 3) {
-                Scanner in = new Scanner(System.in);
                 System.out.println("\nWELCOME TO SOCIOPATH!");
                 System.out.println("What do you want to do?\n");
                 System.out.println("1. Check Students");
@@ -42,7 +42,7 @@ public class Menus {
                 }
             }
         } catch (InputMismatchException ex) {
-            System.out.println("Please enter an integer");
+            System.out.println("Please enter an integer!");
             mainMenu();
         }
     }
