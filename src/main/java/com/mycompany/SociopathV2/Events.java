@@ -382,7 +382,7 @@ public class Events {
             System.out.println("\nThat's too bad. . .");
             if (DataManipulation.isLoversWith(lover, loved)) {
                 DataManipulation.incrementRep(DataManipulation.getRelationship(lover, loved, Sociopath.Rels.LOVES), 1);
-                System.out.println("Through every rejection, " + lover + "'s crush on " + loved + " grows biggers and bigger!");
+                System.out.println("Through every rejection, " + lover + "'s crush on " + loved + " grows bigger and bigger!");
             }
             DataManipulation.loves(lover, loved, 10);
             System.out.println(lover + " still has a crush on " + loved + ", but " + loved + " does not feel the same way . . .");
