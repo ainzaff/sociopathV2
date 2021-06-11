@@ -258,7 +258,7 @@ public class Events {
                     takenInts.add(str2);
                 }
             } catch (Exception e) {
-                System.out.println("You entered an unsupported character(s). PKlease try again.");
+                System.out.println("You entered an unsupported character(s). Please try again.");
                 eventSix();
             }
         }
