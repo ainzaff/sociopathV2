@@ -247,7 +247,7 @@ public class Events {
 
         // Input
         System.out.println("\nHow many friendships do you want to examine? --> ");
-        int n = Sociopath.input.nextInt();
+        int n = input.nextInt();
 
         System.out.println("\nEnter " + n + " friendships between " + n + " people. (Example: 1 2 or A B)\n");
         for (int i = 0; i < n; i++) {
