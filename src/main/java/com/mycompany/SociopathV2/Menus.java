@@ -17,27 +17,33 @@ public class Menus {
     public static Scanner input = new Scanner(System.in);
     
     public static void mainMenu() {
-        int choice = 0;
-        while (choice != 1 || choice != 2 || choice != 3) {
-            System.out.println("\nWELCOME TO SOCIOPATH!");
-            System.out.println("What do you want to do?\n");
-            System.out.println("1. Check Students");
-            System.out.println("2. Events");
-            System.out.println("3. Exit\n");
-            choice = Sociopath.input.nextInt();
-            switch (choice) {
-                case 1:
-                    studentMenu();
-                    break;
-                case 2:
-                    eventMenu();
-                    break;
-                case 3:
-                    System.exit(0);
-                    break;
-                default:
-                    System.out.println("Please type in a valid number option");
+        try {
+            int choice = 0;
+            while (choice != 1 || choice != 2 || choice != 3) {
+                Scanner in = new Scanner(System.in);
+                System.out.println("\nWELCOME TO SOCIOPATH!");
+                System.out.println("What do you want to do?\n");
+                System.out.println("1. Check Students");
+                System.out.println("2. Events");
+                System.out.println("3. Exit\n");
+                choice = in.nextInt();
+                switch (choice) {
+                    case 1:
+                        studentMenu();
+                        break;
+                    case 2:
+                        eventMenu();
+                        break;
+                    case 3:
+                        System.exit(0);
+                        break;
+                    default:
+                        System.out.println("Please type in a valid number option");
+                }
             }
+        } catch (InputMismatchException ex) {
+            System.out.println("Please enter an integer");
+            mainMenu();
         }
     }
 
