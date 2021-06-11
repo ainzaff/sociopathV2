@@ -108,6 +108,7 @@ public class Events {
                     return;
                 }
             }
+            System.out.println("Lies! "+ talked + " did not help "+ person1 + " with their lab questions!");
         }
     }
 
