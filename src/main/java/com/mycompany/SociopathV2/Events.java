@@ -33,17 +33,17 @@ public class Events {
                     System.out.println("\nAhh, I see. " + helper + " is quite good at programming . . .");
                     System.out.println(helper + " and " + helped + " have now become friends!");
                     System.out.println(helper + "'s reputation in the eyes of " + helped + " has increased by 10!");
-                    Relationship lab = DataManipulation.friendTo(helper, helped, 10);
+                    Relationship lab = DataManipulation.friendTo(helped, helper, 10);
+                    DataManipulation.friendTo(helper, helped, 0);
                     lab.setProperty("goodLab", "true");
-                    DataManipulation.friendTo(helped, helper, 0);
                 }
                 if ((Integer) helpernode.getProperty("prog") < 50) {
                     System.out.println("\n" + helper + " isn't very good at programming, so " + helper + " probably could not have finished those questions . . .");
                     System.out.println(helper + " and " + helped + " have now become friends!");
                     System.out.println(helper + "'s reputation in the eyes of " + helped + " has increased by 2!");
-                    Relationship lab = DataManipulation.friendTo(helper, helped, 2);
+                    Relationship lab = DataManipulation.friendTo(helped, helper, 2);
+                    DataManipulation.friendTo(helper, helped, 0);
                     lab.setProperty("goodLab", "false");
-                    DataManipulation.friendTo(helped, helper, 0);
                 }
             } else {
                 System.out.println("\nThey are not strangers. Are you lying to yourself?");
@@ -81,7 +81,7 @@ public class Events {
                 }
                 Node talkednode = DataManipulation.getNode(talked);
                 Node person1node = DataManipulation.getNode(person1);
-                Iterable<Relationship> relationships = talkednode.getRelationships(Direction.OUTGOING, Sociopath.Rels.IS_FRIENDS_WITH);
+                Iterable<Relationship> relationships = talkednode.getRelationships(Direction.INCOMING, Sociopath.Rels.IS_FRIENDS_WITH);
                 for (Relationship relay : relationships) {
                     if (!relay.hasProperty("goodLab")) {
                         continue;
@@ -93,7 +93,7 @@ public class Events {
                             System.out.println(person2 + " is already friends with " + talked + "\nThis incident has caused " + talked + "'s reputation from " + person2 + "'s perspective to increase by " + (int) Math.floor(0.5 * (int) relay.getProperty("rep")) + "!");
                             return;
                         }
-                        DataManipulation.knowsOf(person2, talked, (int) Math.floor(0.5 * (int) relay.getProperty("rep")));
+                        DataManipulation.knowsOf(talked, person2, (int) Math.floor(0.5 * (int) relay.getProperty("rep")));
                         System.out.println(person2 + " now knows of " + talked + " !");
                         System.out.println(talked + "'s reputation in the eyes (or in this case, ears) of " + person2 + " has increased by " + (int) Math.floor(0.5 * (int) relay.getProperty("rep")) + "!");
                         return;
@@ -105,7 +105,7 @@ public class Events {
                             System.out.println(person2 + " is already friends with " + talked + "\nThis incident has caused " + talked + "'s reputation from " + person2 + "'s perspective to decrease by " + (int) Math.floor(1 * (int) relay.getProperty("rep")) + "!");
                             return;
                         }
-                        DataManipulation.knowsOf(person2, talked, (int) Math.floor(-1 * (int) relay.getProperty("rep")));
+                        DataManipulation.knowsOf(talked, person2, (int) Math.floor(-1 * (int) relay.getProperty("rep")));
                         System.out.println(person2 + " now knows of " + talked + " !");
                         System.out.println(talked + "'s reputation in the eyes (or in this case, ears) of " + person2 + " has decreased by " + (int) Math.floor(-1 * (int) relay.getProperty("rep")) + "!");
                         return;
@@ -372,9 +372,9 @@ public class Events {
             System.out.println("Which person was being bullied?");
             String bullied = input.nextLine().toUpperCase();
             System.out.println("The small and weak " + bullied + " was preyed upon by the big bad bully , " + bully + "!");
-            DataManipulation.bullies(bully, bullied, -1);
+            DataManipulation.bullies(bullied, bully, -1);
             System.out.println(bullied + " now hates " + bully);
-            DataManipulation.hates(bullied, bully, -1);
+            DataManipulation.hates(bully, bullied, -1);
             System.out.println("\nThe voices of " + bullied + " echoed through the school halls.");
             System.out.println("Everyone now knows that " + bully + " is bullying " + bullied + "\n");
             Iterable<Relationship> list = bullyNode.getRelationships();
@@ -404,7 +404,7 @@ public class Events {
                 System.out.println("\n Now you're not even making sense . . .");
                 return;
             }
-            if (DataManipulation.isLoversWith(loved, lover)) {
+            if (DataManipulation.isLoversWith(lover, loved)) {
                 System.out.println("\nThey are already lovers. \nReturning to main menu . . .");
                 return;
             }
@@ -413,23 +413,24 @@ public class Events {
             String choice = input.nextLine();
             if (choice.equalsIgnoreCase("yes")) {
                 //if already have a crush
-                if (DataManipulation.isLoversWith(lover, loved)) {
-                    DataManipulation.incrementRep(DataManipulation.getRelationship(lover, loved, Sociopath.Rels.LOVES), 10);
+                if (DataManipulation.isLoversWith(loved, lover)) {
+                    DataManipulation.incrementRep(DataManipulation.getRelationship(loved, lover, Sociopath.Rels.LOVES), 10);
                 }
-                if (!DataManipulation.isLoversWith(lover, loved)) {
-                    DataManipulation.loves(lover, loved, 20);
+                if (!DataManipulation.isLoversWith(loved, lover)) {
+                    DataManipulation.loves(loved, lover, 20);
                 }
-                DataManipulation.loves(loved, lover, 20);
+                DataManipulation.loves(lover, loved, 20);
                 System.out.println("\n" + lover + " and " + loved + " are now lovers!\n");
                 return;
             }
             if (choice.equalsIgnoreCase("no")) {
                 System.out.println("\nThat's too bad. . .");
-                if (DataManipulation.isLoversWith(lover, loved)) {
-                    DataManipulation.incrementRep(DataManipulation.getRelationship(lover, loved, Sociopath.Rels.LOVES), 1);
+                if (DataManipulation.isLoversWith(loved, lover)) {
+                    DataManipulation.incrementRep(DataManipulation.getRelationship(loved, lover, Sociopath.Rels.LOVES), 1);
                     System.out.println("Through every rejection, " + lover + "'s crush on " + loved + " grows bigger and bigger!");
+                    return;
                 }
-                DataManipulation.loves(lover, loved, 10);
+                DataManipulation.loves(loved, lover, 10);
                 System.out.println(lover + " still has a crush on " + loved + ", but " + loved + " does not feel the same way . . .");
                 return;
             }
