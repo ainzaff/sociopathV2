@@ -28,7 +28,7 @@ public class jFrameDisplayProfile extends javax.swing.JFrame {
     public void fetch(String a){
         a = a.toUpperCase();
         jLabel2.setText(a);
-        String[] column = {"NAME", "RELATIONSHIP", "REPUTATION"};
+        String[] column = {"RELATIONSHIP", "NAME", "REPUTATION"};
         DefaultTableModel model = new DefaultTableModel(StudentMethods.getProfile(DataManipulation.getNode(a)), column); 
         jTable1.setModel(model);
     }
