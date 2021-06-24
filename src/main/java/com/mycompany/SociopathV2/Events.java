@@ -163,6 +163,10 @@ public class Events {
             //split space
             String[] bookHeights = bookHeightsInput.split(" ");
             //push book height elements into a list while parse into integer
+            if(bookHeights.length != numOfBooks){
+                System.out.println("Heights inserted is not the same as input");
+            }
+            if(bookHeights.length == numOfBooks){
             for (int i = 0; i < numOfBooks; i++) {
                 bookList.push(Integer.parseInt(bookHeights[i]));
             }
@@ -177,6 +181,7 @@ public class Events {
                 counter = i;
             }
             System.out.println("Rounds needed: " + counter);
+            }
         } catch (Exception e) {
             System.out.println("Please enter the number of books and the book's heights in a String with blank spaces in between.");
         }
